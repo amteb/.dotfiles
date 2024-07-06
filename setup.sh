@@ -34,4 +34,4 @@ sudo apt install sd
 
 brew install tlrc
 
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+test -d /home/linuxbrew/.linuxbrew && eval ""
