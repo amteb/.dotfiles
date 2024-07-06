@@ -42,7 +42,7 @@ function install_and_add_to_stow_setup() {
     fi
 
     # Path to your setup.sh script
-    SETUP_SCRIPT="$HOME/.dotfiles/setup.sh"
+    SETUP_SCRIPT="$DOT/setup.sh"
 
     # Check if the command is already in setup.sh
     if grep -Fxq "$cmd" "$SETUP_SCRIPT"; then
@@ -59,7 +59,7 @@ function install_and_add_to_stow_setup() {
         fi
 
         # Change to the dotfiles directory
-        DOTFILES_DIR="$HOME/.dotfiles"
+        DOTFILES_DIR="$DOT"
         qpushd "$DOTFILES_DIR"
 
         # Commit and push the changes
@@ -77,7 +77,7 @@ function sto() {
 }
 
 function restow() {
-    qpushd "$HOME/.dotfiles"
+    qpushd "$DOT"
 
     stow .
     git add .
