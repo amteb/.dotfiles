@@ -9,3 +9,4 @@ wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64
 sudo chmod +x eza
 sudo chown root:root eza
 sudo mv eza /usr/local/bin/eza
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
