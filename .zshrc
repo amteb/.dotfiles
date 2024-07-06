@@ -24,6 +24,15 @@ l (){
 
 
 # install and stow
+
+qpushd() {
+  pushd "$1" > /dev/null
+}
+
+qpopd() {
+  popd > /dev/null
+}
+
 function install_and_add_to_stow_setup() {
     local cmd="$*"
 
@@ -51,7 +60,7 @@ function install_and_add_to_stow_setup() {
 
         # Change to the dotfiles directory
         DOTFILES_DIR="$HOME/.dotfiles"
-        pushd "$DOTFILES_DIR"
+        qpushd "$DOTFILES_DIR"
 
         # Commit and push the changes
         git add setup.sh
@@ -59,7 +68,7 @@ function install_and_add_to_stow_setup() {
         git push
 
         echo "Installation command logged and dotfiles repo synced."
-        popd
+        qpopd
     fi
 }
 
@@ -68,7 +77,7 @@ function sto() {
 }
 
 function restow() {
-    pushd "$HOME/.dotfiles"
+    qpushd "$HOME/.dotfiles"
 
     stow .
     git add .
@@ -81,7 +90,7 @@ function restow() {
       echo "No changes to commit"
     fi
 
-    popd
+    qpopd
 }
 
 function szsh() {
