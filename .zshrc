@@ -41,33 +41,33 @@ function install_and_add_to_stow_setup() {
         return 1
     fi
 
-    # Path to your setup.sh script
+    eval "$cmd"
+    if [ $? -ne 0 ]; then
+        echo "Installation command failed: $cmd"
+        return 1
+    fi
+
     SETUP_SCRIPT="$DOT/setup.sh"
 
-    # Check if the command is already in setup.sh
     if grep -Fxq "$cmd" "$SETUP_SCRIPT"; then
         echo "Command already exists in setup.sh: $cmd"
     else
-        # Log the command to setup.sh
-        echo "$cmd" >> "$SETUP_SCRIPT"
+        echo "\n$cmd" >> "$SETUP_SCRIPT"
 
-        # Execute the command
-        eval "$cmd"
-        if [ $? -ne 0 ]; then
-            echo "Installation command failed: $cmd"
-            return 1
-        fi
-
-        # Change to the dotfiles directory
         DOTFILES_DIR="$DOT"
         qpushd "$DOTFILES_DIR"
 
-        # Commit and push the changes
         git add setup.sh
-        git commit -m "Added new installation command: $cmd"
-        git push
 
-        echo "Installation command logged and dotfiles repo synced."
+        if ! git diff --cached --quiet; then
+            git commit -m "Added new installation command: $cmd"
+            git push
+
+            echo "Installation command logged and dotfiles repo synced."
+        else
+            echo "No changes to commit."
+        fi
+
         qpopd
     fi
 }
@@ -93,7 +93,7 @@ function restow() {
     qpopd
 }
 
-function szsh() {
+function szs() {
   source "$HOME/.zshrc"
   echo "Sourced .zshrc"
 }
