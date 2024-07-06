@@ -4,3 +4,4 @@ sudo apt install keychain
 sudo apt install -y build-essential
 sudo apt install -y bat
 sudo apt install -y fd-find
+sudo apt install -y fzf
