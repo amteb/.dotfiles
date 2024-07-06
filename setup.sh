@@ -5,3 +5,4 @@ sudo apt install -y build-essential
 sudo apt install -y bat
 sudo apt install -y fd-find
 sudo apt install -y fzf
+wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
