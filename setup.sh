@@ -33,3 +33,5 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.
 sudo apt install sd
 
 brew install tlrc
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
