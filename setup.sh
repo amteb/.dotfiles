@@ -11,3 +11,4 @@ sudo chown root:root eza
 sudo mv eza /usr/local/bin/eza
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 sudo apt install neofetch
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz && sudo rm -rf /opt/nvim && sudo tar -C /opt -xzf nvim-linux64.tar.gz
