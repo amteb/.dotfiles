@@ -10,3 +10,4 @@ sudo chmod +x eza
 sudo chown root:root eza
 sudo mv eza /usr/local/bin/eza
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+sudo apt install neofetch
