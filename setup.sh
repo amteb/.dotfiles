@@ -44,3 +44,5 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.
 sudo apt install sd
 
 brew install tlrc
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
