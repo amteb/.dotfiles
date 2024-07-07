@@ -41,3 +41,4 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.
 # https://www.gnu.org/software/stow/
 sudo apt install stow
 stow .
+brew install antidote
