@@ -48,3 +48,5 @@ brew install tlrc
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 curl -sSf https://rye.astral.sh/get | bash
+
+sudo apt install zsh
