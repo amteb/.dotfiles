@@ -50,3 +50,5 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 curl -sSf https://rye.astral.sh/get | bash
 
 sudo apt install zsh
+
+curl -sS https://starship.rs/install.sh | sh
