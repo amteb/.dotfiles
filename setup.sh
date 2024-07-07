@@ -46,3 +46,5 @@ sudo apt install sd
 brew install tlrc
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
+
+curl -sSf https://rye.astral.sh/get | bash
