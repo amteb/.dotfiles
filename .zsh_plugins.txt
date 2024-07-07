@@ -1,0 +1,1 @@
+wbingli/zsh-wakatime

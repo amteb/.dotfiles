@@ -110,6 +110,21 @@ elif [ -f "$HOME/.profile" ] ; then
   source "$HOME/.profile"
 fi
 
+if [ -d "$HOME/.cargo/env" ] ; then
+  source "$HOME/.cargo/env"
+fi
+
+  # zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
+  # if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  #   (
+  #     source /path-to-antidote/antidote.zsh
+  #     antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  #   )
+  # fi
+  # source ${zsh_plugins}.zsh
+
+source "/home/linuxbrew/.linuxbrew/opt/antidote/share/antidote/antidote.zsh"
+
 # keychain configuration
 eval `keychain --eval --agents ssh id_ed25519`
 
@@ -131,4 +146,3 @@ if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init bash)"
 fi
 
-. "$HOME/.cargo/env"
