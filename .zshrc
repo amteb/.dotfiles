@@ -114,14 +114,14 @@ if [ -d "$HOME/.cargo/env" ] ; then
   source "$HOME/.cargo/env"
 fi
 
-  # zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
-  # if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
-  #   (
-  #     source /path-to-antidote/antidote.zsh
-  #     antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
-  #   )
-  # fi
-  # source ${zsh_plugins}.zsh
+zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins"
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  (
+    source ".antidote/antidote.zsh"
+    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  )
+fi
+source ${zsh_plugins}.zsh
 
 source "/home/linuxbrew/.linuxbrew/opt/antidote/share/antidote/antidote.zsh"
 
