@@ -384,6 +384,7 @@ require("lazy").setup(
                         settings = {
                             basedpyright = {
                                 disableOrganizeImports = true,
+                                typeCheckingMode = "standard",
                             },
                             python = {
                                 analysis = {
@@ -524,6 +525,23 @@ require("lazy").setup(
                 --  into multiple repos for maintenance purposes.
                 "hrsh7th/cmp-nvim-lsp",
                 "hrsh7th/cmp-path",
+                dependencies = {
+                    -- codeium
+                    {
+                        "Exafunction/codeium.nvim",
+                        cmd = "Codeium",
+                        build = ":Codeium Auth",
+                        opts = {},
+                    },
+                },
+                ---@param opts cmp.ConfigSchema
+                opts = function(_, opts)
+                    table.insert(opts.sources, 1, {
+                        name = "codeium",
+                        group_index = 1,
+                        priority = 100,
+                    })
+                end,
             },
             config = function()
                 -- See `:help cmp`
@@ -647,12 +665,12 @@ require("lazy").setup(
                         underline_visible = false,
                     },
                     indent_blankline = {
-                        context_highlight = "", -- default | pro
+                        context_highlight = "pro", -- default | pro
                         context_start_underline = false,
                     },
                 },
-                ---@param c Colorscheme
-                override = function(c) end,
+                -- ---@param c Colorscheme
+                -- override = function(c) end,
                 -- ---@param cs Colorscheme
                 -- ---@param p ColorschemeOptions
                 -- ---@param Config MonokaiProOptions
@@ -746,15 +764,18 @@ require("lazy").setup(
         },
         {
             "Exafunction/codeium.nvim",
-            event = "BufEnter",
-            dependencies = {
-                "nvim-lua/plenary.nvim",
-                "hrsh7th/nvim-cmp",
-            },
-            config = function()
-                require("codeium").setup({
-                })
-            end,
+            cmd = "Codeium",
+            build = ":Codeium Auth",
+            opts = {},
+            -- event = "BufEnter",
+            -- dependencies = {
+            --     "nvim-lua/plenary.nvim",
+            --     "hrsh7th/nvim-cmp",
+            -- },
+            -- config = function()
+            --     require("codeium").setup({
+            --     })
+            -- end,
         },
         {
             'nvimdev/dashboard-nvim',
@@ -768,26 +789,37 @@ require("lazy").setup(
                             enable = true,
                         },
                         shortcut = {
-                            { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
+                            {
+                                desc = '󰊳 Update',
+                                group = '@property',
+                                action = 'Lazy update',
+                                key = 'U',
+                            },
                             {
                                 icon = ' ',
                                 icon_hl = '@variable',
                                 desc = 'Files',
                                 group = 'Label',
                                 action = 'Telescope find_files',
-                                key = 'f',
+                                key = 'F',
                             },
                             {
-                                desc = ' Apps',
+                                desc = ' Home',
                                 group = 'DiagnosticHint',
-                                action = 'Telescope app',
-                                key = 'a',
+                                action = 'Neotree dir=~',
+                                key = 'H',
+                            },
+                            {
+                                desc = ' Dev',
+                                group = 'DiagnosticHint',
+                                action = 'Neotree dir=~/dev',
+                                key = 'D',
                             },
                             {
                                 desc = ' dotfiles',
                                 group = 'Number',
-                                action = 'Telescope dotfiles',
-                                key = 'd',
+                                action = 'Neotree dir=~/.dotfiles',
+                                key = '.',
                             },
                         },
                     },

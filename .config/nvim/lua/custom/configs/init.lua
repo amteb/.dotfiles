@@ -126,3 +126,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- [[ Disable Netrw ]]
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+-- [[ Disable Error Underline ]]
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.with(
+        vim.lsp.diagnostic.on_publish_diagnostics,
+        {
+            underline = false
+        }
+    )

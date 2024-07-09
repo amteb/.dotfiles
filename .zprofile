@@ -30,6 +30,7 @@ if [ -d "$HOME/.modular" ]; then
 fi
 
 export HOMEBREW_NO_ENV_HINTS=TRUE
+export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=TRUE
 
 if command -v fd > /dev/null 2>&1; then
   export FZF_DEFAULT_COMMAND="fd --type file --color=always"
