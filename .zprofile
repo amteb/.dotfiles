@@ -37,11 +37,11 @@ if [ -d "/opt/mssql-tools18/bin" ] ; then
     PATH="$PATH:/opt/mssql-tools18/bin"
 fi
 
-if [ -d "$HOME/.cargo/env" ] ; then
+if [ -f "$HOME/.cargo/env" ] ; then
     source "$HOME/.cargo/env"
 fi
 
-if [ -d "$HOME/.rye/env" ] ; then
+if [ -f "$HOME/.rye/env" ] ; then
     source "$HOME/.rye/env"
 fi
 

@@ -164,6 +164,10 @@ fi
 zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins"
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   (
+  autoload -Uz compinit
+  compinit
+  )
+  (
     source ".antidote/antidote.zsh"
     antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
   )
@@ -193,3 +197,12 @@ if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init bash)"
 fi
 
+
+# The following lines were added by compinstall
+
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle :compinstall filename '~/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
