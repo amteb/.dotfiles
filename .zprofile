@@ -38,11 +38,11 @@ if [ -d "/opt/mssql-tools18/bin" ] ; then
 fi
 
 if [ -d "$HOME/.cargo/env" ] ; then
-    . "$HOME/.cargo/env"
+    source "$HOME/.cargo/env"
 fi
 
 if [ -d "$HOME/.rye/env" ] ; then
-    . "$HOME/.rye/env"
+    source "$HOME/.rye/env"
 fi
 
 export HOMEBREW_NO_ENV_HINTS=TRUE
