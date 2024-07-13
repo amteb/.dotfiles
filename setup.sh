@@ -24,6 +24,14 @@ wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64
   && sudo chmod +x eza \
   && sudo chown root:root eza \
   && sudo mv eza /usr/local/bin/eza # ls alternative
+url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest \ 
+  | jq -r '.assets[] | select(.name | test("delta-.*-x86_64-unknown-linux-gnu.tar.gz") ) | .browser_download_url') \
+  && wget "$url" -O /tmp/delta.tar.gz \
+  && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
+  && tar -xzf /tmp/delta.tar.gz -C /tmp \
+  && mv "/tmp/$dirname/delta" "$HOME/.local/bin" \
+  && rm -r "/tmp/$dirname" \
+  && rm /tmp/delta.tar.gz # delta, git diff viewer
 curl -LsSf https://astral.sh/uv/install.sh | sh # pip alternative
 curl -sSf https://rye.astral.sh/get | bash # WIP "cargo for python"
 brew install tlrc # tldr, man alternative

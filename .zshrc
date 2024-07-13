@@ -30,6 +30,7 @@ alias v.='nvim .'
 alias sva='source .venv/bin/activate'
 alias sz="source $HOME/.zshrc"
 alias sp="source $HOME/.zprofile"
+alias cat="bat"
 
 # functions
 
