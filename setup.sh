@@ -44,3 +44,5 @@ stow .
 brew install antidote
 
 sudo apt install unzip
+
+sudo apt-get install jq
