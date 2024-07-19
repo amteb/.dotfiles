@@ -19,13 +19,13 @@ sudo apt install -y fd-find # find alternative
 sudo apt install -y fzf # fuzzy finding
 sudo apt-get install ripgrep # grep alternative
 sudo apt install sd # sed alternative
+sudo apt-get install jq
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh # cd alternative
 wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz \
   && sudo chmod +x eza \
   && sudo chown root:root eza \
   && sudo mv eza /usr/local/bin/eza # ls alternative
-url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest \ 
-  | jq -r '.assets[] | select(.name | test("delta-.*-x86_64-unknown-linux-gnu.tar.gz") ) | .browser_download_url') \
+url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.assets[] | select(.name | test("delta-.*-x86_64-unknown-linux-gnu.tar.gz") ) | .browser_download_url') \
   && wget "$url" -O /tmp/delta.tar.gz \
   && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
   && tar -xzf /tmp/delta.tar.gz -C /tmp \
@@ -41,6 +41,8 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.
   && sudo rm -rf /opt/nvim \
   && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
   && rm nvim-linux64.tar.gz
+sudo apt install unzip
+brew install antidote
 
 # GNU stow
 # symlink manager for dotfiles
@@ -49,8 +51,5 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.
 # https://www.gnu.org/software/stow/
 sudo apt install stow
 stow .
-brew install antidote
 
-sudo apt install unzip
 
-sudo apt-get install jq
