@@ -23,14 +23,16 @@ SAVEHIST=2000
 force_color_prompt=yes
 
 # aliases
-alias clip='clip.exe'
-alias code='code-insiders'
-alias v='nvim'
-alias v.='nvim .'
-alias sva='source .venv/bin/activate'
+alias clip="clip.exe"
+alias code="code-insiders"
+alias v="nvim"
+alias v.="nvim ."
+alias sva="source .venv/bin/activate"
 alias sz="source $HOME/.zshrc"
 alias sp="source $HOME/.zprofile"
 alias cat="bat"
+alias z.="z .."
+alias z-="z -"
 
 # functions
 
