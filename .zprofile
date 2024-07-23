@@ -3,47 +3,27 @@
 #umask 022
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
+[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
+[ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/squashfs-root/usr/bin" ] ; then
-    PATH="$PATH:$HOME/squashfs-root/usr/bin"
-fi
+[ -d "$HOME/squashfs-root/usr/bin" ] && PATH="$PATH:$HOME/squashfs-root/usr/bin"
 
-if [ -d "/opt/nvim-linux64" ] ; then
-  export PATH="$PATH:/opt/nvim-linux64/bin"
-  export EDITOR='nvim'
-fi
+[ -d "/opt/nvim-linux64" ] && export PATH="$PATH:/opt/nvim-linux64/bin" && export EDITOR='nvim'
 
-if [ -d "$HOME/.modular" ]; then
-  export MODULAR_HOME="$HOME/.modular"
-  if [ -d "$HOME/.modular/pkg/packages.modular.com_mojo/bin" ]; then
-    export PATH="$PATH:$HOME/.modular/pkg/packages.modular.com_mojo/bin"
-  fi
-fi
+[ -d "$HOME/.modular" ] && export MODULAR_HOME="$HOME/.modular" && ([ -d "$HOME/.modular/pkg/packages.modular.com_mojo/bin" && export PATH="$PATH:$HOME/.modular/pkg/packages.modular.com_mojo/bin")
 
-if [ -d "/usr/local/node/bin/" ] ; then
-    PATH="$PATH:/usr/local/node/bin"
-fi
+[ -d "/usr/local/node/bin/" ] && PATH="$PATH:/usr/local/node/bin"
 
-if [ -d "/opt/mssql-tools18/bin" ] ; then
-    PATH="$PATH:/opt/mssql-tools18/bin"
-fi
+[ -d "/opt/mssql-tools18/bin" ] && PATH="$PATH:/opt/mssql-tools18/bin"
 
-if [ -f "$HOME/.cargo/env" ] ; then
-    source "$HOME/.cargo/env"
-fi
+[ -d "/usr/local/go/bin" ] && export PATH=$PATH:/usr/local/go/bin
 
-if [ -f "$HOME/.rye/env" ] ; then
-    source "$HOME/.rye/env"
-fi
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
+[ -f "$HOME/.rye/env" ] && source "$HOME/.rye/env"
 
 export HOMEBREW_NO_ENV_HINTS=TRUE
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=TRUE
@@ -67,3 +47,5 @@ fi
 
 # stow .dotfiles
 export DOT="$HOME/.dotfiles"
+
+[ -f "$HOME/.zshrc" ] && source "$HOME/.zshrc"

@@ -153,12 +153,6 @@ function g {
 }
 
 # sources
-if [ -f "$HOME/.zprofile" ] ; then
-  source "$HOME/.zprofile"
-elif [ -f "$HOME/.profile" ] ; then
-  source "$HOME/.profile"
-fi
-
 if [ -d "$HOME/.cargo/env" ] ; then
   source "$HOME/.cargo/env"
 fi
