@@ -157,6 +157,15 @@ if [ -d "$HOME/.cargo/env" ] ; then
   source "$HOME/.cargo/env"
 fi
 
+# The following lines were added by compinstall
+
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle :compinstall filename '~/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
 zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins"
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   (
@@ -169,8 +178,6 @@ if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   )
 fi
 source ${zsh_plugins}.zsh
-
-source "/home/linuxbrew/.linuxbrew/opt/antidote/share/antidote/antidote.zsh"
 
 # keychain configuration
 eval `keychain --eval --agents ssh id_ed25519`
@@ -192,13 +199,3 @@ fi
 if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init bash)"
 fi
-
-
-# The following lines were added by compinstall
-
-zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle :compinstall filename '~/.zshrc'
-
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
