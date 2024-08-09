@@ -6,10 +6,13 @@
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    vim.fn.system { "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath }
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+if not vim.uv.fs_stat(lazypath) then
+    local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+    local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+    if vim.v.shell_error ~= 0 then
+        error('Error cloning lazy.nvim:\n' .. out)
+    end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
@@ -141,11 +144,11 @@ require("lazy").setup(
                     -- You can put your default mappings / updates / etc. in here
                     --  All the info you're looking for is in `:help telescope.setup()`
                     --
-                    -- defaults = {
-                    --   mappings = {
-                    --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-                    --   },
-                    -- },
+                    defaults = {
+                        mappings = {
+                            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+                        },
+                    },
                     -- pickers = {}
                     extensions = {
                         ["ui-select"] = {
@@ -268,6 +271,8 @@ require("lazy").setup(
                         --  Useful when your language has ways of declaring types without an actual implementation.
                         map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 
+                        map("gh", vim.lsp.buf.hover, "[G]o [H]over")
+
                         -- Jump to the type of the word under your cursor.
                         --  Useful when you're not sure what type a variable is and you want to see
                         --  the definition of its *type*, not where it was *defined*.
@@ -292,7 +297,7 @@ require("lazy").setup(
 
                         -- Opens a popup that displays documentation about the word under your cursor
                         --  See `:help K` for why this keymap.
-                        map("K", vim.lsp.buf.hover, "Hover Documentation")
+                        -- map("K", vim.lsp.buf.hover, "Hover Documentation")
 
                         -- WARN: This is not Goto Definition, this is Goto Declaration.
                         --  For example, in C this would take you to the header.
@@ -332,10 +337,10 @@ require("lazy").setup(
                         -- code, if the language server you are using supports them
                         --
                         -- This may be unwanted, since they displace some of your code
-                        if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-                            map("<leader>th", function()
-                                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-                            end, "[T]oggle Inlay [H]ints")
+                        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+                            map('<leader>th', function()
+                                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+                            end, '[T]oggle Inlay [H]ints')
                         end
                     end,
                 })
@@ -434,7 +439,9 @@ require("lazy").setup(
 
         { -- Autoformat
             "stevearc/conform.nvim",
-            lazy = false,
+            'stevearc/conform.nvim',
+            event = { 'BufWritePre' },
+            cmd = { 'ConformInfo' },
             keys = {
                 {
                     "<leader>f",
@@ -458,7 +465,7 @@ require("lazy").setup(
                     }
                 end,
                 formatters_by_ft = {
-                    -- lua = { "stylua" },
+                    lua = { "stylua" },
                     -- Conform can also run multiple formatters sequentially
                     -- python = { "isort", "black" },
                     --
@@ -708,7 +715,7 @@ require("lazy").setup(
             "nvim-treesitter/nvim-treesitter",
             build = ":TSUpdate",
             opts = {
-                ensure_installed = { "bash", "c", "diff", "html", "lua", "luadoc", "markdown", "vim", "vimdoc" },
+                ensure_installed = { "bash", "c", "diff", "html", "lua", "luadoc", "markdown", "vim", "vimdoc", "python", "toml", "yaml", "json", "sql", "make" },
                 -- Autoinstall languages that are not installed
                 auto_install = true,
                 highlight = {
@@ -716,9 +723,18 @@ require("lazy").setup(
                     -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
                     --  If you are experiencing weird indenting issues, add the language to
                     --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-                    additional_vim_regex_highlighting = { "ruby" },
+                    -- additional_vim_regex_highlighting = { "ruby" },
                 },
-                indent = { enable = true, disable = { "ruby" } },
+                indent = { enable = true },
+                incremental_selection = {
+                    enable = true,
+                    keymaps = {
+                        init_selection = "gnn",
+                        node_incremental = "grn",
+                        scope_incremental = "grc",
+                        node_decremental = "grm",
+                    }
+                }
             },
             config = function(_, opts)
                 -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -756,57 +772,8 @@ require("lazy").setup(
             --     })
             -- end,
         },
-        {
-            'nvimdev/dashboard-nvim',
-            event = 'VimEnter',
-            priority = 999,
-            config = function()
-                require('dashboard').setup {
-                    theme = 'hyper',
-                    config = {
-                        week_header = {
-                            enable = true,
-                        },
-                        shortcut = {
-                            {
-                                desc = '󰊳 Update',
-                                group = '@property',
-                                action = 'Lazy update',
-                                key = 'U',
-                            },
-                            {
-                                icon = ' ',
-                                icon_hl = '@variable',
-                                desc = 'Files',
-                                group = 'Label',
-                                action = 'Telescope find_files',
-                                key = 'F',
-                            },
-                            {
-                                desc = ' Home',
-                                group = 'DiagnosticHint',
-                                action = 'Neotree dir=~',
-                                key = 'H',
-                            },
-                            {
-                                desc = ' Dev',
-                                group = 'DiagnosticHint',
-                                action = 'Neotree dir=~/dev',
-                                key = 'D',
-                            },
-                            {
-                                desc = ' dotfiles',
-                                group = 'Number',
-                                action = 'Neotree dir=~/.dotfiles',
-                                key = '.',
-                            },
-                        },
-                    },
-                }
-            end,
-            dependencies = { { 'nvim-tree/nvim-web-devicons' } }
-        },
 
+        require("custom.plugins.dashboard"),
 
         -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
         -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -816,7 +783,7 @@ require("lazy").setup(
         --
         --  Here are some example plugins that I've included in the Kickstart repository.
         --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-        --
+
         require "kickstart.plugins.debug",
         require "kickstart.plugins.indent_line",
         require "kickstart.plugins.lint",
