@@ -22,18 +22,6 @@ SAVEHIST=2000
 # should be on the output of commands, not on the prompt
 force_color_prompt=yes
 
-# aliases
-alias clip="clip.exe"
-alias code="code-insiders"
-alias v="nvim"
-alias v.="nvim ."
-alias sva="source .venv/bin/activate"
-alias sz="source $HOME/.zshrc"
-alias sp="source $HOME/.zprofile"
-alias cat="bat"
-alias z.="z .."
-alias z-="z -"
-
 # functions
 
 ## install and stow
@@ -93,7 +81,7 @@ function restow() {
 
     stow .
     git add .
-    
+
     if ! git diff --cached --quiet; then
       git commit -m "Updated dotfiles"
       git push
@@ -153,6 +141,19 @@ function f {
 function g {
     git "$@"
 }
+
+# aliases
+alias clip="clip.exe"
+alias code="code-insiders"
+alias c.="code-insiders ."
+alias v="nvim"
+alias v.="nvim ."
+alias sva="source .venv/bin/activate"
+alias sz="source $HOME/.zshrc"
+alias sp="source $HOME/.zprofile"
+alias cat="bat"
+alias z.="z .."
+alias z-="z -"
 
 # sources
 if [ -d "$HOME/.cargo/env" ] ; then
