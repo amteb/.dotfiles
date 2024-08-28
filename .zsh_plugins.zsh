@@ -1,0 +1,1 @@
+.config/.zsh_plugins.zsh
