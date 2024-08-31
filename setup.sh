@@ -33,7 +33,7 @@ url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq
   && rm -r "/tmp/$dirname" \
   && rm /tmp/delta.tar.gz # delta, git diff viewer
 curl -LsSf https://astral.sh/uv/install.sh | sh # pip alternative
-curl -sSf https://rye.astral.sh/get | bash # WIP "cargo for python"
+uv tool install pre-commit
 brew install tlrc # tldr, man alternative
 sudo apt install keychain # for persistent github ssh sessions
 # neovim
@@ -53,3 +53,5 @@ sudo apt install stow
 stow .
 
 
+
+brew install gitleaks
