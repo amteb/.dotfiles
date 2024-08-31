@@ -47,7 +47,7 @@ function install_and_add_to_stow_setup() {
         return 1
     fi
 
-    SETUP_SCRIPT="$DOT/setup.sh"
+    SETUP_SCRIPT="$DOT/scripts/setup.sh"
 
     if grep -Fxq "$cmd" "$SETUP_SCRIPT"; then
         echo "Command already exists in setup.sh: $cmd"
@@ -57,7 +57,7 @@ function install_and_add_to_stow_setup() {
         DOTFILES_DIR="$DOT"
         qpushd "$DOTFILES_DIR"
 
-        git add setup.sh
+        git add $SETUP_SCRIPT
 
         if ! git diff --cached --quiet; then
             git commit -m "Added new installation command: $cmd"
