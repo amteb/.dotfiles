@@ -14,6 +14,8 @@ _darcs
 \.git
 \.gitignore
 \.gitmodules
+\.gitattributes
+\.pre-commit-config.yaml
 
 .+~          # emacs backup files
 \#.*\#       # emacs autosave files
@@ -23,3 +25,4 @@ _darcs
 ^/COPYING
 
 setup.sh
+\.config/broot/launcher/bash/br
