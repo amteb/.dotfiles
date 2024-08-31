@@ -79,9 +79,7 @@ Kickstart Guide:
 If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
 -- ]]
 
-require("custom.configs")
-
-require("custom.plugins")
+require("custom")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=4 sts=4 sw=4 et

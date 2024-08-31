@@ -22,18 +22,6 @@ SAVEHIST=2000
 # should be on the output of commands, not on the prompt
 force_color_prompt=yes
 
-# aliases
-alias clip="clip.exe"
-alias code="code-insiders"
-alias v="nvim"
-alias v.="nvim ."
-alias sva="source .venv/bin/activate"
-alias sz="source $HOME/.zshrc"
-alias sp="source $HOME/.zprofile"
-alias cat="bat"
-alias z.="z .."
-alias z-="z -"
-
 # functions
 
 ## install and stow
@@ -93,7 +81,7 @@ function restow() {
 
     stow .
     git add .
-    
+
     if ! git diff --cached --quiet; then
       git commit -m "Updated dotfiles"
       git push
@@ -154,16 +142,32 @@ function g {
     git "$@"
 }
 
-# sources
-if [ -f "$HOME/.zprofile" ] ; then
-  source "$HOME/.zprofile"
-elif [ -f "$HOME/.profile" ] ; then
-  source "$HOME/.profile"
-fi
+# aliases
+alias clip="clip.exe"
+alias code="code-insiders"
+alias c.="code-insiders ."
+alias v="nvim"
+alias v.="nvim ."
+alias sva="source .venv/bin/activate"
+alias sz="source $HOME/.zshrc"
+alias sp="source $HOME/.zprofile"
+alias cat="bat"
+alias z.="z .."
+alias z-="z -"
 
+# sources
 if [ -d "$HOME/.cargo/env" ] ; then
   source "$HOME/.cargo/env"
 fi
+
+# The following lines were added by compinstall
+
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle :compinstall filename '~/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
 
 zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins"
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
@@ -177,8 +181,6 @@ if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   )
 fi
 source ${zsh_plugins}.zsh
-
-source "/home/linuxbrew/.linuxbrew/opt/antidote/share/antidote/antidote.zsh"
 
 # keychain configuration
 eval `keychain --eval --agents ssh id_ed25519`
@@ -200,13 +202,3 @@ fi
 if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init bash)"
 fi
-
-
-# The following lines were added by compinstall
-
-zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle :compinstall filename '~/.zshrc'
-
-autoload -Uz compinit
-compinit
-# End of lines added by compinstall
