@@ -41,10 +41,6 @@ if command -v keychain > /dev/null 2>&1; then
     eval `keychain --eval --agents ssh --inherit any id_ed25519`
 fi
 
-# if command -v keychain > /dev/null 2>&1; then
-#   eval `keychain --eval --agents ssh --inherit any id_ed25519`
-# fi
-
 # Initialize starship prompt
 if command -v starship > /dev/null 2>&1; then
   eval "$(starship init zsh)"
@@ -53,9 +49,4 @@ fi
 # Initialize zoxide
 if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init zsh)"
-fi
-
-# Load atuin (if installed)
-if command -v atuin > /dev/null 2>&1; then
-  eval "$(atuin init zsh --disable-up-arrow)"
 fi

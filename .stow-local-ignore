@@ -24,7 +24,5 @@ _darcs
 ^/LICENSE.*
 ^/COPYING
 
-setup.sh
-\.config/broot/launcher/bash/br
-
-^_ # dirs that start with "_"
+^scripts
+^_.*         # dirs and files that start with "_"

@@ -178,4 +178,4 @@ if prompt_install "set up Git smudge and clean filters"; then
     sh ./setup_smudge_clean.sh
 fi
 
-echo "Setup complete!"
+echo "Setup complete"
