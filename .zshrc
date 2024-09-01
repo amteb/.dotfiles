@@ -62,20 +62,18 @@ function install_and_add_to_stow_setup() {
         return 1
     fi
 
-    SETUP_SCRIPT="$DOT/scripts/setup.sh"
+    SETUP_SCRIPT="$DOTFILES/scripts/setup.sh"
 
     if grep -Fxq "$cmd" "$SETUP_SCRIPT"; then
         echo "Command already exists in setup.sh: $cmd"
     else
         echo "\n$cmd" >> "$SETUP_SCRIPT"
 
-        DOTFILES_DIR="$DOT"
-        qpushd "$DOTFILES_DIR"
-
+        qpushd "$DOTFILES"
         git add $SETUP_SCRIPT
 
         if ! git diff --cached --quiet; then
-            git commit -m "Added new installation command: $cmd"
+            git commit -m "feat: add new installation command: $cmd"
             git push
 
             echo "Installation command logged and dotfiles repo synced."
@@ -92,13 +90,13 @@ function sto() {
 }
 
 function restow() {
-    qpushd "$DOT"
+    qpushd "$DOTFILES"
 
     stow .
     git add .
 
     if ! git diff --cached --quiet; then
-      git commit -m "Updated dotfiles"
+      git commit -m "chore: update dotfiles"
       git push
       echo "Synced .dotfiles repo"
     else

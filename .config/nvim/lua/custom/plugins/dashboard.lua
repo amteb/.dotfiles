@@ -1,56 +1,64 @@
 return {
-    'nvimdev/dashboard-nvim',
-    event = 'VimEnter',
+    "nvimdev/dashboard-nvim",
+    event = "VimEnter",
     priority = 999,
     config = function()
-        require('dashboard').setup {
-            theme = 'hyper',
+        require("dashboard").setup {
+            theme = "hyper",
             config = {
                 week_header = {
                     enable = true,
                 },
                 shortcut = {
                     {
-                        desc = '󰊳 Update',
-                        group = '@property',
-                        action = 'Lazy update',
-                        key = 'U',
+                        desc = "󰊳 Update",
+                        group = "@property",
+                        action = "Lazy update",
+                        key = "U",
                     },
                     {
-                        icon = ' ',
-                        icon_hl = '@variable',
-                        desc = 'Files',
-                        group = 'Label',
-                        action = 'Telescope find_files',
-                        key = 'F',
+                        icon = " ",
+                        icon_hl = "@variable",
+                        desc = "Files",
+                        group = "Label",
+                        action = "Telescope find_files",
+                        key = "F",
                     },
                     {
-                        desc = ' Home',
-                        group = 'DiagnosticHint',
-                        action = 'Neotree dir=~',
-                        key = 'H',
+                        desc = " Current Dir",
+                        group = "DiagnosticHint",
+                        action = function()
+                            vim.cmd("Neotree dir=" .. vim.fn.getcwd())
+                        end,
+                        key = ".",
                     },
                     {
-                        desc = ' Dev',
-                        group = 'DiagnosticHint',
-                        action = 'Neotree dir=~/dev',
-                        key = 'D',
+                        desc = " Home",
+                        group = "DiagnosticHint",
+                        action = "Neotree dir=~",
+                        key = "H",
                     },
                     {
-                        desc = ' Config',
-                        group = 'Number',
-                        action = 'Neotree dir=~/.config/nvim',
-                        key = 'N',
+                        desc = " Dev",
+                        group = "DiagnosticHint",
+                        action = "Neotree dir=~/dev",
+                        key = "D",
                     },
                     {
-                        desc = ' dotfiles',
-                        group = 'Number',
-                        action = 'Neotree dir=~/.dotfiles',
-                        key = '.',
+                        desc = " Config",
+                        group = "Number",
+                        action = "Neotree dir=~/.config/nvim",
+                        key = "n",
+                    },
+                    {
+                        desc = " dotfiles",
+                        group = "Number",
+                        action = "Neotree dir=~/.dotfiles",
+                        key = "d",
                     },
                 },
             },
         }
     end,
-    dependencies = { { 'nvim-tree/nvim-web-devicons' } }
+    dependencies = { { "nvim-tree/nvim-web-devicons" } },
 }

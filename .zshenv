@@ -3,9 +3,10 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export PAGER='less'
 export LANG='en_US.UTF-8'
+export LC_ALL='en_US.UTF-8'
 export HOMEBREW_NO_ENV_HINTS=TRUE
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=TRUE
-export DOT="$HOME/.dotfiles"
+export DOTFILES="$HOME/.dotfiles"
 
 # PATH modifications
 typeset -U path

@@ -26,3 +26,5 @@ _darcs
 
 setup.sh
 \.config/broot/launcher/bash/br
+
+^_ # dirs that start with "_"
