@@ -175,3 +175,5 @@ function check_ssh_agent() {
   fi
   echo SSH_AUTH_SOCK=/tmp/ssh-nn2x11zHDkIj/agent.75973
 }
+
+. "$HOME/.cargo/env"
