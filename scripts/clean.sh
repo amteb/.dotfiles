@@ -7,6 +7,11 @@ if [ -n "$GIT_TRACE" ]; then
     echo "---" >> /tmp/git_clean_filter.log
 fi
 
-sed -e "s|$HOME|%%HOME%%|g" \
-    -e "s|$(git config user.name)|%%GIT_NAME%%|g" \
-    -e "s|$(git config user.email)|%%GIT_EMAIL%%|g"
+# If the file is .gitconfig.dotfiles, don't apply any substitutions
+if [[ "${1}" == *".gitconfig.dotfiles" ]]; then
+    cat
+else
+    sed -e "s|$HOME|%%HOME%%|g" \
+        -e "s|$(git config user.name)|%%GIT_NAME%%|g" \
+        -e "s|$(git config user.email)|%%GIT_EMAIL%%|g"
+fi

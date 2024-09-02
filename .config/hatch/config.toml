@@ -5,8 +5,8 @@ shell = ""
 [dirs]
 project = []
 python = "isolated"
-data = "~/.local/share/hatch"
-cache = "~/.cache/hatch"
+data = "%%HOME%%/.local/share/hatch"
+cache = "%%HOME%%/.cache/hatch"
 
 [dirs.env]
 

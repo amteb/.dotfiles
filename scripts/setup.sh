@@ -175,6 +175,21 @@ else
     echo "gitleaks is already installed."
 fi
 
+# Setup .gitconfig
+if [ ! -f "$HOME/.gitconfig" ]; then
+   echo "[include]" > "$HOME/.gitconfig"
+   echo "    path = $HOME/.gitconfig.dotfiles" >> "$HOME/.gitconfig"
+   echo "Created .gitconfig with include directive"
+else
+   if ! grep -q ".gitconfig.dotfiles" "$HOME/.gitconfig"; then
+       echo "[include]" >> "$HOME/.gitconfig"
+       echo "    path = $HOME/.gitconfig.dotfiles" >> "$HOME/.gitconfig"
+       echo "Added include directive to existing .gitconfig"
+   else
+       echo ".gitconfig already includes .gitconfig.dotfiles"
+   fi
+fi
+
 # Setup smudge and clean filters
 if prompt_install "set up Git smudge and clean filters"; then
     sh ./setup_smudge_clean.sh

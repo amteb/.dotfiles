@@ -27,7 +27,7 @@ compinit
 
 # Completion styling
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle :compinstall filename '~/.zshrc'
+zstyle :compinstall filename '%%HOME%%/.zshrc'
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 
