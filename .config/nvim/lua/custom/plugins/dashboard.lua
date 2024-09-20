@@ -11,6 +11,12 @@ return {
                 },
                 shortcut = {
                     {
+                        desc = "󰒲 Lazy",
+                        group = "@property",
+                        action = "Lazy",
+                        key = "L",
+                    },
+                    {
                         desc = "󰊳 Update",
                         group = "@property",
                         action = "Lazy update",
