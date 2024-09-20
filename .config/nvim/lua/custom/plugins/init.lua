@@ -512,23 +512,7 @@ require("lazy").setup({
             --  into multiple repos for maintenance purposes.
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-path",
-            dependencies = {
-                -- codeium
-                {
-                    "Exafunction/codeium.nvim",
-                    cmd = "Codeium",
-                    build = ":Codeium Auth",
-                    opts = {},
-                },
-            },
-            ---@param opts cmp.ConfigSchema
-            opts = function(_, opts)
-                table.insert(opts.sources, 1, {
-                    name = "codeium",
-                    group_index = 1,
-                    priority = 100,
-                })
-            end,
+            dependencies = {},
         },
         config = function()
             -- See `:help cmp`
@@ -600,7 +584,6 @@ require("lazy").setup({
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
                     { name = "path" },
-                    { name = "codeium" },
                 },
             }
         end,
@@ -691,21 +674,6 @@ require("lazy").setup({
     {
         "wakatime/vim-wakatime",
         lazy = false,
-    },
-    {
-        "Exafunction/codeium.nvim",
-        cmd = "Codeium",
-        build = ":Codeium Auth",
-        opts = {},
-        -- event = "BufEnter",
-        -- dependencies = {
-        --     "nvim-lua/plenary.nvim",
-        --     "hrsh7th/nvim-cmp",
-        -- },
-        -- config = function()
-        --     require("codeium").setup({
-        --     })
-        -- end,
     },
 
     -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
