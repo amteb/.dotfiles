@@ -106,6 +106,10 @@ function restow() {
     qpopd
 }
 
+function gas(){
+    $DOTFILES/scripts/git_auto_sync.sh "$@"
+}
+
 ## utility functions
 function l {
   eza \
