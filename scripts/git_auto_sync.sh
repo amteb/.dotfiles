@@ -159,7 +159,7 @@ add_repo() {
     sed -i "/^\[$freq\]/,/^\[/ s/paths=\[\(.*\)\]/paths=[\1, \"$escaped_repo\"]/" "$CONFIG_FILE"
     sed -i "/^\[$freq\]/,/^\[/ s/paths=\[, /paths=[/" "$CONFIG_FILE"
     echo "Added $repo to $freq in the configuration."
-    update_cron
+    update_cron_for_freq "$freq"
 }
 
 remove_repo() {
@@ -207,15 +207,20 @@ list_all_repos() {
     done < <(list_freqs)
 }
 
-update_cron() {
-    crontab -l | grep -v "$SCRIPT_PATH" | crontab -
+update_cron_for_freq() {
+    local freq="$1"
+    crontab -l | grep -v "$SCRIPT_PATH sync $freq" | crontab -
 
+    cron_expression=$(get_cron "$freq")
+    if [ -n "$cron_expression" ]; then
+        (crontab -l ; echo "$cron_expression $SCRIPT_PATH sync $freq >> $HOME/.log/git_auto_sync.log 2>&1") | crontab -
+        echo "Updated cron job for $freq"
+    fi
+}
+
+update_cron() {
     while IFS= read -r freq; do
-        cron_expression=$(get_cron "$freq")
-        if [ -n "$cron_expression" ]; then
-            crontab -l | grep -v "$(printf '%s\n' "$SCRIPT_PATH" | sed 's:[][\/.^$*]:\\&:g')" | crontab -
-            echo "Updated cron job for $freq"
-        fi
+        update_cron_for_freq "$freq"
     done < <(list_freqs)
 }
 
