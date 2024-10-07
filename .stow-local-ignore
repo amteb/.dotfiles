@@ -25,4 +25,5 @@ _darcs
 ^/COPYING
 
 ^scripts
+^.zsh        # still not fully fledged
 ^_.*         # dirs and files that start with "_"
