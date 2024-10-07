@@ -142,6 +142,9 @@ alias z-="z -"
 alias c="code-insiders"
 alias f="fd"
 alias g="git"
+alias t="tmux"
+alias ta="tmux attach"
+alias tl="tmux list-sessions"
 
 # Named directories
 hash -d dot="$HOME/.dotfiles"
