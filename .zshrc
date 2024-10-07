@@ -107,7 +107,7 @@ function restow() {
 }
 
 function gas(){
-    $DOTFILES/scripts/git_auto_sync.sh "$@"
+    $DOTFILES/scripts/git-autosync "$@"
 }
 
 ## utility functions

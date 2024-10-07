@@ -1,0 +1,53 @@
+#compdef git-autosync
+
+_git-autosync() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :->command' \
+        '*:: :->args'
+
+    case $state in
+    command)
+        _values 'git-autosync command' \
+            'add[Add a repository to a frequency]' \
+            'remove[Remove a repository from a frequency]' \
+            'list[List repositories]' \
+            'sync[Synchronize repositories]' \
+            'update-cron[Update cron jobs]' \
+            'add-freq[Add a new frequency]' \
+            'remove-freq[Remove a frequency]'
+        ;;
+    args)
+        case $line[1] in
+        add|remove)
+            _arguments \
+                '1:repository:_path_files -/' \
+                '2:frequency:->frequencies'
+            ;;
+        list|sync)
+            _arguments '1:frequency:->frequencies'
+            ;;
+        add-freq)
+            _arguments \
+                '1:frequency name' \
+                '2:cron expression'
+            ;;
+        remove-freq)
+            _arguments '1:frequency:->frequencies'
+            ;;
+        esac
+
+        case $state in
+        frequencies)
+            local -a freqs
+            freqs=(${(f)"$(git-autosync list | tail -n +2)"})
+            _describe -t frequencies 'frequency' freqs
+            ;;
+        esac
+        ;;
+    esac
+}
+
+_git-autosync "$@"

@@ -1,0 +1,312 @@
+#!/usr/bin/env zsh
+
+setopt extended_glob
+setopt null_glob
+setopt err_exit
+setopt pipe_fail
+
+CONFIG_FILE="${HOME}/.git-autosync.cfg"
+SCRIPT_PATH="${0:A}"
+COMMAND_NAME="${0:t}"
+LOG_FILE="${HOME}/.log/git_auto_sync.log"
+
+typeset -A frequencies
+
+show_help() {
+    cat << EOF
+Usage: $COMMAND_NAME [OPTION]... COMMAND [ARGS]...
+
+Manage automatic Git repository synchronization.
+
+Commands:
+  add REPO FREQ      Add a repository to a frequency
+  remove REPO FREQ   Remove a repository from a frequency
+  list [FREQ]        List repositories (for a specific frequency if provided)
+  list -a, --all     List all repositories for all frequencies
+  sync FREQ          Synchronize repositories for a frequency
+  sync -a, --all     Synchronize repositories for all frequencies
+  update-cron        Update cron jobs
+  add-freq FREQ CRON Add a new frequency with cron expression
+  remove-freq FREQ   Remove a frequency and its repositories
+
+Options:
+  -h, --help         Display this help message
+EOF
+}
+
+check_config() {
+    [[ -f "$CONFIG_FILE" ]] || {
+        echo "Warning: Config file not found: $CONFIG_FILE"
+        return 1
+    }
+}
+
+create_config() {
+    echo "Creating new config file: $CONFIG_FILE"
+    cat << 'EOF' > "$CONFIG_FILE"
+[nightly]
+cron = "0 0 * * *"
+paths = []
+
+[weekly]
+cron = "0 0 * * 0"
+paths = []
+
+[monthly]
+cron = "0 0 1 * *"
+paths = []
+EOF
+    echo "Created config file with premade nightly, weekly, and monthly frequencies."
+}
+
+load_config() {
+    local freq="" cron="" paths=()
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        case "$line" in
+            \[*\])
+                [[ -n "$freq" ]] && frequencies[$freq]="${cron}:${(j:,:)paths}"
+                freq="${line:1:-1}"
+                cron="" paths=()
+                ;;
+            cron=*)
+                cron="${line#cron=}"
+                ;;
+            paths=*)
+                eval "paths=(${line#paths=})"
+                ;;
+        esac
+    done < "$CONFIG_FILE"
+    [[ -n "$freq" ]] && frequencies[$freq]="${cron}:${(j:,:)paths}"
+}
+
+save_config() {
+    : > "$CONFIG_FILE"
+    for freq cron_paths in ${(kv)frequencies}; do
+        cron="${cron_paths%%:*}"
+        paths=(${(s:,:)${cron_paths#*:}})
+        print -r -- "[$freq]" >> "$CONFIG_FILE"
+        print -r -- "cron = \"$cron\"" >> "$CONFIG_FILE"
+        print -r -- "paths = [${(j:, :)${(qq)paths}}]" >> "$CONFIG_FILE"
+        print >> "$CONFIG_FILE"
+    done
+}
+
+sync_repos() {
+    local freq="$1" repo
+    echo "Syncing repositories for frequency: $freq"
+    for repo in ${(s:,:)${frequencies[$freq]#*:}}; do
+        echo "Syncing $repo"
+        (
+            cd "$repo" || return
+            git add .
+            git diff --quiet && git diff --staged --quiet || git commit -m "chore: $freq sync"
+            git pull
+            git push
+        )
+    done
+}
+
+add_repo() {
+    local repo="$1" freq="$2"
+
+    [[ "$repo" == "." ]] && {
+        git rev-parse --is-inside-work-tree &>/dev/null || {
+            echo "Error: Current directory is not a git repository."
+            return 1
+        }
+        repo="$(git rev-parse --show-toplevel)"
+    }
+
+    check_config || create_config
+    load_config
+
+    [[ -n "${frequencies[$freq]}" ]] || add_freq "$freq"
+
+    local cron="${frequencies[$freq]%%:*}"
+    local paths=(${(s:,:)${frequencies[$freq]#*:}})
+    paths+=("$repo")
+    frequencies[$freq]="${cron}:${(j:,:)paths}"
+
+    save_config
+    echo "Added $repo to $freq in the configuration."
+    update_cron_for_freq "$freq"
+}
+
+remove_repo() {
+    local repo="$1" freq="$2"
+
+    [[ "$repo" == "." ]] && {
+        git rev-parse --is-inside-work-tree &>/dev/null || {
+            echo "Error: Current directory is not a git repository."
+            return 1
+        }
+        repo="$(git rev-parse --show-toplevel)"
+    }
+
+    check_config || {
+        echo "Error: Cannot remove repository. Config file not found."
+        return 1
+    }
+    load_config
+
+    local cron="${frequencies[$freq]%%:*}"
+    local paths=(${(s:,:)${frequencies[$freq]#*:}})
+    paths=(${paths:#$repo})
+    frequencies[$freq]="${cron}:${(j:,:)paths}"
+
+    save_config
+    echo "Removed $repo from $freq in the configuration."
+    update_cron
+}
+
+list_repos() {
+    local freq="$1"
+    check_config || return 1
+    load_config
+
+    echo "Repositories for $freq:"
+    print -l -- ${(s:,:)${frequencies[$freq]#*:}}
+}
+
+list_all_repos() {
+    check_config || return 1
+    load_config
+
+    for freq in ${(k)frequencies}; do
+        echo "Repositories for $freq:"
+        print -l -- ${(s:,:)${frequencies[$freq]#*:}} | sed 's/^/  /'
+        echo
+    done
+}
+
+update_cron_for_freq() {
+    local freq="$1"
+    crontab -l | grep -v "$SCRIPT_PATH sync $freq" | crontab -
+
+    local cron_expression="${frequencies[$freq]%%:*}"
+    [[ -n "$cron_expression" ]] && {
+        (crontab -l ; echo "$cron_expression $SCRIPT_PATH sync $freq >> $LOG_FILE 2>&1") | crontab -
+        echo "Updated cron job for $freq"
+    }
+}
+
+update_cron() {
+    for freq in ${(k)frequencies}; do
+        update_cron_for_freq "$freq"
+    done
+}
+
+add_freq() {
+    local freq="$1" cron_expression="$2"
+
+    [[ -z "$cron_expression" ]] && {
+        read -r "cron_expression?Enter cron expression for $freq (e.g., 0 0 * * * for daily at midnight): "
+    }
+
+    frequencies[$freq]="${cron_expression}:"
+    save_config
+    echo "Added new frequency: $freq with cron expression: $cron_expression"
+    update_cron
+}
+
+remove_freq() {
+    local freq="$1"
+
+    check_config || {
+        echo "Error: Cannot remove frequency. Config file not found."
+        return 1
+    }
+    load_config
+
+    [[ -n "${frequencies[$freq]}" ]] || {
+        echo "Error: Frequency '$freq' not found in the configuration."
+        return 1
+    }
+
+    unset "frequencies[$freq]"
+    save_config
+
+    echo "Removed frequency '$freq' and its associated repositories from the configuration."
+    update_cron
+}
+
+# Main script
+check_config || create_config
+load_config
+
+case "$1" in
+    -h|--help)
+        show_help
+        exit 0
+        ;;
+    add)
+        if [[ $# -lt 3 ]]; then
+            echo "Usage: $COMMAND_NAME add REPO FREQ"
+            echo "Use '$COMMAND_NAME --help' for more information."
+            exit 1
+        fi
+        add_repo "$2" "$3"
+        ;;
+    remove)
+        if [[ $# -lt 3 ]]; then
+            echo "Usage: $COMMAND_NAME remove REPO FREQ"
+            echo "Use '$COMMAND_NAME --help' for more information."
+            exit 1
+        fi
+        remove_repo "$2" "$3"
+        ;;
+    list)
+        case "$2" in
+            "")
+                echo "Available frequencies:"
+                print -l -- ${(k)frequencies}
+                ;;
+            -a|--all)
+                list_all_repos
+                ;;
+            *)
+                list_repos "$2"
+                ;;
+        esac
+        ;;
+    sync)
+        case "$2" in
+            "")
+                echo "Please specify a frequency to sync or use -a/--all to sync all frequencies."
+                exit 1
+                ;;
+            -a|--all)
+                for freq in ${(k)frequencies}; do
+                    sync_repos "$freq"
+                done
+                ;;
+            *)
+                sync_repos "$2"
+                ;;
+        esac
+        ;;
+    update-cron)
+        update_cron
+        ;;
+    add-freq)
+        if [[ $# -lt 2 ]]; then
+            echo "Usage: $COMMAND_NAME add-freq FREQ [CRON]"
+            echo "Use '$COMMAND_NAME --help' for more information."
+            exit 1
+        fi
+        add_freq "$2" "$3"
+        ;;
+    remove-freq)
+        if [[ $# -lt 2 ]]; then
+            echo "Usage: $COMMAND_NAME remove-freq FREQ"
+            echo "Use '$COMMAND_NAME --help' for more information."
+            exit 1
+        fi
+        remove_freq "$2"
+        ;;
+    *)
+        echo "Usage: $COMMAND_NAME {add|remove|list|sync|update-cron|add-freq|remove-freq} [repo] [freq]"
+        echo "Use '$COMMAND_NAME --help' for more information."
+        exit 1
+        ;;
+esac
