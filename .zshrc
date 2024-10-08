@@ -17,7 +17,7 @@ setopt AUTO_CD
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 setopt EXTENDED_GLOB
-setopt CORRECT
+unsetopt CORRECT
 setopt NO_CASE_GLOB
 setopt NUMERIC_GLOB_SORT
 
@@ -145,6 +145,7 @@ alias g="git"
 alias t="tmux"
 alias ta="tmux attach"
 alias tl="tmux list-sessions"
+alias tf="$DOTFILES/scripts/tmux-sessionizer"
 
 # Named directories
 hash -d dot="$HOME/.dotfiles"

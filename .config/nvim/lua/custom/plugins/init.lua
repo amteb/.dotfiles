@@ -34,6 +34,8 @@ require("lazy").setup({
     require "custom.plugins.theme",
     require "custom.plugins.which_key",
     require "custom.plugins.lspconfig",
+    require "custom.plugins.vim-tmux-navigator",
+    require "custom.plugins.tmux-status",
 
     -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
     {
