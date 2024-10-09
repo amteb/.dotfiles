@@ -145,6 +145,7 @@ alias g="git"
 alias t="tmux"
 alias ta="tmux attach"
 alias tl="tmux list-sessions"
+alias tm="tmux new-session -s main"
 alias tf="$DOTFILES/scripts/tmux-sessionizer"
 
 # Named directories

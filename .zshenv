@@ -11,17 +11,16 @@ export DOTFILES="$HOME/.dotfiles"
 # PATH modifications
 typeset -U path
 path=(
+    $path
     "$HOME/bin"
     "$HOME/.local/bin"
     "/usr/local/bin"
     "/opt/nvim-linux64/bin"
     "/usr/local/go/bin"
-    $path
 )
 
 # Conditional PATH additions
 [[ -d "$HOME/squashfs-root/usr/bin" ]] && path+=("$HOME/squashfs-root/usr/bin")
-[[ -d "$HOME/.modular/pkg/packages.modular.com_mojo/bin" ]] && path+=("$HOME/.modular/pkg/packages.modular.com_mojo/bin")
 [[ -d "/usr/local/node/bin" ]] && path+=("/usr/local/node/bin")
 [[ -d "/opt/mssql-tools18/bin" ]] && path+=("/opt/mssql-tools18/bin")
 
@@ -34,5 +33,3 @@ if command -v fd > /dev/null 2>&1; then
   export FZF_DEFAULT_OPTS="--ansi"
 fi
 
-# Ensure MODULAR_HOME is set if the directory exists
-[[ -d "$HOME/.modular" ]] && export MODULAR_HOME="$HOME/.modular"

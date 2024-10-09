@@ -11,9 +11,6 @@ fi
 # Source cargo env if it exists
 [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
-# Source rye env if it exists
-[[ -f "$HOME/.rye/env" ]] && source "$HOME/.rye/env"
-
 # Initialize keychain
 # SSH Agent Management
 SSH_ENV="$HOME/.ssh/agent-environment"
