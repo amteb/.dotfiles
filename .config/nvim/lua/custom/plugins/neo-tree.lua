@@ -13,7 +13,7 @@ return {
     cmd = "Neotree",
     event = "BufWinEnter",
     keys = {
-        { "\\", ":Neotree float reveal<CR>", { desc = "NeoTree float reveal" } },
+        { "\\", ":Neotree float reveal<CR>", desc = "NeoTree float reveal", silent = true },
     },
     opts = {
         popup_border_style = "rounded",
