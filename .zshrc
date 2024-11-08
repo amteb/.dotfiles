@@ -129,8 +129,7 @@ function l {
 
 # Aliases
 alias clip="clip.exe"
-alias code="code-insiders"
-alias c.="code-insiders ."
+alias c.="code ."
 alias v="nvim"
 alias v.="nvim ."
 alias sva="source .venv/bin/activate"
@@ -139,7 +138,7 @@ alias sp="source $HOME/.zprofile"
 alias cat="bat"
 alias z.="z .."
 alias z-="z -"
-alias c="code-insiders"
+alias c="code"
 alias f="fd"
 alias g="git"
 alias t="tmux"
@@ -195,3 +194,4 @@ function check_ssh_agent() {
 # This section can be safely removed at any time if needed.
 [[ ! -r '%%HOME%%/.opam/opam-init/init.zsh' ]] || source '%%HOME%%/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
+export PATH="$PATH:/opt/mssql-tools18/bin"
