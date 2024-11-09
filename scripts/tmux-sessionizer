@@ -1,25 +1,39 @@
 #!/usr/bin/env zsh
+# Parameter expansion with default value: ${1:-$(command)}
+selected=${1:-$({ fd . ~/dev --max-depth 1 --type d; echo ~/.dotfiles; } | fzf)}
 
-if [[ $# -eq 1 ]]; then
-    selected=$1
-else
-    selected=$({ fd . ~/dev --max-depth 1 --type d; echo ~/.dotfiles; } | fzf)
-fi
+# Early return using short-circuit operator
+[[ -z $selected ]] && exit 0
 
-if [[ -z $selected ]]; then
-    exit 0
-fi
-
-selected_name=$(basename "$selected" | tr . _)
+# Parameter expansion with substitution
+selected_name=${$(basename "$selected")//\./_}
 tmux_running=$(pgrep tmux)
 
-if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
-    exit 0
-fi
+# Set your tmux config file location
+TMUX_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
 
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
-    tmux new-session -ds $selected_name -c $selected
-fi
-
-tmux switch-client -t $selected_name
+# Case statement instead of if blocks
+case "$TMUX$tmux_running" in
+    # No tmux running at all
+    "")
+        tmux -f "$TMUX_CONFIG" new-session -s $selected_name -c $selected
+        ;;
+    # Tmux running but not in a session
+    ${~tmux_running})
+        # Create session if it doesn't exist, using anonymous function for grouping
+        () {
+            tmux has-session -t=$selected_name 2>/dev/null || 
+                tmux new-session -ds $selected_name -c $selected
+            # Source config for new session
+            tmux source-file "$TMUX_CONFIG"
+        }
+        tmux attach-session -t $selected_name
+        ;;
+    # In a tmux session
+    *)
+        # Create session if it doesn't exist using && and ||
+        tmux has-session -t=$selected_name 2>/dev/null ||
+            (tmux new-session -ds $selected_name -c $selected && tmux source-file "$TMUX_CONFIG")
+        tmux switch-client -t $selected_name
+        ;;
+esac

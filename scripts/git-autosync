@@ -5,6 +5,9 @@ setopt null_glob
 setopt err_exit
 setopt pipe_fail
 
+# Ensure we have access to common command paths
+export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+
 CONFIG_FILE="${HOME}/.git-autosync.cfg"
 SCRIPT_PATH="${0:A}"
 COMMAND_NAME="${0:t}"
@@ -13,8 +16,7 @@ LOG_FILE="${HOME}/.log/git_auto_sync.log"
 typeset -A frequencies
 
 show_help() {
-    cat << EOF
-Usage: $COMMAND_NAME [OPTION]... COMMAND [ARGS]...
+    print "Usage: $COMMAND_NAME [OPTION]... COMMAND [ARGS]...
 
 Manage automatic Git repository synchronization.
 
@@ -30,8 +32,15 @@ Commands:
   remove-freq FREQ   Remove a frequency and its repositories
 
 Options:
-  -h, --help         Display this help message
-EOF
+  -h, --help         Display this help message"
+}
+
+check_git_repo() {
+    local dir="$1"
+    (
+        cd "$dir" 2>/dev/null && \
+        git rev-parse --git-dir >/dev/null 2>&1
+    )
 }
 
 check_config() {
@@ -60,48 +69,136 @@ EOF
 }
 
 load_config() {
-    local freq="" cron="" paths=()
+    local current_freq=""
+    local current_cron=""
+    local current_paths=()
+    
     while IFS= read -r line || [[ -n "$line" ]]; do
+        # Trim whitespace
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+        
+        # Skip empty lines and comments
+        [[ -z "$line" || "$line" == \#* ]] && continue
+        
         case "$line" in
             \[*\])
-                [[ -n "$freq" ]] && frequencies[$freq]="${cron}:${(j:,:)paths}"
-                freq="${line:1:-1}"
-                cron="" paths=()
+                # Save previous frequency if exists
+                if [[ -n "$current_freq" ]]; then
+                    frequencies[$current_freq]="${current_cron}:${(j:,:)current_paths}"
+                fi
+                # Start new frequency
+                current_freq="${line:1:-1}"
+                current_cron=""
+                current_paths=()
                 ;;
-            cron=*)
-                cron="${line#cron=}"
+            cron*=*)
+                # Extract cron value, handling quoted strings
+                current_cron="${line#*=}"
+                current_cron="${current_cron#"${current_cron%%[! ]*}"}" # trim leading space
+                current_cron="${current_cron#[\"\']}"  # remove leading quote
+                current_cron="${current_cron%[\"\']}"  # remove trailing quote
                 ;;
-            paths=*)
-                eval "paths=(${line#paths=})"
+            paths*=*)
+                # Extract paths array, handling quoted strings
+                local paths_str="${line#*=}"
+                paths_str="${paths_str#"${paths_str%%[! ]*}"}" # trim leading space
+                paths_str="${paths_str#\[}"  # remove leading bracket
+                paths_str="${paths_str%\]}"  # remove trailing bracket
+                
+                # Split paths string into array
+                if [[ -n "$paths_str" ]]; then
+                    # Convert comma-separated string to array, handling quoted values
+                    local IFS=,
+                    current_paths=()
+                    for path in ${=paths_str}; do
+                        # Trim whitespace and quotes
+                        path="${path#"${path%%[! ]*}"}"
+                        path="${path%"${path##*[! ]}"}"
+                        path="${path#[\"\']}"
+                        path="${path%[\"\']}"
+                        [[ -n "$path" ]] && current_paths+=("$path")
+                    done
+                fi
                 ;;
         esac
     done < "$CONFIG_FILE"
-    [[ -n "$freq" ]] && frequencies[$freq]="${cron}:${(j:,:)paths}"
+    
+    # Save last frequency
+    [[ -n "$current_freq" ]] && frequencies[$current_freq]="${current_cron}:${(j:,:)current_paths}"
 }
 
 save_config() {
-    : > "$CONFIG_FILE"
-    for freq cron_paths in ${(kv)frequencies}; do
-        cron="${cron_paths%%:*}"
-        paths=(${(s:,:)${cron_paths#*:}})
-        print -r -- "[$freq]" >> "$CONFIG_FILE"
-        print -r -- "cron = \"$cron\"" >> "$CONFIG_FILE"
-        print -r -- "paths = [${(j:, :)${(qq)paths}}]" >> "$CONFIG_FILE"
-        print >> "$CONFIG_FILE"
+    # Ensure config directory exists
+    local config_dir="${CONFIG_FILE:h}"
+    [[ -d "$config_dir" ]] || mkdir -p "$config_dir"
+    
+    # Create backup of existing config if it exists
+    [[ -f "$CONFIG_FILE" ]] && cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
+    
+    # Clear/create the config file
+    : > "$CONFIG_FILE" || {
+        echo "Error: Could not write to config file: $CONFIG_FILE"
+        return 1
+    }
+    
+    # Write each frequency section
+    local freq cron paths
+    for freq in ${(k)frequencies}; do
+        cron="${frequencies[$freq]%%:*}"
+        paths=(${(s:,:)${frequencies[$freq]#*:}})
+        
+        {
+            print -r -- "[$freq]"
+            print -r -- "cron = \"$cron\""
+            
+            # Format paths array with proper quoting
+            local quoted_paths=()
+            local path
+            for path in $paths; do
+                quoted_paths+=("\"$path\"")
+            done
+            print -r -- "paths = [${(j:, :)quoted_paths}]"
+            print
+        } >> "$CONFIG_FILE"
     done
+    
+    echo "Configuration saved successfully."
 }
 
-sync_repos() {
-    local freq="$1" repo
+# Rest of the functions remain the same
+sync_repos() sync_repos() {
+    local freq="$1"
+    local repo
     echo "Syncing repositories for frequency: $freq"
+    
     for repo in ${(s:,:)${frequencies[$freq]#*:}}; do
         echo "Syncing $repo"
         (
-            cd "$repo" || return
-            git add .
-            git diff --quiet && git diff --staged --quiet || git commit -m "chore: $freq sync"
-            git pull
-            git push
+            if cd "$repo" 2>/dev/null; then
+                if git rev-parse --git-dir >/dev/null 2>&1; then
+                    local changes_exist=0
+                    
+                    # Check for changes
+                    if ! git diff --quiet || ! git diff --staged --quiet; then
+                        changes_exist=1
+                    fi
+                    
+                    # Only commit if there are changes
+                    if (( changes_exist )); then
+                        git add .
+                        git commit -m "chore: $freq sync"
+                    fi
+                    
+                    # Pull and push regardless of local changes
+                    git pull
+                    git push
+                else
+                    echo "Error: $repo is no longer a git repository"
+                fi
+            else
+                echo "Error: Could not access $repo"
+            fi
         )
     done
 }
@@ -109,13 +206,18 @@ sync_repos() {
 add_repo() {
     local repo="$1" freq="$2"
 
-    [[ "$repo" == "." ]] && {
-        git rev-parse --is-inside-work-tree &>/dev/null || {
+    if [[ "$repo" == "." ]]; then
+        if ! check_git_repo "$PWD"; then
             echo "Error: Current directory is not a git repository."
             return 1
-        }
-        repo="$(git rev-parse --show-toplevel)"
-    }
+        fi
+        repo="$PWD"
+    else
+        if ! check_git_repo "$repo"; then
+            echo "Error: $repo is not a git repository."
+            return 1
+        fi
+    fi
 
     check_config || create_config
     load_config
@@ -132,21 +234,23 @@ add_repo() {
     update_cron_for_freq "$freq"
 }
 
+
 remove_repo() {
     local repo="$1" freq="$2"
 
-    [[ "$repo" == "." ]] && {
-        git rev-parse --is-inside-work-tree &>/dev/null || {
+    if [[ "$repo" == "." ]]; then
+        if ! git rev-parse --is-inside-work-tree &>/dev/null; then
             echo "Error: Current directory is not a git repository."
             return 1
-        }
-        repo="$(git rev-parse --show-toplevel)"
-    }
+        fi
+        repo=$(git rev-parse --show-toplevel)
+    fi
 
-    check_config || {
+    if ! check_config; then
         echo "Error: Cannot remove repository. Config file not found."
         return 1
-    }
+    fi
+    
     load_config
 
     local cron="${frequencies[$freq]%%:*}"
@@ -181,13 +285,23 @@ list_all_repos() {
 
 update_cron_for_freq() {
     local freq="$1"
-    crontab -l | grep -v "$SCRIPT_PATH sync $freq" | crontab -
+    local temp_crontab
+    
+    # Save current crontab
+    temp_crontab=$(crontab -l 2>/dev/null)
+    
+    # Remove existing entry for this frequency
+    temp_crontab=$(echo "$temp_crontab" | grep -v "$SCRIPT_PATH sync $freq")
+    
+    # Write back modified crontab
+    echo "$temp_crontab" | crontab -
 
+    # Add new entry if we have a cron expression
     local cron_expression="${frequencies[$freq]%%:*}"
-    [[ -n "$cron_expression" ]] && {
-        (crontab -l ; echo "$cron_expression $SCRIPT_PATH sync $freq >> $LOG_FILE 2>&1") | crontab -
+    if [[ -n "$cron_expression" ]]; then
+        (echo "$temp_crontab"; echo "$cron_expression $SCRIPT_PATH sync $freq >> $LOG_FILE 2>&1") | crontab -
         echo "Updated cron job for $freq"
-    }
+    fi
 }
 
 update_cron() {
@@ -241,16 +355,16 @@ case "$1" in
         ;;
     add)
         if [[ $# -lt 3 ]]; then
-            echo "Usage: $COMMAND_NAME add REPO FREQ"
-            echo "Use '$COMMAND_NAME --help' for more information."
+            print "Usage: $COMMAND_NAME add REPO FREQ"
+            print "Use '$COMMAND_NAME --help' for more information."
             exit 1
         fi
         add_repo "$2" "$3"
         ;;
     remove)
         if [[ $# -lt 3 ]]; then
-            echo "Usage: $COMMAND_NAME remove REPO FREQ"
-            echo "Use '$COMMAND_NAME --help' for more information."
+            print "Usage: $COMMAND_NAME remove REPO FREQ"
+            print "Use '$COMMAND_NAME --help' for more information."
             exit 1
         fi
         remove_repo "$2" "$3"
@@ -258,7 +372,7 @@ case "$1" in
     list)
         case "$2" in
             "")
-                echo "Available frequencies:"
+                print "Available frequencies:"
                 print -l -- ${(k)frequencies}
                 ;;
             -a|--all)
@@ -272,7 +386,7 @@ case "$1" in
     sync)
         case "$2" in
             "")
-                echo "Please specify a frequency to sync or use -a/--all to sync all frequencies."
+                print "Please specify a frequency to sync or use -a/--all to sync all frequencies."
                 exit 1
                 ;;
             -a|--all)
@@ -290,23 +404,23 @@ case "$1" in
         ;;
     add-freq)
         if [[ $# -lt 2 ]]; then
-            echo "Usage: $COMMAND_NAME add-freq FREQ [CRON]"
-            echo "Use '$COMMAND_NAME --help' for more information."
+            print "Usage: $COMMAND_NAME add-freq FREQ [CRON]"
+            print "Use '$COMMAND_NAME --help' for more information."
             exit 1
         fi
         add_freq "$2" "$3"
         ;;
     remove-freq)
         if [[ $# -lt 2 ]]; then
-            echo "Usage: $COMMAND_NAME remove-freq FREQ"
-            echo "Use '$COMMAND_NAME --help' for more information."
+            print "Usage: $COMMAND_NAME remove-freq FREQ"
+            print "Use '$COMMAND_NAME --help' for more information."
             exit 1
         fi
         remove_freq "$2"
         ;;
     *)
-        echo "Usage: $COMMAND_NAME {add|remove|list|sync|update-cron|add-freq|remove-freq} [repo] [freq]"
-        echo "Use '$COMMAND_NAME --help' for more information."
+        print "Usage: $COMMAND_NAME {add|remove|list|sync|update-cron|add-freq|remove-freq} [repo] [freq]"
+        print "Use '$COMMAND_NAME --help' for more information."
         exit 1
         ;;
 esac

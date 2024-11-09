@@ -33,3 +33,4 @@ if command -v fd > /dev/null 2>&1; then
   export FZF_DEFAULT_OPTS="--ansi"
 fi
 
+export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=true

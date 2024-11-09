@@ -21,6 +21,46 @@ prompt_install() {
     esac
 }
 
+# List of utility commands to install
+UTILS="curl wget git build-essential bat fd-find fzf ripgrep sd jq zoxide eza delta uv tlrc keychain tmux"
+
+# Install utility commands
+for util in $UTILS; do
+    if ! command_exists "$util"; then
+        if prompt_install "$util"; then
+            case "$util" in
+                bat) sudo apt install -y bat ;;
+                fd-find) sudo apt install -y fd-find ;;
+                fzf) sudo apt install -y fzf ;;
+                ripgrep) sudo apt-get install ripgrep ;;
+                sd) sudo apt install sd ;;
+                jq) sudo apt-get install jq ;;
+                zoxide) curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh ;;
+                eza)
+                    wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz \
+                    && sudo chmod +x eza \
+                    && sudo chown root:root eza \
+                    && sudo mv eza /usr/local/bin/eza
+                    ;;
+                delta)
+                    url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.assets[] | select(.name | contains("delta-") and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url')
+                    wget "$url" -O /tmp/delta.tar.gz \
+                    && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
+                    && tar -xzf /tmp/delta.tar.gz -C /tmp \
+                    && mv "/tmp/$dirname/delta" "$HOME/.local/bin" \
+                    && rm -r "/tmp/$dirname" \
+                    && rm /tmp/delta.tar.gz
+                    ;;
+                uv) curl -LsSf https://astral.sh/uv/install.sh | sh ;;
+                tlrc) brew install tlrc ;;
+                keychain) sudo apt install keychain ;;
+            esac
+        fi
+    else
+        echo "$util is already installed."
+    fi
+done
+
 # Update and upgrade system packages
 echo "Updating system packages..."
 sudo apt update && sudo apt upgrade -y
@@ -72,46 +112,6 @@ if ! command_exists starship; then
 else
     echo "starship prompt is already installed."
 fi
-
-# List of utility commands to install
-UTILS="bat fd-find fzf ripgrep sd jq zoxide eza delta uv tlrc keychain"
-
-# Install utility commands
-for util in $UTILS; do
-    if ! command_exists "$util"; then
-        if prompt_install "$util"; then
-            case "$util" in
-                bat) sudo apt install -y bat ;;
-                fd-find) sudo apt install -y fd-find ;;
-                fzf) sudo apt install -y fzf ;;
-                ripgrep) sudo apt-get install ripgrep ;;
-                sd) sudo apt install sd ;;
-                jq) sudo apt-get install jq ;;
-                zoxide) curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh ;;
-                eza)
-                    wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz \
-                    && sudo chmod +x eza \
-                    && sudo chown root:root eza \
-                    && sudo mv eza /usr/local/bin/eza
-                    ;;
-                delta)
-                    url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.assets[] | select(.name | contains("delta-") and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url')
-                    wget "$url" -O /tmp/delta.tar.gz \
-                    && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
-                    && tar -xzf /tmp/delta.tar.gz -C /tmp \
-                    && mv "/tmp/$dirname/delta" "$HOME/.local/bin" \
-                    && rm -r "/tmp/$dirname" \
-                    && rm /tmp/delta.tar.gz
-                    ;;
-                uv) curl -LsSf https://astral.sh/uv/install.sh | sh ;;
-                tlrc) brew install tlrc ;;
-                keychain) sudo apt install keychain ;;
-            esac
-        fi
-    else
-        echo "$util is already installed."
-    fi
-done
 
 # Install pre-commit if not already installed
 if ! command_exists pre-commit; then
