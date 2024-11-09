@@ -192,7 +192,7 @@ fi
 
 # Setup smudge and clean filters
 if prompt_install "set up Git smudge and clean filters"; then
-    sh ./setup_smudge_clean.sh
+    sh $SCRIPT_DIR/setup_smudge_clean.sh
 fi
 
 echo "Setup complete"

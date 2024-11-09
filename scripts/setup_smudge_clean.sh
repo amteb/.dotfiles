@@ -16,9 +16,9 @@ if [ ! -f scripts/clean.sh ]; then
     cat > scripts/clean.sh << 'EOL'
 #!/bin/sh
 
-sed -e "s|$HOME|%%HOME%%|g" \
-    -e "s|$(git config user.name)|%%GIT_NAME%%|g" \
-    -e "s|$(git config user.email)|%%GIT_EMAIL%%|g"
+sed -e "s|$HOME|~|g" \
+    -e "s|$(git config user.name)||g" \
+    -e "s|$(git config user.email)||g"
 EOL
     chmod +x scripts/clean.sh
     echo "Created clean.sh"
@@ -31,9 +31,9 @@ if [ ! -f scripts/smudge.sh ]; then
     cat > scripts/smudge.sh << 'EOL'
 #!/bin/sh
 
-sed -e "s|%%HOME%%|$HOME|g" \
-    -e "s|%%GIT_NAME%%|$(git config user.name)|g" \
-    -e "s|%%GIT_EMAIL%%|$(git config user.email)|g"
+sed -e "s|~|$HOME|g" \
+    -e "s||$(git config user.name)|g" \
+    -e "s||$(git config user.email)|g"
 EOL
     chmod +x scripts/smudge.sh
     echo "Created smudge.sh"
