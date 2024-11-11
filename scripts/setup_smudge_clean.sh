@@ -16,7 +16,7 @@ if [ ! -f scripts/clean.sh ]; then
     cat > scripts/clean.sh << 'EOL'
 #!/bin/sh
 
-sed -e "s|$HOME|~|g" \
+sed -e "s|$HOME|%%HOME%%|g" \
     -e "s|$(git config user.name)||g" \
     -e "s|$(git config user.email)||g"
 EOL
