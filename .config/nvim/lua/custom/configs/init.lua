@@ -28,9 +28,32 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-    vim.opt.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--     vim.opt.clipboard = "unnamedplus"
+-- end)
+-- vim.api.nvim_create_autocmd({ "FocusGained" }, {
+--     pattern = { "*" },
+--     command = [[call setreg("@", getreg("+"))]],
+-- })
+-- vim.opt.clipboard = ""
+
+-- [[ WSL Clipboard Support ]]
+if vim.fn.has "wsl" == 1 then
+    -- This is NeoVim's recommended way to solve clipboard sharing if you use WSL
+    -- See: https://github.com/neovim/neovim/wiki/FAQ#how-to-use-the-windows-clipboard-from-wsl
+    vim.g.clipboard = {
+        name = "WslClipboard",
+        copy = {
+            ["+"] = "clip.exe",
+            ["*"] = "clip.exe",
+        },
+        paste = {
+            ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+            ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+        },
+        cache_enabled = 0,
+    }
+end
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -71,10 +94,10 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
-vim.o.tabstop = 4      -- A TAB character looks like 4 spaces
+vim.o.tabstop = 4 -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
-vim.o.softtabstop = 4  -- Number of spaces inserted instead of a TAB character
-vim.o.shiftwidth = 4   -- Number of spaces inserted when indenting
+vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
+vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -132,28 +155,6 @@ vim.g.loaded_netrwPlugin = 1
 
 -- [[ Disable Error Underline ]]
 
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics,
-        {
-            underline = false
-        }
-    )
-
--- [[ WSL Clipboard Support ]]
-if vim.fn.has("wsl") == 1 then
-    -- This is NeoVim's recommended way to solve clipboard sharing if you use WSL
-    -- See: https://github.com/neovim/neovim/wiki/FAQ#how-to-use-the-windows-clipboard-from-wsl
-    vim.g.clipboard = {
-        name = "WslClipboard",
-        copy = {
-            ["+"] = "clip.exe",
-            ["*"] = "clip.exe",
-        },
-        paste = {
-            ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-            ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-        },
-        cache_enabled = 0,
-    }
-end
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = false,
+})

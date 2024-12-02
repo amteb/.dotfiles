@@ -47,8 +47,3 @@ fi
 if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
-
-# if [ ! -d /mnt/wsl/share-debian ]; then
-#   mkdir /mnt/wsl/share-debian
-#   wsl.exe -d Debian -u root mount --bind / /mnt/wsl/share-debian/
-# fi
