@@ -14,7 +14,7 @@ return { -- LSP Configuration & Plugins
         { "j-hui/fidget.nvim", opts = {} },
 
         -- Allows extra capabilities provided by nvim-cmp
-        { "hrsh7th/cmp-nvim-lsp", }
+        { "hrsh7th/cmp-nvim-lsp" },
     },
     config = function()
         -- Brief aside: **What is LSP?**
@@ -160,7 +160,7 @@ return { -- LSP Configuration & Plugins
         --  - settings (table): Override the default settings passed when initializing the server.
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
         local servers = {
-            -- clangd = {},
+            clangd = {},
             -- gopls = {},
             basedpyright = {
                 settings = {
