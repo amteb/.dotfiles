@@ -1,12 +1,10 @@
-#!/usr/bin/env zsh
+#!/home/linuxbrew/.linuxbrew/bin/zsh
 
-setopt extended_glob
+export PATH="/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
 setopt null_glob
 setopt err_exit
 setopt pipe_fail
-
-# Ensure we have access to common command paths
-export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 
 CONFIG_FILE="${HOME}/.git-autosync.cfg"
 SCRIPT_PATH="${0:A}"
@@ -37,10 +35,22 @@ Options:
 
 check_git_repo() {
     local dir="$1"
-    (
-        cd "$dir" 2>/dev/null && \
-        git rev-parse --git-dir >/dev/null 2>&1
-    )
+    local ret
+    
+    [[ "$dir" == "." ]] && dir="$PWD"
+    
+    if ! command -v git >/dev/null 2>&1; then
+        echo "Error: git command not found. Please ensure git is installed and in PATH."
+        return 1
+    fi 
+    
+    if cd "$dir" 2>/dev/null; then
+        if git rev-parse --git-dir >/dev/null 2>&1; then
+            return 0
+        fi
+    fi
+    
+    return 1
 }
 
 check_config() {
@@ -167,7 +177,7 @@ save_config() {
 }
 
 # Rest of the functions remain the same
-sync_repos() sync_repos() {
+sync_repos() {
     local freq="$1"
     local repo
     echo "Syncing repositories for frequency: $freq"
@@ -207,12 +217,14 @@ add_repo() {
     local repo="$1" freq="$2"
 
     if [[ "$repo" == "." ]]; then
+        echo "Checking current directory: $PWD"
         if ! check_git_repo "$PWD"; then
             echo "Error: Current directory is not a git repository."
             return 1
         fi
         repo="$PWD"
     else
+        echo "Checking directory: $repo"
         if ! check_git_repo "$repo"; then
             echo "Error: $repo is not a git repository."
             return 1
@@ -233,8 +245,6 @@ add_repo() {
     echo "Added $repo to $freq in the configuration."
     update_cron_for_freq "$freq"
 }
-
-
 remove_repo() {
     local repo="$1" freq="$2"
 
@@ -278,7 +288,10 @@ list_all_repos() {
 
     for freq in ${(k)frequencies}; do
         echo "Repositories for $freq:"
-        print -l -- ${(s:,:)${frequencies[$freq]#*:}} | sed 's/^/  /'
+        # Use zsh's built-in printing with padding instead of sed
+        print -l -- ${(s:,:)${frequencies[$freq]#*:}} | while read -r line; do
+            print "  $line"
+        done
         echo
     done
 }

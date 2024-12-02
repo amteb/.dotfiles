@@ -23,6 +23,7 @@ path=(
 [[ -d "$HOME/squashfs-root/usr/bin" ]] && path+=("$HOME/squashfs-root/usr/bin")
 [[ -d "/usr/local/node/bin" ]] && path+=("/usr/local/node/bin")
 [[ -d "/opt/mssql-tools18/bin" ]] && path+=("/opt/mssql-tools18/bin")
+[[ -d "/home/linuxbrew/.linuxbrew/bin" ]] && path+=("/home/linuxbrew/.linuxbrew/bin:$PATH")
 
 export PATH
 
