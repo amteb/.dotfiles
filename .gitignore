@@ -1,1 +1,4 @@
 .config/google-chrome
+.config/uv/uv-receipt.json
+.config/go/telemetry/
+tmux-client-*.log
