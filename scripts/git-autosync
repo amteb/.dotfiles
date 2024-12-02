@@ -36,20 +36,20 @@ Options:
 check_git_repo() {
     local dir="$1"
     local ret
-    
+
     [[ "$dir" == "." ]] && dir="$PWD"
-    
+
     if ! command -v git >/dev/null 2>&1; then
         echo "Error: git command not found. Please ensure git is installed and in PATH."
         return 1
-    fi 
-    
+    fi
+
     if cd "$dir" 2>/dev/null; then
         if git rev-parse --git-dir >/dev/null 2>&1; then
             return 0
         fi
     fi
-    
+
     return 1
 }
 
@@ -82,15 +82,15 @@ load_config() {
     local current_freq=""
     local current_cron=""
     local current_paths=()
-    
+
     while IFS= read -r line || [[ -n "$line" ]]; do
         # Trim whitespace
         line="${line#"${line%%[![:space:]]*}"}"
         line="${line%"${line##*[![:space:]]}"}"
-        
+
         # Skip empty lines and comments
         [[ -z "$line" || "$line" == \#* ]] && continue
-        
+
         case "$line" in
             \[*\])
                 # Save previous frequency if exists
@@ -115,7 +115,7 @@ load_config() {
                 paths_str="${paths_str#"${paths_str%%[! ]*}"}" # trim leading space
                 paths_str="${paths_str#\[}"  # remove leading bracket
                 paths_str="${paths_str%\]}"  # remove trailing bracket
-                
+
                 # Split paths string into array
                 if [[ -n "$paths_str" ]]; then
                     # Convert comma-separated string to array, handling quoted values
@@ -133,7 +133,7 @@ load_config() {
                 ;;
         esac
     done < "$CONFIG_FILE"
-    
+
     # Save last frequency
     [[ -n "$current_freq" ]] && frequencies[$current_freq]="${current_cron}:${(j:,:)current_paths}"
 }
@@ -142,26 +142,26 @@ save_config() {
     # Ensure config directory exists
     local config_dir="${CONFIG_FILE:h}"
     [[ -d "$config_dir" ]] || mkdir -p "$config_dir"
-    
+
     # Create backup of existing config if it exists
     [[ -f "$CONFIG_FILE" ]] && cp "$CONFIG_FILE" "${CONFIG_FILE}.bak"
-    
+
     # Clear/create the config file
     : > "$CONFIG_FILE" || {
         echo "Error: Could not write to config file: $CONFIG_FILE"
         return 1
     }
-    
+
     # Write each frequency section
     local freq cron paths
     for freq in ${(k)frequencies}; do
         cron="${frequencies[$freq]%%:*}"
         paths=(${(s:,:)${frequencies[$freq]#*:}})
-        
+
         {
             print -r -- "[$freq]"
             print -r -- "cron = \"$cron\""
-            
+
             # Format paths array with proper quoting
             local quoted_paths=()
             local path
@@ -172,7 +172,7 @@ save_config() {
             print
         } >> "$CONFIG_FILE"
     done
-    
+
     echo "Configuration saved successfully."
 }
 
@@ -181,25 +181,25 @@ sync_repos() {
     local freq="$1"
     local repo
     echo "Syncing repositories for frequency: $freq"
-    
+
     for repo in ${(s:,:)${frequencies[$freq]#*:}}; do
         echo "Syncing $repo"
         (
             if cd "$repo" 2>/dev/null; then
                 if git rev-parse --git-dir >/dev/null 2>&1; then
                     local changes_exist=0
-                    
+
                     # Check for changes
                     if ! git diff --quiet || ! git diff --staged --quiet; then
                         changes_exist=1
                     fi
-                    
+
                     # Only commit if there are changes
                     if (( changes_exist )); then
                         git add .
                         git commit -m "chore: $freq sync"
                     fi
-                    
+
                     # Pull and push regardless of local changes
                     git pull
                     git push
@@ -260,7 +260,7 @@ remove_repo() {
         echo "Error: Cannot remove repository. Config file not found."
         return 1
     fi
-    
+
     load_config
 
     local cron="${frequencies[$freq]%%:*}"
@@ -299,13 +299,13 @@ list_all_repos() {
 update_cron_for_freq() {
     local freq="$1"
     local temp_crontab
-    
+
     # Save current crontab
     temp_crontab=$(crontab -l 2>/dev/null)
-    
+
     # Remove existing entry for this frequency
     temp_crontab=$(echo "$temp_crontab" | grep -v "$SCRIPT_PATH sync $freq")
-    
+
     # Write back modified crontab
     echo "$temp_crontab" | crontab -
 
