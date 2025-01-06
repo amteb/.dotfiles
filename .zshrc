@@ -27,7 +27,7 @@ compinit
 
 # Completion styling
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle :compinstall filename '~/.zshrc'
+zstyle :compinstall filename '%%HOME%%/.zshrc'
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 
@@ -152,23 +152,6 @@ hash -d dot="$HOME/.dotfiles"
 hash -d projects="$HOME/projects"
 hash -d downloads="$HOME/Downloads"
 
-# Antidote plugin management
-zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins"
-[[ -f ${zsh_plugins}.txt ]] || touch ${zsh_plugins}.txt
-fpath=(${ZDOTDIR:-$HOME}/.antidote/functions $fpath)
-autoload -Uz antidote
-if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
-  (
-  autoload -Uz compinit
-  compinit
-  )
-  (
-    source ".antidote/antidote.zsh"
-    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
-  )
-fi
-source ${zsh_plugins}.zsh
-
 # Load any local configurations
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
@@ -192,6 +175,6 @@ function check_ssh_agent() {
 #   - the correct directories to the PATH
 #   - auto-completion for the opam binary
 # This section can be safely removed at any time if needed.
-[[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+[[ ! -r '%%HOME%%/.opam/opam-init/init.zsh' ]] || source '%%HOME%%/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
 export PATH="$PATH:/opt/mssql-tools18/bin"
