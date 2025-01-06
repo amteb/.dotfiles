@@ -22,7 +22,7 @@ case "$TMUX$tmux_running" in
     ${~tmux_running})
         # Create session if it doesn't exist, using anonymous function for grouping
         () {
-            tmux has-session -t=$selected_name 2>/dev/null || 
+            tmux has-session -t=$selected_name 2>/dev/null ||
                 tmux new-session -ds $selected_name -c $selected
             # Source config for new session
             tmux source-file "$TMUX_CONFIG"
