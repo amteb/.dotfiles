@@ -16,3 +16,24 @@ fish_indicator = '󰈺 '
 powershell_indicator = '_'
 cmd_indicator = 'c'
 unknown_indicator = 'mystery shell'
+
+[c]
+commands = [
+    [
+        "zig",
+        "cc",
+        "--version",
+    ],
+    [
+        "clang",
+        "--version",
+    ],
+    [
+        "cc",
+        "--version",
+    ],
+    [
+        "gcc",
+        "--version",
+    ],
+]

@@ -21,6 +21,12 @@ unsetopt CORRECT
 setopt NO_CASE_GLOB
 setopt NUMERIC_GLOB_SORT
 
+bindkey -e
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^xe' edit-command-line
+bindkey '^x^e' edit-command-line
+
 # Completion system
 autoload -Uz compinit
 compinit
