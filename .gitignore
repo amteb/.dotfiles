@@ -2,3 +2,5 @@
 .config/uv/uv-receipt.json
 .config/go/telemetry/
 tmux-client-*.log
+.config/nvim/lazy-lock.json
+.config/Code/Azure Accounts/accessTokenCache

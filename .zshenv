@@ -17,6 +17,7 @@ path=(
     "/usr/local/bin"
     "/opt/nvim-linux64/bin"
     "/usr/local/go/bin"
+    "/usr/local/zig"
 )
 
 # Conditional PATH additions
