@@ -6,3 +6,4 @@ tmux-client-*.log
 .config/Code/Azure Accounts/accessTokenCache
 .config/go/telemetry
 .config/uv/uv-receipt.json
+.config/Code/Azure Accounts/accessTokenCache
