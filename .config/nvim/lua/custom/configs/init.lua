@@ -24,36 +24,37 @@ vim.opt.mouse = "a"
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.schedule(function()
-    vim.opt.clipboard = "unnamedplus"
-end)
--- vim.api.nvim_create_autocmd({ "FocusGained" }, {
---     pattern = { "*" },
---     command = [[call setreg("@", getreg("+"))]],
--- })
--- vim.opt.clipboard = ""
-
--- [[ WSL Clipboard Support ]]
-if vim.fn.has "wsl" == 1 then
-    -- This is NeoVim's recommended way to solve clipboard sharing if you use WSL
-    -- See: https://github.com/neovim/neovim/wiki/FAQ#how-to-use-the-windows-clipboard-from-wsl
-    vim.g.clipboard = {
-        name = "WslClipboard",
-        copy = {
-            ["+"] = "clip.exe",
-            ["*"] = "clip.exe",
-        },
-        paste = {
-            ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-            ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-        },
-        cache_enabled = 0,
-    }
-end
+-- -- Sync clipboard between OS and Neovim.
+-- --  Schedule the setting after `UiEnter` because it can increase startup-time.
+-- --  Remove this option if you want your OS clipboard to remain independent.
+-- --  See `:help 'clipboard'`
+-- vim.schedule(function()
+--     vim.opt.clipboard = "unnamedplus"
+-- end)
+-- -- vim.api.nvim_create_autocmd({ "FocusGained" }, {
+-- --     pattern = { "*" },
+-- --     command = [[call setreg("@", getreg("+"))]],
+-- -- })
+-- -- vim.opt.clipboard = ""
+--
+-- -- [[ WSL Clipboard Support ]]
+-- if vim.fn.has "wsl" == 1 then
+--     -- This is NeoVim's recommended way to solve clipboard sharing if you use WSL
+--     -- See: https://github.com/neovim/neovim/wiki/FAQ#how-to-use-the-windows-clipboard-from-wsl
+--     vim.g.clipboard = {
+--         name = "WslClipboard",
+--         copy = {
+--             ["+"] = "clip.exe",
+--             ["*"] = "clip.exe",
+--         },
+--         paste = {
+--             ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+--             ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+--         },
+--         cache_enabled = 0,
+--     }
+-- end
+require("custom.configs.clipboard").setup()
 
 -- Enable break indent
 vim.opt.breakindent = true
