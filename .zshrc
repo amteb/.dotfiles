@@ -33,7 +33,7 @@ compinit
 
 # Completion styling
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-zstyle :compinstall filename '%%HOME%%/.zshrc'
+zstyle :compinstall filename '~/.zshrc'
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 
@@ -134,6 +134,7 @@ function l {
 }
 
 # Aliases
+alias lt="l --tree"
 alias clip="clip.exe"
 alias c.="code ."
 alias v="nvim"
@@ -181,6 +182,6 @@ function check_ssh_agent() {
 #   - the correct directories to the PATH
 #   - auto-completion for the opam binary
 # This section can be safely removed at any time if needed.
-[[ ! -r '%%HOME%%/.opam/opam-init/init.zsh' ]] || source '%%HOME%%/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+[[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
 export PATH="$PATH:/opt/mssql-tools18/bin"

@@ -11,7 +11,7 @@ fi
 if [[ "${1}" == *".gitconfig.dotfiles" ]]; then
     cat
 else
-    sed -e "s|$HOME|%%HOME%%|g" \
+    sed -e "s|$HOME|~|g" \
         -e "s|$(git config user.name)||g" \
         -e "s|$(git config user.email)||g"
 fi
