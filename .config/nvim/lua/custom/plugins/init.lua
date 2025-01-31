@@ -30,16 +30,18 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 
     require "custom.plugins.cmp",
+    require "custom.plugins.dashboard",
+    require "custom.plugins.fine-cmdline",
+    require "custom.plugins.lualine",
     require "custom.plugins.lsp.config",
     require "custom.plugins.lsp.plugins",
     require "custom.plugins.mini",
-    require "custom.plugins.theme",
     require "custom.plugins.neo-tree",
     require "custom.plugins.telescope",
-    require "custom.plugins.which_key",
-    require "custom.plugins.dashboard",
+    require "custom.plugins.theme",
     require "custom.plugins.tmux-status",
     require "custom.plugins.vim-tmux-navigator",
+    require "custom.plugins.which_key",
 
     -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
     {
@@ -246,7 +248,8 @@ require("lazy").setup({
             --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
         end,
     },
-    {'akinsho/git-conflict.nvim', version = "*", config = true},
+    { "akinsho/git-conflict.nvim", version = "*", config = true, opts = {} },
+
     -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
     -- init.lua. If you want these files, they are in the repository, so you can just download them and
     -- place them in the correct locations.
