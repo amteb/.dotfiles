@@ -1,8 +1,6 @@
 .config/google-chrome
 .config/uv/uv-receipt.json
 .config/go/telemetry/
-tmux-client-*.log
 .config/nvim/lazy-lock.json
-.config/Code/**/*
-.config/go/telemetry
-.config/uv/uv-receipt.json
+.config/Code/**/accessTokenCache
+tmux-client-*.log
