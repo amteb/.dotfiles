@@ -117,6 +117,7 @@ fi
 if ! command_exists pre-commit; then
     if prompt_install "pre-commit"; then
         uv tool install pre-commit
+        pre-commit install
     fi
 else
     echo "pre-commit is already installed."
