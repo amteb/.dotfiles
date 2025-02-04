@@ -31,7 +31,6 @@ require("lazy").setup({
 
     require "custom.plugins.cmp",
     require "custom.plugins.dashboard",
-    require "custom.plugins.fine-cmdline",
     require "custom.plugins.lualine",
     require "custom.plugins.lsp.config",
     require "custom.plugins.lsp.plugins",
