@@ -152,7 +152,7 @@ alias ta="tmux attach"
 alias tl="tmux list-sessions"
 alias tm="tmux new-session -s main"
 alias tf="$DOTFILES/scripts/tmux-sessionizer"
-alias funcsync="uv sync -q && uv pip compile pyproject.toml -q -o requirements.txt"
+alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --generate-hashes --quiet"
 
 # Named directories
 hash -d dot="$HOME/.dotfiles"

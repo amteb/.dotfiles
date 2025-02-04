@@ -1,1 +1,3 @@
 * filter=substitution
+scripts/clean.sh -filter
+scripts/smudge.sh -filter

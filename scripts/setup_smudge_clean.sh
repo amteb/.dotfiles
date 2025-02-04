@@ -17,8 +17,8 @@ if [ ! -f scripts/clean.sh ]; then
 #!/bin/sh
 
 sed -e "s|$HOME|~|g" \
-    -e "s|$(git config user.name)||g" \
-    -e "s|$(git config user.email)||g"
+    -e "s|$(git config user.name)|atbraz|g" \
+    -e "s|$(git config user.email)|user@example.com|g"
 EOL
     chmod +x scripts/clean.sh
     echo "Created clean.sh"
@@ -32,8 +32,8 @@ if [ ! -f scripts/smudge.sh ]; then
 #!/bin/sh
 
 sed -e "s|~|$HOME|g" \
-    -e "s||$(git config user.name)|g" \
-    -e "s||$(git config user.email)|g"
+    -e "s|atbraz|$(git config user.name)|g" \
+    -e "s|user@example.com|$(git config user.email)|g"
 EOL
     chmod +x scripts/smudge.sh
     echo "Created smudge.sh"
