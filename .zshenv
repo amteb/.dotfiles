@@ -18,13 +18,14 @@ path=(
     "/opt/nvim-linux64/bin"
     "/usr/local/go/bin"
     "/usr/local/zig"
+    "$HOME/go/bin"
 )
 
 # Conditional PATH additions
 [[ -d "$HOME/squashfs-root/usr/bin" ]] && path+=("$HOME/squashfs-root/usr/bin")
 [[ -d "/usr/local/node/bin" ]] && path+=("/usr/local/node/bin")
 [[ -d "/opt/mssql-tools18/bin" ]] && path+=("/opt/mssql-tools18/bin")
-[[ -d "/home/linuxbrew/.linuxbrew/bin" ]] && path+=("/home/linuxbrew/.linuxbrew/bin:$PATH")
+[[ -d "/home/linuxbrew/.linuxbrew/bin" ]] && path+=("/home/linuxbrew/.linuxbrew/bin")
 
 export PATH
 

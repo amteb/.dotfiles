@@ -177,7 +177,23 @@ return { -- LSP Configuration & Plugins
             },
             ruff = {},
             marksman = {},
-            -- rust_analyzer = {},
+            rust_analyzer = {
+                settings = {
+                    ["rust-analyzer"] = {
+                        checkOnSave = {
+                            command = "clippy",
+                            extraArgs = { "--", "-W", "clippy::pedantic" },
+                        },
+                        cargo = {
+                            allFeatures = true,
+                        },
+                        procMacro = {
+                            enable = true,
+                        },
+                    },
+                },
+            },
+
             -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
             --
             -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -221,6 +237,8 @@ return { -- LSP Configuration & Plugins
         require("mason-tool-installer").setup { ensure_installed = ensure_installed }
 
         require("mason-lspconfig").setup {
+            ensure_installed = {},
+            automatic_installation = {},
             handlers = {
                 function(server_name)
                     local server = servers[server_name] or {}

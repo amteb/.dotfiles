@@ -77,7 +77,7 @@ return { -- Autocompletion
                 -- Manually trigger a completion from nvim-cmp.
                 --  Generally you don't need this, because nvim-cmp will display
                 --  completions whenever it has completion options available.
-                ["<S-Space>"] = cmp.mapping.complete {},
+                ["<C-.>"] = cmp.mapping.complete {},
 
                 -- Think of <c-l> as moving to the right of your snippet expansion.
                 --  So if you have a snippet that's like:
@@ -110,7 +110,7 @@ return { -- Autocompletion
                 { name = "nvim_lsp" },
                 { name = "luasnip" },
                 { name = "path" },
-                { name = "nvim_lsp_signature_help" }
+                { name = "nvim_lsp_signature_help" },
             },
         }
     end,

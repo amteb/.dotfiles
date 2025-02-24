@@ -41,7 +41,7 @@ return { -- You can easily change to a different colorscheme.
         plugins = {
             bufferline = {
                 underline_selected = false,
-                underline_visible = false,
+                underline_visible = true,
             },
             indent_blankline = {
                 context_highlight = "pro", -- default | pro

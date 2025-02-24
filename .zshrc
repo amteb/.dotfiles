@@ -28,6 +28,7 @@ bindkey '^xe' edit-command-line
 bindkey '^x^e' edit-command-line
 
 # Completion system
+fpath=(~/.dotfiles/.zsh/completions $fpath)
 autoload -Uz compinit
 compinit
 
@@ -133,6 +134,16 @@ function l {
     "$@"
 }
 
+function tmux_sessionizer_widget() {
+    LBUFFER=""
+    RBUFFER=""
+    zle redisplay
+    zsh -c "$DOTFILES/scripts/tmux-sessionizer"
+    zle reset-prompt
+}
+zle -N tmux_sessionizer_widget
+bindkey '^F' tmux_sessionizer_widget
+
 # Aliases
 alias lt="l --tree"
 alias clip="clip.exe"
@@ -185,3 +196,7 @@ function check_ssh_agent() {
 [[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
 export PATH="$PATH:/opt/mssql-tools18/bin"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh --disable-up-arrow)"

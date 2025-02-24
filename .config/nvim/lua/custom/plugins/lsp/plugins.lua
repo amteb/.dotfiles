@@ -9,4 +9,4 @@ return {
             { path = "luvit-meta/library", words = { "vim%.uv" } },
         },
     },
-}, { "Bilal2453/luvit-meta", lazy = true }
+}, { "Bilal2453/luvit-meta", lazy = true } --, { "cordx56/rustowl", dependencies = { "neovim/nvim-lspconfig" } }
