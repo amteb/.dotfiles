@@ -182,7 +182,6 @@ return { -- LSP Configuration & Plugins
                     ["rust-analyzer"] = {
                         checkOnSave = {
                             command = "clippy",
-                            extraArgs = { "--", "-W", "clippy::pedantic" },
                         },
                         cargo = {
                             allFeatures = true,
