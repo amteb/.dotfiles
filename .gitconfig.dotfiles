@@ -1,16 +1,45 @@
 [core]
     pager = delta
+    excludesfile = ~/.gitignore
+[column]
+    ui = auto
+[init]
+    defaultBranch = main
+[branch]
+    sort = -committerdate
+[commit]
+    verbose = true
+[tag]
+    sort = version:refname
 
-[interactive]
-    diffFilter = delta --color-only
-
-[delta]
-    navigate = true    # use n and N to move between diff sections
-
+[fetch]
+    prune = true
+    pruneTags = true
+    all = true
+[pull]
+    rebase = false
+[push]
+    default = simple
+    autoSetupRemote = true
+    followTags = true
 [merge]
-    conflictstyle = diff3
+    conflictstyle = zdiff3
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
 
 [diff]
-    colorMoved = default
-[init]
-	defaultBranch = main
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true    # use n and N to move between diff sections
+[help]
+    autocorrect = prompt
+[rerere]
+    enabled = true
+    autoupdate = true

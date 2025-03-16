@@ -17,10 +17,10 @@ return {
                         key = "L",
                     },
                     {
-                        desc = "󰊳 Update",
+                        desc = " Mason",
                         group = "@property",
-                        action = "Lazy update",
-                        key = "U",
+                        action = "Mason",
+                        key = "M",
                     },
                     {
                         icon = " ",
