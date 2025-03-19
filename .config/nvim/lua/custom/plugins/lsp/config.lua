@@ -209,11 +209,9 @@ return { -- LSP Configuration & Plugins
                 settings = {
                     basedpyright = {
                         disableOrganizeImports = true,
-                        typeCheckingMode = "standard",
-                    },
-                    python = {
                         analysis = {
-                            ignore = { "*" },
+                            diagnosticMode = "openFilesOnly",
+                            typeCheckingMode = "standard",
                         },
                     },
                 },

@@ -58,4 +58,5 @@ return { -- NOTE: Plugins can be added with a link (or for a github repo: 'owner
     -- Highlight todo, notes, etc in comments
     { "folke/todo-comments.nvim", event = "VimEnter", dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
     { "akinsho/git-conflict.nvim", version = "*", config = true, opts = {} },
+    { "HiPhish/debugpy.nvim" },
 }

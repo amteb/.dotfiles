@@ -94,7 +94,26 @@ return {
             -- online, please don't ask me how to install them :)
             ensure_installed = {
                 -- Update this to ensure that you have the debuggers for the langs you want
-                "delve",
+                -- "delve",
+                "debugpy",
+            },
+            dap.configurations.python = {
+                {
+                    type = 'python',
+                    request = 'attach',
+                    name = 'Azure Functions: Attach',
+                    connect = {
+                        host = 'localhost',
+                        port = 5678
+                    },
+                    justMyCode = false,
+                    pathMappings = {
+                        {
+                            localRoot = "${workspaceFolder}",
+                            remoteRoot = "."
+                        }
+                    },
+                }
             },
         }
 
