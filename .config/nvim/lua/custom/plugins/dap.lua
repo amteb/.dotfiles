@@ -146,6 +146,9 @@ return {
             host = "127.0.0.1",
             port = 5678,
             justMyCode = false,
+            skipFiles = {
+                "**/contextlib.py",
+            },
             pathMappings = {
                 {
                     localRoot = "${workspaceFolder}",

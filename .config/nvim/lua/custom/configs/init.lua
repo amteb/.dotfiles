@@ -100,6 +100,12 @@ vim.opt.scrolloff = 10
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
+-- disable line wrap
+vim.opt.wrap = false
+
+-- display line on col 100
+vim.opt.colorcolumn = "100"
+
 vim.o.tabstop = 4 -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
 vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
@@ -147,9 +153,19 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
--- Keybinds to move in insert mode without using arrow keys
-vim.keymap.set("i", "<C-b>", "<Left>", { desc = "Move left (back) in insert mode" })
-vim.keymap.set("i", "<C-f>", "<Right>", { desc = "Move right (forward) in insert mode" })
+-- Make resizing repeatable without pressing <C-w> each time
+vim.api.nvim_set_keymap("n", "<C-w>+", '<C-w>+<Cmd>let g:repeat_resize = "+"<CR><Cmd>set opfunc=RepeatResize<CR>g@l', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-w>-", '<C-w>-<Cmd>let g:repeat_resize = "-"<CR><Cmd>set opfunc=RepeatResize<CR>g@l', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-w><", '<C-w><<Cmd>let g:repeat_resize = "<"<CR><Cmd>set opfunc=RepeatResize<CR>g@l', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-w>>", '<C-w>><Cmd>let g:repeat_resize = ">"<CR><Cmd>set opfunc=RepeatResize<CR>g@l', { noremap = true, silent = true })
+
+vim.cmd [[
+function! RepeatResize(type)
+  execute "normal! \<C-w>" . g:repeat_resize
+  set opfunc=RepeatResize
+  return 'g@l'
+endfunction
+]]
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -174,3 +190,11 @@ vim.g.loaded_netrwPlugin = 1
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
     underline = true,
 })
+
+vim.filetype.add {
+    extension = {
+        jinja = "jinja",
+        jinja2 = "jinja",
+        j2 = "jinja",
+    },
+}
