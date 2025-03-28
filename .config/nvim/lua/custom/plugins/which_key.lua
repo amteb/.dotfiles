@@ -52,6 +52,7 @@ return { -- Useful plugin to show you pending keybinds.
             { "<leader>t", group = "[T]oggle" },
             { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
             { "<leader>n", group = "[N]eotest" },
+            { "<leader>p", group = "Har[P]oon" },
         },
     },
 }
