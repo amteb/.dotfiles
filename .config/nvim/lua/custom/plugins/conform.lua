@@ -32,11 +32,28 @@ return { -- Autoformat
         end,
         formatters_by_ft = {
             lua = { "stylua" },
+            python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+            ocaml = { "ocamlformat" },
             -- Conform can also run multiple formatters sequentially
             --
             -- You can use a sub-list to tell conform to run *until* a formatter
             -- is found.
             -- javascript = { { "prettierd", "prettier" } },
+        },
+        formatters = {
+            ocamlformat = {
+                command = "ocamlformat",
+                args = {
+                    "--if-then-else",
+                    "vertical",
+                    "--break-cases",
+                    "fit-or-vertical",
+                    "--type-decl",
+                    "sparse",
+                    -- $FILENAME - absolute path to the file
+                    "$FILENAME",
+                },
+            },
         },
     },
 }

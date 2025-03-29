@@ -1,3 +1,18 @@
+local function recording()
+    local reg = vim.fn.reg_recording()
+    if reg ~= "" then
+        return "Recording @" .. reg
+    end
+    return ""
+end
+
+local function has_messages()
+    if #vim.fn.filter(vim.fn.getmessages(), "v:val !~ '^E121:'") > 0 then
+        return "󰍡" -- or any icon you prefer
+    end
+    return ""
+end
+
 return {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -70,6 +85,8 @@ return {
                         icon = "󰘬",
                     },
                     { "diff" },
+                    { recording },
+                    { has_messages },
                 },
                 lualine_x = {
                     {
@@ -77,14 +94,16 @@ return {
                         sections = { "error", "warn", "info", "hint" },
                     },
                 },
-                lualine_y = { "filetype" },
+                lualine_y = { "lsp_status", "filetype" },
                 lualine_z = { "" },
             },
-            -- extensions = {
-            --     "lazy",
-            --     "mason",
-            --     "neo-tree",
-            -- },
+            extensions = {
+                "fzf",
+                "lazy",
+                "mason",
+                "neo-tree",
+                "nvim-dap-ui",
+            },
         }
     end,
 }

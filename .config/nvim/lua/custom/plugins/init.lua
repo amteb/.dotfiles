@@ -30,9 +30,11 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 
     require "custom.plugins.cmp",
+    require "custom.plugins.dap",
     require "custom.plugins.mini",
     require "custom.plugins.theme",
     require "custom.plugins.conform",
+    require "custom.plugins.harpoon",
     require "custom.plugins.lualine",
     require "custom.plugins.neo-tree",
     require "custom.plugins.dashboard",
@@ -55,9 +57,7 @@ require("lazy").setup({
     --  Here are some example plugins that I've included in the Kickstart repository.
     --  Uncomment any of the lines below to enable them (you will need to restart nvim).
 
-    require "kickstart.plugins.debug",
     require "kickstart.plugins.indent_line",
-    require "kickstart.plugins.lint",
     require "kickstart.plugins.autopairs",
     require "kickstart.plugins.gitsigns", -- adds gitsigns recommend keymaps
 }, {
@@ -65,19 +65,19 @@ require("lazy").setup({
         -- If you are using a Nerd Font: set icons to an empty table which will use the
         -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
         icons = vim.g.have_nerd_font and {} or {
-            cmd = "⌘",
-            config = "🛠",
-            event = "📅",
-            ft = "📂",
-            init = "⚙",
-            keys = "🗝",
-            plugin = "🔌",
             runtime = "💻",
             require = "🌙",
+            config = "🛠",
+            plugin = "🔌",
             source = "📄",
-            start = "🚀",
-            task = "📌",
+            event = "📅",
             lazy = "💤 ",
+            start = "🚀",
+            keys = "🗝",
+            task = "📌",
+            init = "⚙",
+            cmd = "⌘",
+            ft = "📂",
         },
     },
 })

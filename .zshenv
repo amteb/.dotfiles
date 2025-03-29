@@ -37,3 +37,6 @@ if command -v fd > /dev/null 2>&1; then
 fi
 
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=true
+
+# opam configuration
+[[ ! -r ~/.opam/opam-init/init.zsh ]] || source ~/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
