@@ -1,7 +1,7 @@
 local function recording()
     local reg = vim.fn.reg_recording()
     if reg ~= "" then
-        return "Recording @" .. reg
+        return reg
     end
     return ""
 end
@@ -15,6 +15,7 @@ end
 
 return {
     "nvim-lualine/lualine.nvim",
+    lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
         local colors = require "monokai-pro.colorscheme"
@@ -42,8 +43,8 @@ return {
                 c = { bg = colors.base.background, fg = colors.statusBar.activeForeground },
             },
             command = {
-                a = { bg = colors.base.yellow, fg = colors.base.black, gui = "bold" },
-                b = { bg = colors.base.background, fg = colors.base.yellow },
+                a = { bg = colors.base.cyan, fg = colors.base.black, gui = "bold" },
+                b = { bg = colors.base.background, fg = colors.base.cyan },
                 c = { bg = colors.base.background, fg = colors.statusBar.activeForeground },
             },
             inactive = {
@@ -85,7 +86,6 @@ return {
                         icon = "󰘬",
                     },
                     { "diff" },
-                    { recording },
                     { has_messages },
                 },
                 lualine_x = {
@@ -93,9 +93,15 @@ return {
                         "diagnostics",
                         sections = { "error", "warn", "info", "hint" },
                     },
+
+                    { "lsp_status" },
                 },
-                lualine_y = { "lsp_status", "filetype" },
-                lualine_z = { "" },
+                lualine_y = {
+                    "filetype",
+                },
+                lualine_z = {
+                    { recording },
+                },
             },
             extensions = {
                 "fzf",
