@@ -40,20 +40,6 @@ return { -- Autoformat
             -- is found.
             -- javascript = { { "prettierd", "prettier" } },
         },
-        formatters = {
-            ocamlformat = {
-                command = "ocamlformat",
-                args = {
-                    "--if-then-else",
-                    "vertical",
-                    "--break-cases",
-                    "fit-or-vertical",
-                    "--type-decl",
-                    "sparse",
-                    -- $FILENAME - absolute path to the file
-                    "$FILENAME",
-                },
-            },
-        },
+        formatters = {},
     },
 }
