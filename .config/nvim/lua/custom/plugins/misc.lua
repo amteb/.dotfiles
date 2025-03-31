@@ -196,4 +196,5 @@ return { -- NOTE: Plugins can be added with a link (or for a github repo: 'owner
             },
         },
     },
+    { "wakatime/vim-wakatime", lazy = false },
 }
