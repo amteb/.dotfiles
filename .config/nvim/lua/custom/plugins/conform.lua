@@ -34,6 +34,9 @@ return { -- Autoformat
             lua = { "stylua" },
             python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
             ocaml = { "ocamlformat" },
+            sh = { "shfmt" },
+            bash = { "shfmt" },
+            zsh = { "shfmt" },
             -- Conform can also run multiple formatters sequentially
             --
             -- You can use a sub-list to tell conform to run *until* a formatter

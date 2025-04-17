@@ -36,6 +36,7 @@ require("lazy").setup({
     require "custom.plugins.conform",
     require "custom.plugins.harpoon",
     require "custom.plugins.lualine",
+    require "custom.plugins.devicons",
     require "custom.plugins.neo-tree",
     require "custom.plugins.dashboard",
     require "custom.plugins.telescope",
