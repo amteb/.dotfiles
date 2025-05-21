@@ -36,6 +36,7 @@ require("lazy").setup({
     require "custom.plugins.conform",
     require "custom.plugins.harpoon",
     require "custom.plugins.lualine",
+    require "custom.plugins.devicons",
     require "custom.plugins.neo-tree",
     require "custom.plugins.dashboard",
     require "custom.plugins.telescope",
@@ -46,7 +47,7 @@ require("lazy").setup({
     require "custom.plugins.tmux-status",
     require "custom.plugins.vim-tmux-navigator",
 
-    require "custom.plugins.other",
+    require "custom.plugins.misc",
     --
     -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
     -- init.lua. If you want these files, they are in the repository, so you can just download them and

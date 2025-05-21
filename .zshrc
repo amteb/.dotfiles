@@ -48,11 +48,11 @@ zstyle ':completion:*:history-words' menu yes
 
 ## install and stow
 qpushd() {
-  pushd "$1" > /dev/null
+    pushd "$1" >/dev/null
 }
 
 qpopd() {
-  popd > /dev/null
+    popd >/dev/null
 }
 
 function install_and_add_to_stow_setup() {
@@ -74,7 +74,7 @@ function install_and_add_to_stow_setup() {
     if grep -Fxq "$cmd" "$SETUP_SCRIPT"; then
         echo "Command already exists in setup.sh: $cmd"
     else
-        echo "\n$cmd" >> "$SETUP_SCRIPT"
+        echo "\n$cmd" >>"$SETUP_SCRIPT"
 
         qpushd "$DOTFILES"
         git add $SETUP_SCRIPT
@@ -103,35 +103,35 @@ function restow() {
     git add .
 
     if ! git diff --cached --quiet; then
-      git commit -m "chore: update dotfiles"
-      git push
-      echo "Synced .dotfiles repo"
+        git commit -m "chore: update dotfiles"
+        git push
+        echo "Synced .dotfiles repo"
     else
-      echo "No changes to commit"
+        echo "No changes to commit"
     fi
 
     qpopd
 }
 
-function gas(){
+function gas() {
     $DOTFILES/scripts/git-autosync "$@"
 }
 
 ## utility functions
 function l {
-  eza \
-    -a \
-    -l \
-    -F \
-    -@ \
-    --git \
-    --git-repos \
-    --group-directories-first \
-    --header \
-    --icons=always \
-    --no-quotes \
-    --time-style=relative \
-    "$@"
+    eza \
+        -a \
+        -l \
+        -F \
+        -@ \
+        --git \
+        --git-repos \
+        --group-directories-first \
+        --header \
+        --icons=always \
+        --no-quotes \
+        --time-style=relative \
+        "$@"
 }
 
 function tmux_sessionizer_widget() {
@@ -164,7 +164,8 @@ alias ta="tmux attach"
 alias tl="tmux list-sessions"
 alias tm="tmux new-session -s main"
 alias tf="$DOTFILES/scripts/tmux-sessionizer"
-alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --generate-hashes --quiet"
+alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --quiet"
+alias lg="lazygit"
 
 # Named directories
 hash -d dot="$HOME/.dotfiles"
@@ -175,26 +176,25 @@ hash -d downloads="$HOME/Downloads"
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 function check_ssh_agent() {
-  ssh-add -l &>/dev/null
-  if [ 0 = 2 ]; then
-    echo No ssh-agent running
-  elif [ 0 = 1 ]; then
-    echo ssh-agent has no identities
-  else
-    echo ssh-agent has at least one identity
-  fi
-  echo SSH_AUTH_SOCK=/tmp/ssh-nn2x11zHDkIj/agent.75973
+    ssh-add -l &>/dev/null
+    if [ 0 = 2 ]; then
+        echo No ssh-agent running
+    elif [ 0 = 1 ]; then
+        echo ssh-agent has no identities
+    else
+        echo ssh-agent has at least one identity
+    fi
+    echo SSH_AUTH_SOCK=/tmp/ssh-nn2x11zHDkIj/agent.75973
 }
 
 . "$HOME/.cargo/env"
-
 
 # BEGIN opam configuration
 # This is useful if you're using opam as it adds:
 #   - the correct directories to the PATH
 #   - auto-completion for the opam binary
 # This section can be safely removed at any time if needed.
-[[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+[[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' >/dev/null 2>/dev/null
 # END opam configuration
 export PATH="$PATH:/opt/mssql-tools18/bin"
 
