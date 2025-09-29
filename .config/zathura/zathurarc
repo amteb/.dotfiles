@@ -1,0 +1,3 @@
+set selection-clipboard clipboard
+map b adjust_window best-fit
+set synctex-editor-command "nvr --remote-silent +%{line} %{input}"

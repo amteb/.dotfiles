@@ -1,6 +1,11 @@
 #!/bin/sh
 
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+# Get script directory (macOS compatible)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    SCRIPT_DIR=$(dirname "$(greadlink -f "$0" 2>/dev/null || readlink "$0" 2>/dev/null || echo "$0")")
+else
+    SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+fi
 
 # Function to check if a command exists
 command_exists() {
@@ -21,83 +26,160 @@ prompt_install() {
     esac
 }
 
+# Detect OS and set package manager
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OS="mac"
+    PKG_MGR="brew install"
+else
+    OS="linux" 
+    PKG_MGR="sudo apt install -y"
+fi
+
+# Function to install a package based on OS
+install_package() {
+    local package="$1"
+    case "$package" in
+        # Cross-platform packages that work with standard package managers
+        bat|fzf|ripgrep|jq|tmux|keychain|neovim|stow|unzip)
+            if [[ "$OS" == "mac" ]]; then
+                brew install "$package"
+            else
+                if [[ "$package" == "neovim" ]]; then
+                    # Linux manual installation for latest version
+                    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz \
+                    && sudo rm -rf /opt/nvim \
+                    && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
+                    && rm nvim-linux64.tar.gz
+                elif [[ "$package" == "unzip" ]]; then
+                    echo "unzip should be pre-installed"
+                else
+                    $PKG_MGR "$package"
+                fi
+            fi
+            ;;
+        # OS-specific package names
+        fd)
+            if [[ "$OS" == "mac" ]]; then
+                brew install fd
+            else
+                $PKG_MGR fd-find
+            fi
+            ;;
+        git-delta)
+            if [[ "$OS" == "mac" ]]; then
+                brew install git-delta
+            else
+                # Linux manual installation
+                url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.assets[] | select(.name | contains("delta-") and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url')
+                wget "$url" -O /tmp/delta.tar.gz \
+                && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
+                && tar -xzf /tmp/delta.tar.gz -C /tmp \
+                && mv "/tmp/$dirname/delta" "$HOME/.local/bin" \
+                && rm -r "/tmp/$dirname" \
+                && rm /tmp/delta.tar.gz
+            fi
+            ;;
+        # Cross-platform curl installers
+        zoxide|uv)
+            if [[ "$package" == "zoxide" ]]; then
+                curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+            else
+                curl -LsSf https://astral.sh/uv/install.sh | sh
+            fi
+            ;;
+        # Special cases
+        eza)
+            if [[ "$OS" == "mac" ]]; then
+                brew install eza
+            else
+                wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz \
+                && sudo chmod +x eza \
+                && sudo chown root:root eza \
+                && sudo mv eza /usr/local/bin/eza
+            fi
+            ;;
+        tlrc)
+            brew install tlrc  # Available on both platforms via brew
+            ;;
+        sd)
+            if [[ "$OS" == "mac" ]]; then
+                brew install sd
+            else
+                $PKG_MGR sd
+            fi
+            ;;
+        build-essential)
+            if [[ "$OS" == "linux" ]]; then
+                $PKG_MGR build-essential
+            fi
+            ;;
+        *)
+            echo "Unknown package: $package"
+            return 1
+            ;;
+    esac
+}
+
 # List of utility commands to install
-UTILS="curl wget git build-essential bat fd-find fzf ripgrep sd jq zoxide eza delta uv tlrc keychain tmux"
+if [[ "$OS" == "mac" ]]; then
+    UTILS="curl wget git bat fd fzf ripgrep sd jq zoxide eza git-delta uv tlrc keychain tmux neovim stow"
+else
+    UTILS="curl wget git build-essential bat fd fzf ripgrep sd jq zoxide eza git-delta uv tlrc keychain tmux neovim unzip stow"
+fi
 
 # Install utility commands
 for util in $UTILS; do
     if ! command_exists "$util"; then
         if prompt_install "$util"; then
-            case "$util" in
-                bat) sudo apt install -y bat ;;
-                fd-find) sudo apt install -y fd-find ;;
-                fzf) sudo apt install -y fzf ;;
-                ripgrep) sudo apt-get install ripgrep ;;
-                sd) sudo apt install sd ;;
-                jq) sudo apt-get install jq ;;
-                zoxide) curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh ;;
-                eza)
-                    wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz \
-                    && sudo chmod +x eza \
-                    && sudo chown root:root eza \
-                    && sudo mv eza /usr/local/bin/eza
-                    ;;
-                delta)
-                    url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.assets[] | select(.name | contains("delta-") and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url')
-                    wget "$url" -O /tmp/delta.tar.gz \
-                    && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
-                    && tar -xzf /tmp/delta.tar.gz -C /tmp \
-                    && mv "/tmp/$dirname/delta" "$HOME/.local/bin" \
-                    && rm -r "/tmp/$dirname" \
-                    && rm /tmp/delta.tar.gz
-                    ;;
-                uv) curl -LsSf https://astral.sh/uv/install.sh | sh ;;
-                tlrc) brew install tlrc ;;
-                keychain) sudo apt install keychain ;;
-            esac
+            install_package "$util"
         fi
     else
         echo "$util is already installed."
     fi
 done
 
-# Update and upgrade system packages
-echo "Updating system packages..."
-sudo apt update && sudo apt upgrade -y
-
-# Install build-essential if not already installed
-if ! dpkg -s build-essential > /dev/null 2>&1; then
-    echo "Installing build-essential..."
-    sudo apt install -y build-essential
+# Update system packages
+if [[ "$OS" == "mac" ]]; then
+    echo "Updating Homebrew..."
+    brew update
 else
-    echo "build-essential is already installed."
+    echo "Updating system packages..."
+    sudo apt update && sudo apt upgrade -y
 fi
 
 # Install neofetch if not already installed
 if ! command_exists neofetch; then
     if prompt_install "neofetch"; then
-        sudo apt install neofetch
+        if [[ "$OS" == "mac" ]]; then
+            brew install neofetch
+        else
+            sudo apt install neofetch
+        fi
     fi
 else
     echo "neofetch is already installed."
 fi
 
-# Install Homebrew if not already installed
-if ! command_exists brew; then
+# Install Homebrew if not already installed (Linux only, macOS has it by default)
+if [[ "$OS" == "linux" ]] && ! command_exists brew; then
     if prompt_install "Homebrew"; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         if [ -d /home/linuxbrew/.linuxbrew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         fi
     fi
-else
-    echo "Homebrew is already installed."
+elif [[ "$OS" == "mac" ]]; then
+    echo "Homebrew should be pre-installed on macOS."
 fi
 
 # Install and configure zsh if not already the default shell
 if [ "$SHELL" != "$(which zsh)" ]; then
     if prompt_install "zsh and set it as your default shell"; then
-        sudo apt install zsh
+        if [[ "$OS" == "mac" ]]; then
+            echo "zsh is pre-installed on macOS"
+        else
+            sudo apt install zsh
+        fi
         chsh -s "$(which zsh)"
     fi
 else

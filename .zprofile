@@ -4,13 +4,22 @@
 umask 022
 
 # Load Homebrew in login shells (if installed)
-if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS Homebrew
+  if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -f "/usr/local/bin/brew" ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+else
+  # Linux Homebrew
+  if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  fi
 fi
 
 # Source cargo env if it exists
-[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-
+[[ -f "$HOME/.cargo/env" ]] && 
 # Initialize keychain
 # SSH Agent Management
 SSH_ENV="$HOME/.ssh/agent-environment"

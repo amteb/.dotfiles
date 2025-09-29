@@ -1,69 +1,59 @@
 #!/usr/bin/env zsh
 
-selected=${1:-$(
+add_paths_from_dir() {
+    local base_dir=$1
+    local strip_prefix=$2
+    local fd_cmd=$3
+
+    while IFS= read -r path; do
+        display_path=${path#$strip_prefix}
+        paths[${display_path%/}]=$path
+    done < <($fd_cmd . "$base_dir" --max-depth 1 --type d)
+}
+
+get_project_paths() {
     local FD_CMD=${commands[fd]}
     local FZF_CMD=${commands[fzf]}
     local SORT_CMD=${commands[sort]}
 
     declare -A paths
 
-    while IFS= read -r path; do
-        display_path=${path#$HOME/dev/}
-        paths[${display_path%/}]=$path
-    done < <($FD_CMD . ~/dev --max-depth 1 --type d)
-
-    while IFS= read -r path; do
-        display_path=${path#$HOME/dev/}
-        paths[${display_path%/}]=$path
-    done < <($FD_CMD . ~/dev/misc --max-depth 1 --type d)
-
-    while IFS= read -r path; do
-        display_path=${path#$HOME/dev/}
-        paths[${display_path%/}]=$path
-    done < <($FD_CMD . ~/dev/package-abs/ --max-depth 1 --type d)
-
+    add_paths_from_dir ~/Documents/dev "$HOME/Documents/dev/" "$FD_CMD"
+    add_paths_from_dir ~/Documents/finmath "$HOME/Documents/finmath/" "$FD_CMD"
     paths[.dotfiles]="$HOME/.dotfiles"
 
-    local -a keys
-    keys=("${(@k)paths}")
-
+    local -a keys=("${(@k)paths}")
     print -l "${(@)keys}" | $SORT_CMD -rf | $FZF_CMD | while read -r selected_display; do
         [[ -n $selected_display ]] && echo "${paths[$selected_display]}"
     done
-)}
+}
+
+selected=${1:-$(get_project_paths)}
 
 # Early return using short-circuit operator
 [[ -z $selected ]] && exit 0
 
-# Parameter expansion with substitution
+create_or_attach_session() {
+    local session_name=$1
+    local session_path=$2
+    local config_file=$3
+
+    if ! tmux has-session -t="$session_name" 2>/dev/null; then
+        tmux new-session -ds "$session_name" -c "$session_path"
+        tmux source-file "$config_file"
+    fi
+}
+
 selected_name=${$(basename "$selected")//\./_}
 tmux_running=$(pgrep tmux)
-
-# Set your tmux config file location
 TMUX_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
 
-# Case statement instead of if blocks
-case "$TMUX$tmux_running" in
-    # No tmux running at all
-    "")
-        tmux -f "$TMUX_CONFIG" new-session -s $selected_name -c $selected
-        ;;
-    # Tmux running but not in a session
-    ${~tmux_running})
-        # Create session if it doesn't exist, using anonymous function for grouping
-        () {
-            tmux has-session -t=$selected_name 2>/dev/null ||
-                tmux new-session -ds $selected_name -c $selected
-            # Source config for new session
-            tmux source-file "$TMUX_CONFIG"
-        }
-        tmux attach-session -t $selected_name
-        ;;
-    # In a tmux session
-    *)
-        # Create session if it doesn't exist using && and ||
-        tmux has-session -t=$selected_name 2>/dev/null ||
-            (tmux new-session -ds $selected_name -c $selected && tmux source-file "$TMUX_CONFIG")
-        tmux switch-client -t $selected_name
-        ;;
-esac
+if [[ -z $TMUX && -z $tmux_running ]]; then
+    tmux -f "$TMUX_CONFIG" new-session -s "$selected_name" -c "$selected"
+elif [[ -z $TMUX && -n $tmux_running ]]; then
+    create_or_attach_session "$selected_name" "$selected" "$TMUX_CONFIG"
+    tmux attach-session -t "$selected_name"
+else
+    create_or_attach_session "$selected_name" "$selected" "$TMUX_CONFIG"
+    tmux switch-client -t "$selected_name"
+fi

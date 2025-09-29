@@ -35,3 +35,5 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- Navigate gr references
 vim.keymap.set("n", "]r", ":cnext<CR>", { desc = "Next reference" })
 vim.keymap.set("n", "[r", ":cprev<CR>", { desc = "Previous reference" })
+
+vim.api.nvim_set_keymap("c", "W", "w", { noremap = true, silent = true })

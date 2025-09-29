@@ -221,6 +221,16 @@ return {
                     },
                 },
             },
+            tinymist = {
+                settings = {
+                    formatterMode = "typstyle",
+                    exportPdf = "onType",
+                    semanticTokens = "disable",
+                    preview = {
+                        zoom = "fit-width",
+                    },
+                },
+            },
         }
 
         -- Ensure the servers and tools above are installed

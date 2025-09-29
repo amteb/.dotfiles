@@ -11,5 +11,15 @@ return {
             },
         },
     },
-    -- { "cordx56/rustowl", dependencies = { "neovim/nvim-lspconfig" } },
+    {
+        "chomosuke/typst-preview.nvim",
+        ft = "typst",
+        version = "1.*",
+        opts = {
+            dependencies_bin = { ["tinymist"] = "tinymist" },
+            invert_colors = "auto",
+            -- open_cmd = "zathura %s",
+            viewer = "zathura",
+        },
+    }, -- { "cordx56/rustowl", dependencies = { "neovim/nvim-lspconfig" } },
 }
