@@ -27,3 +27,4 @@ _darcs
 ^scripts
 ^.zsh        # still not fully fledged
 ^_.*         # dirs and files that start with "_"
+^README.md

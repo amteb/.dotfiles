@@ -1,0 +1,13 @@
+# shellcheck configuration for dotfiles
+
+# Disable specific checks that are noisy for dotfiles
+disable=SC1090  # Can't follow non-constant source (common in shell configs)
+disable=SC1091  # Not following sourced files (they may not exist on this system)
+disable=SC2148  # Missing shebang (not needed for .zshrc, .zshenv, etc.)
+disable=SC2296  # Zsh-specific parameter expansion syntax
+
+# Enable optional checks
+enable=quote-safe-variables
+
+# Set shell to zsh for zsh config files
+shell=bash

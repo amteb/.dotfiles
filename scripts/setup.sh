@@ -31,7 +31,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     OS="mac"
     PKG_MGR="brew install"
 else
-    OS="linux" 
+    OS="linux"
     PKG_MGR="sudo apt install -y"
 fi
 

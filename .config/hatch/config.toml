@@ -5,8 +5,8 @@ shell = ""
 [dirs]
 project = []
 python = "isolated"
-data = "~/.local/share/hatch"
-cache = "~/.cache/hatch"
+data = "%%HOME%%/.local/share/hatch"
+cache = "%%HOME%%/.cache/hatch"
 
 [dirs.env]
 
@@ -16,8 +16,8 @@ cache = "~/.cache/hatch"
 repo = "main"
 
 [template]
-name = "abraz"
-email = "user@example.com"
+name = "%%GIT_NAME%%"
+email = "%%GIT_EMAIL%%"
 
 [template.licenses]
 headers = true

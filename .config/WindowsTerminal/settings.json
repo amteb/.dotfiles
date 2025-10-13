@@ -1,10 +1,10 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
-            "command": 
+            "command":
             {
                 "action": "copy",
                 "singleLine": false
@@ -22,7 +22,7 @@
             "keys": "ctrl+v"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "auto",
@@ -40,22 +40,22 @@
     "copyFormatting": "none",
     "copyOnSelect": true,
     "defaultProfile": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
             "adjustIndistinguishableColors": "indexed",
             "antialiasingMode": "cleartype",
             "bellStyle": "none",
             "colorScheme": "Monokai Pro Machine",
             "experimental.retroTerminalEffect": false,
-            "font": 
+            "font":
             {
                 "face": "FiraCode Nerd Font",
                 "size": 11.5
@@ -66,7 +66,7 @@
             "scrollbarState": "hidden",
             "useAcrylic": false
         },
-        "list": 
+        "list":
         [
             {
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -nologo",
@@ -113,7 +113,7 @@
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#403E41",

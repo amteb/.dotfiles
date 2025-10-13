@@ -1,0 +1,45 @@
+# EditorConfig for dotfiles
+# https://editorconfig.org
+
+root = true
+
+# Default settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Shell scripts
+[*.{sh,bash,zsh}]
+indent_style = space
+indent_size = 4
+
+# Zsh config files
+[.zshrc,.zshenv,.zprofile]
+indent_style = space
+indent_size = 4
+
+# Lua files (Neovim)
+[*.lua]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[*.{yaml,yml,toml,json}]
+indent_style = space
+indent_size = 2
+
+# Markdown
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false  # Preserve trailing spaces for line breaks
+
+# Makefile
+[{Makefile,*.mk}]
+indent_style = tab
+
+# Git config
+[.gitconfig*]
+indent_style = tab

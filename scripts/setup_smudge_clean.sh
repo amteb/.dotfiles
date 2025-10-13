@@ -14,11 +14,19 @@ fi
 # Create clean script if it doesn't exist
 if [ ! -f scripts/clean.sh ]; then
     cat > scripts/clean.sh << 'EOL'
-#!/bin/sh
+#!/bin/bash
 
-sed -e "s|$HOME|~|g" \
-    -e "s|$(git config user.name)|atbraz|g" \
-    -e "s|$(git config user.email)|user@example.com|g"
+# Log to a file for debugging
+if [ -n "$GIT_TRACE" ]; then
+    echo "Clean filter running at $(date). Args: $@" >> /tmp/git_clean_filter.log
+    env >> /tmp/git_clean_filter.log
+    echo "---" >> /tmp/git_clean_filter.log
+fi
+
+# Replace actual values with placeholders for storage in git
+sed -e "s|$HOME|%%HOME%%|g" \
+    -e "s|$(git config user.name)|%%GIT_NAME%%|g" \
+    -e "s|$(git config user.email)|%%GIT_EMAIL%%|g"
 EOL
     chmod +x scripts/clean.sh
     echo "Created clean.sh"
@@ -29,11 +37,17 @@ fi
 # Create smudge script if it doesn't exist
 if [ ! -f scripts/smudge.sh ]; then
     cat > scripts/smudge.sh << 'EOL'
-#!/bin/sh
+#!/bin/bash
 
-sed -e "s|~|$HOME|g" \
-    -e "s|atbraz|$(git config user.name)|g" \
-    -e "s|user@example.com|$(git config user.email)|g"
+# Check if GIT_TRACE is set (which happens in verbose mode)
+if [ -n "$GIT_TRACE" ]; then
+    echo "Smudge filter running on: ${1:-<no filename provided>}" >&2
+fi
+
+# Replace placeholders with actual values from environment
+sed -e "s|%%HOME%%|$HOME|g" \
+    -e "s|%%GIT_NAME%%|$(git config user.name)|g" \
+    -e "s|%%GIT_EMAIL%%|$(git config user.email)|g"
 EOL
     chmod +x scripts/smudge.sh
     echo "Created smudge.sh"
