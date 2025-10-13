@@ -27,4 +27,21 @@ _darcs
 ^scripts
 ^.zsh        # still not fully fledged
 ^_.*         # dirs and files that start with "_"
+
+# Repository-specific documentation
 ^README.md
+^.*\.md$     # All markdown files in root
+
+# Build files
+^Makefile
+^makefile
+^GNUmakefile
+
+# Editor and linter configs for the repo itself
+^\.editorconfig
+^\.shellcheckrc
+^\.yamllint
+^\.clang-format
+
+# Repository-specific git config
+^\.gitconfig\.dotfiles
