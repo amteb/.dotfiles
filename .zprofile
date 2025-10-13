@@ -1,3 +1,22 @@
+# ~/.zprofile
+#
+# Sourced for LOGIN shells only (after .zshenv, before .zshrc)
+# Login shells are typically created when you first log in to your system.
+#
+# What should go here:
+#   - Commands that should run once per login session
+#   - Setting up PATH additions from tools (Homebrew, cargo, etc.)
+#   - SSH agent initialization
+#   - System-specific login configurations
+#   - One-time startup tasks (key management, etc.)
+#
+# What should NOT go here:
+#   - Interactive shell features (those go in .zshrc)
+#   - Environment variables (those go in .zshenv)
+#   - Things that should run for every new shell
+#
+# Note: This runs once per login, not for every terminal window.
+
 # Login shell specific settings
 
 # Set umask
@@ -19,9 +38,13 @@ else
 fi
 
 # Source cargo env if it exists
-[[ -f "$HOME/.cargo/env" ]] && 
-# Initialize keychain
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+
+# opam configuration
+[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2>&1
+
 # SSH Agent Management
+# Ensures a single SSH agent runs across all sessions and persists between logins
 SSH_ENV="$HOME/.ssh/agent-environment"
 
 function start_agent {
@@ -32,7 +55,6 @@ function start_agent {
     /usr/bin/ssh-add
 }
 
-# Source SSH settings, if applicable
 if [ -f "${SSH_ENV}" ]; then
     . "${SSH_ENV}" > /dev/null
     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
@@ -45,14 +67,4 @@ fi
 # Initialize keychain
 if command -v keychain > /dev/null 2>&1; then
     eval `keychain --eval --agents ssh --inherit any id_ed25519 -q`
-fi
-
-# Initialize starship prompt
-if command -v starship > /dev/null 2>&1; then
-  eval "$(starship init zsh)"
-fi
-
-# Initialize zoxide
-if command -v zoxide > /dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
 fi
