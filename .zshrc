@@ -1,23 +1,4 @@
-# ~/.zshrc
-#
-# Sourced for INTERACTIVE shells only (after .zshenv and .zprofile if login shell)
-# This runs every time you open a new terminal window or tab.
-#
-# What should go here:
-#   - Aliases and shell functions
-#   - Key bindings and command line editing
-#   - Prompt configuration (starship, etc.)
-#   - Completion system setup
-#   - History settings
-#   - Interactive shell options (AUTO_CD, AUTO_PUSHD, etc.)
-#   - Tool initialization for interactive use (zoxide, fzf, etc.)
-#
-# What should NOT go here:
-#   - Environment variables (use .zshenv)
-#   - One-time login tasks (use .zprofile)
-#   - Anything that produces output in non-interactive mode
-#
-# Note: This file should enhance the interactive shell experience.
+# ~/.zshrc: executed by zsh for interactive shells.
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -65,7 +46,7 @@ zstyle ':completion:*:history-words' menu yes
 
 # Functions
 
-## Helper functions
+## install and stow
 qpushd() {
     pushd "$1" >/dev/null
 }
@@ -74,39 +55,6 @@ qpopd() {
     popd >/dev/null
 }
 
-# Helper to commit and push changes if there are any staged changes
-# Usage: _git_commit_and_push "commit message" "optional success message"
-_git_commit_and_push() {
-    local commit_message="$1"
-    local success_message="${2:-Changes synced successfully}"
-
-    if ! git diff --cached --quiet; then
-        git commit -m "$commit_message"
-        git push
-        echo "$success_message"
-        return 0
-    else
-        echo "No changes to commit"
-        return 1
-    fi
-}
-
-# Helper to conditionally initialize shell tools
-# Only runs initialization if the tool is installed
-# Usage: _init_shell_tool "tool_name" "initialization_command"
-_init_shell_tool() {
-    local tool="$1"
-    local init_cmd="$2"
-
-    if command -v "$tool" > /dev/null 2>&1; then
-        eval "$init_cmd"
-    fi
-}
-
-## Dotfiles management functions
-
-# Executes an installation command and logs it to setup.sh for reproducibility
-# If the command succeeds and isn't already logged, commits and pushes to dotfiles repo
 function install_and_add_to_stow_setup() {
     local cmd="$*"
 
@@ -130,7 +78,16 @@ function install_and_add_to_stow_setup() {
 
         qpushd "$DOTFILES"
         git add $SETUP_SCRIPT
-        _git_commit_and_push "feat: add new installation command: $cmd" "Installation command logged and dotfiles repo synced."
+
+        if ! git diff --cached --quiet; then
+            git commit -m "feat: add new installation command: $cmd"
+            git push
+
+            echo "Installation command logged and dotfiles repo synced."
+        else
+            echo "No changes to commit."
+        fi
+
         qpopd
     fi
 }
@@ -139,21 +96,32 @@ function sto() {
     install_and_add_to_stow_setup "$@"
 }
 
-# Restows dotfiles and commits/pushes any changes
 function restow() {
-    qpushd "$DOTFILES"
+    local original_dir="$(pwd)"
+    cd "$DOTFILES"
+
     stow .
     git add .
-    _git_commit_and_push "chore: update dotfiles" "Synced .dotfiles repo"
-    qpopd
+
+    if ! git diff --cached --quiet; then
+        git commit -m "chore: update dotfiles"
+        git push
+        echo "Synced .dotfiles repo"
+    else
+        echo "No changes to commit"
+    fi
+
+    # Only return to original directory if we're not already in DOTFILES
+    if [ "$original_dir" != "$DOTFILES" ]; then
+        cd "$original_dir"
+    fi
 }
 
 function gas() {
     $DOTFILES/scripts/git-autosync "$@"
 }
 
-## Utility functions
-
+## utility functions
 function l {
     eza \
         -a \
@@ -169,8 +137,6 @@ function l {
         "$@"
 }
 
-# Zle widget to invoke tmux-sessionizer via key binding
-# Clears command line, runs sessionizer, then resets prompt
 function tmux_sessionizer_widget() {
     LBUFFER=""
     RBUFFER=""
@@ -217,10 +183,34 @@ hash -d downloads="$HOME/Downloads"
 # Load any local configurations
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-# Initialize interactive shell tools
-_init_shell_tool "starship" 'eval "$(starship init zsh)"'
-_init_shell_tool "zoxide" 'eval "$(zoxide init zsh)"'
-_init_shell_tool "jj" 'source <(COMPLETE=zsh jj)'
+function check_ssh_agent() {
+    ssh-add -l &>/dev/null
+    if [ 0 = 2 ]; then
+        echo No ssh-agent running
+    elif [ 0 = 1 ]; then
+        echo ssh-agent has no identities
+    else
+        echo ssh-agent has at least one identity
+    fi
+    echo SSH_AUTH_SOCK=/tmp/ssh-nn2x11zHDkIj/agent.75973
+}
 
-# Source local bin env if it exists
-[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+. "$HOME/.cargo/env"
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>/dev/null
+# END opam configuration
+
+eval "$(starship init zsh)"
+
+PATH="~/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="~/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="~/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"~/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=~/perl5"; export PERL_MM_OPT;
+
+. "$HOME/.local/share/../bin/env"
