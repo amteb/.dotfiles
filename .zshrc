@@ -180,9 +180,6 @@ hash -d dot="$HOME/.dotfiles"
 hash -d projects="$HOME/projects"
 hash -d downloads="$HOME/Downloads"
 
-# Load any local configurations
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
 function check_ssh_agent() {
     ssh-add -l &>/dev/null
     if [ 0 = 2 ]; then
@@ -195,22 +192,10 @@ function check_ssh_agent() {
     echo SSH_AUTH_SOCK=/tmp/ssh-nn2x11zHDkIj/agent.75973
 }
 
-. "$HOME/.cargo/env"
-
-# BEGIN opam configuration
-# This is useful if you're using opam as it adds:
-#   - the correct directories to the PATH
-#   - auto-completion for the opam binary
-# This section can be safely removed at any time if needed.
-[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>/dev/null
-# END opam configuration
+# jj completion
+if command -v jj &> /dev/null; then
+    source <(COMPLETE=zsh jj)
+fi
 
 eval "$(starship init zsh)"
-
-PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
-
-. "$HOME/.local/share/../bin/env"
+eval "$(zoxide init zsh)"

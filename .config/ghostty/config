@@ -3,7 +3,7 @@
 # This template file has been automatically created at the following
 # path since Ghostty couldn't find any existing config files on your system:
 #
-#   ~/Library/Application Support/com.mitchellh.ghostty/config
+#   %%HOME%%/Library/Application Support/com.mitchellh.ghostty/config
 #
 # The template does not set any default options, since Ghostty ships
 # with sensible defaults for all options. Users should only need to set
@@ -46,3 +46,5 @@ font-family = GeistMono Nerd Font
 font-size = 17.375
 keybind = shift+enter=text:\n
 window-padding-balance = true
+
+# theme = 0x96f

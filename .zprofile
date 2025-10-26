@@ -37,11 +37,16 @@ else
   fi
 fi
 
+# Load any local configurations
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
 # Source cargo env if it exists
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
 # opam configuration
 [[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2>&1
+
+[[ -f "$HOME/.local/share/../bin/env" ]] && . "$HOME/.local/share/../bin/env"
 
 # SSH Agent Management
 # Ensures a single SSH agent runs across all sessions and persists between logins
@@ -68,3 +73,4 @@ fi
 if command -v keychain > /dev/null 2>&1; then
     eval `keychain --eval --agents ssh --inherit any id_ed25519 -q`
 fi
+
