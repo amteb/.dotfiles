@@ -42,7 +42,7 @@ commands = [
 disabled=false
 commands = [
     [
-        "clang",
+        "clang-21",
         "--version",
     ],
     [
