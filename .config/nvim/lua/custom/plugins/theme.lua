@@ -66,13 +66,13 @@ return {
             vim.cmd.hi "Comment gui=none"
         end,
     },
-    {
-        dir = vim.fn.stdpath "config" .. "/lua",
-        name = "ghostty-theme-sync",
-        lazy = false,
-        priority = 1000,
-        config = function()
-            require("ghostty-theme-sync").setup()
-        end,
-    },
+    -- {
+    --     dir = vim.fn.stdpath "config" .. "/lua",
+    --     name = "ghostty-theme-sync",
+    --     lazy = false,
+    --     priority = 1000,
+    --     config = function()
+    --         require("ghostty-theme-sync").setup()
+    --     end,
+    -- },
 }

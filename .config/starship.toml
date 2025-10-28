@@ -37,3 +37,39 @@ commands = [
         "--version",
     ],
 ]
+
+[cpp]
+disabled=false
+commands = [
+    [
+        "clang",
+        "--version",
+    ],
+    [
+        "clang",
+        "--version",
+    ],
+    [
+        "clang++",
+        "--version",
+    ],
+    [
+        "cc",
+        "--version",
+    ],
+    [
+        "gcc",
+        "--version",
+    ],
+    [
+        "zig",
+        "cc",
+        "--version",
+    ],
+]
+
+[git_metrics]
+disabled=true
+
+[os]
+disabled=true
