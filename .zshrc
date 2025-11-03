@@ -154,6 +154,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
     alias clip="clip.exe"
 fi
+alias buu="brew update && brew upgrade"
 alias c.="code ."
 alias v="nvim"
 alias v.="nvim ."
