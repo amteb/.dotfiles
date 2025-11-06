@@ -40,7 +40,12 @@ function M.setup()
 	end
 	-- For regular Linux or other systems, Neovim will use its default clipboard detection
 
-	vim.opt.clipboard = "unnamedplus"
+	-- Don't sync system clipboard with default register
+	-- Use explicit registers for system clipboard:
+	--   "+y to copy to system clipboard
+	--   "+p to paste from system clipboard
+	-- Regular y/d/p will use internal registers only
+	vim.opt.clipboard = ""
 end
 
 return M

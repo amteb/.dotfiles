@@ -1,0 +1,16 @@
+#:schema https://jj-vcs.github.io/jj/latest/config-schema.json
+
+# Base configuration for Jujutsu VCS
+# This file is managed in dotfiles and should contain shareable settings
+
+[ui]
+color = "auto"
+pager = "less -FRX"
+diff-formatter = ["delta", "--color-only"]
+
+[ui.diff-editor]
+tool = ["delta", "--line-numbers", "--side-by-side"]
+
+# Merge configuration
+[merge-tools.delta]
+program = "delta"
