@@ -1,0 +1,64 @@
+#!/usr/bin/env zsh
+
+add_paths_from_dir() {
+    local base_dir=$1
+    local strip_prefix=$2
+    local fd_cmd=$3
+
+    while IFS= read -r path; do
+        display_path=${path#$strip_prefix}
+        paths[${display_path%/}]=$path
+    done < <($fd_cmd . "$base_dir" --max-depth 1 --type d)
+}
+
+get_project_paths() {
+    local FD_CMD=${commands[fd]}
+    local FZF_CMD=${commands[fzf]}
+    local SORT_CMD=${commands[sort]}
+
+    declare -A paths
+
+    add_paths_from_dir ~/Documents/dev "$HOME/Documents/dev/" "$FD_CMD"
+    add_paths_from_dir ~/Documents/finmath "$HOME/Documents/finmath/" "$FD_CMD"
+    paths[.dotfiles]="$HOME/.dotfiles"
+
+    local -a keys=("${(@k)paths}")
+    print -l "${(@)keys}" | $SORT_CMD -rf | $FZF_CMD | while read -r selected_display; do
+        [[ -n $selected_display ]] && echo "${paths[$selected_display]}"
+    done
+}
+
+selected=${1:-$(get_project_paths)}
+
+# Early return using short-circuit operator
+[[ -z $selected ]] && exit 0
+
+create_or_attach_session() {
+    local session_name=$1
+    local session_path=$2
+    local config_file=$3
+
+    # Check if session exists
+    if ! zellij list-sessions 2>/dev/null | grep -q "^$session_name$"; then
+        # Session doesn't exist, create it
+        zellij --session "$session_name" --layout minimalist options --default-cwd "$session_path" &
+        sleep 0.5  # Give Zellij time to create the session
+    fi
+}
+
+selected_name=${$(basename "$selected")//\./_}
+zellij_running=$(pgrep -x zellij)
+ZELLIJ_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl"
+
+if [[ -z $ZELLIJ && -z $zellij_running ]]; then
+    # No Zellij running at all, start fresh session
+    zellij --session "$selected_name" --layout minimalist options --default-cwd "$selected"
+elif [[ -z $ZELLIJ && -n $zellij_running ]]; then
+    # Zellij running but we're not in it, attach
+    create_or_attach_session "$selected_name" "$selected" "$ZELLIJ_CONFIG"
+    zellij attach "$selected_name"
+else
+    # We're already in Zellij, switch or create session
+    create_or_attach_session "$selected_name" "$selected" "$ZELLIJ_CONFIG"
+    zellij action switch-session "$selected_name" 2>/dev/null || zellij attach "$selected_name"
+fi

@@ -46,5 +46,7 @@ font-family = GeistMono Nerd Font
 font-size = 17.375
 keybind = shift+enter=csi:27;2;13~
 window-padding-balance = true
+clipboard-paste-protection = false
+clipboard-paste-bracketed-safe = false
 
 # theme = 0x96f
