@@ -3,7 +3,7 @@
 # This template file has been automatically created at the following
 # path since Ghostty couldn't find any existing config files on your system:
 #
-#   %%HOME%%/Library/Application Support/com.mitchellh.ghostty/config
+#   ~/Library/Application Support/com.mitchellh.ghostty/config
 #
 # The template does not set any default options, since Ghostty ships
 # with sensible defaults for all options. Users should only need to set
@@ -42,7 +42,7 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
-font-family = GeistMono Nerd Font
+font-family = Iosevka Term Extended
 font-size = 17.375
 keybind = shift+enter=csi:27;2;13~
 window-padding-balance = true
