@@ -186,6 +186,7 @@ stashed = "s"
 ahead = "a"
 behind = "b"
 diverged = "d"
+use_git_executable = true
 
 [gleam]
 format = "[|](bright-black) [$symbol($version)]($style) "
