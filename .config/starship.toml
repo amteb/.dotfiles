@@ -1,50 +1,73 @@
-"$schema" = 'https://starship.rs/config-schema.json'
-
+"$schema" = "https://starship.rs/config-schema.json"
 add_newline = true
+continuation_prompt = "[.](bright-black) "
 
 [character]
-success_symbol = '[➜ ](bold green)'
-error_symbol = '[➜ ](bold red)'
-vimcmd_symbol = '[V](bold green)'
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[V](bold green)"
 
-[shell]
-disabled = false
-style = 'cyan bold'
-bash_indicator = 'b'
-zsh_indicator = 'z'
-fish_indicator = '󰈺 '
-powershell_indicator = '_'
-cmd_indicator = 'c'
-unknown_indicator = 'mystery shell'
+[aws]
+format = "[|](bright-black) [$symbol($profile)(\\($region\\))(\\[$duration\\])]($style) "
+symbol = " "
+
+[azure]
+format = "[|](bright-black) [$symbol($subscription)]($style) "
+
+[battery]
+format = "[|](bright-black) [$symbol$percentage]($style) "
+
+[buf]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[bun]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
 
 [c]
+format = "[|](bright-black) [$symbol($version(-$name))]($style) "
 commands = [
     [
-        "zig",
-        "cc",
-        "--version",
-    ],
-    [
         "clang",
-        "--version",
-    ],
-    [
-        "cc",
         "--version",
     ],
     [
         "gcc",
         "--version",
     ],
-]
-
-[cpp]
-disabled=false
-commands = [
     [
-        "clang-21",
+        "cc",
         "--version",
     ],
+    [
+        "zig",
+        "cc",
+        "--version",
+    ],
+]
+symbol = " "
+
+[cmake]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[cmd_duration]
+format = "[|](bright-black) [⏱ $duration]($style) "
+
+[cobol]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[conda]
+format = "[|](bright-black) [$symbol$environment]($style) "
+symbol = " "
+
+[container]
+format = "[|](bright-black) [$symbol \\[$name\\]]($style) "
+
+[cpp]
+format = "[|](bright-black) [$symbol($version(-$name))]($style) "
+commands = [
     [
         "clang",
         "--version",
@@ -54,11 +77,11 @@ commands = [
         "--version",
     ],
     [
-        "cc",
+        "gcc",
         "--version",
     ],
     [
-        "gcc",
+        "cc",
         "--version",
     ],
     [
@@ -67,9 +90,358 @@ commands = [
         "--version",
     ],
 ]
+symbol = " "
+
+[crystal]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[daml]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[dart]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[deno]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[direnv]
+format = "[|](bright-black) [$symbol$loaded/$allowed]($style) "
+
+[docker_context]
+format = "[|](bright-black) [$symbol$context]($style) "
+symbol = " "
+
+[dotnet]
+format = "[|](bright-black) [$symbol($version)(🎯 $tfm)]($style) "
+
+[elixir]
+format = "[|](bright-black) [$symbol($version \\(OTP $otp_version\\))]($style) "
+symbol = " "
+
+[elm]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[erlang]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[fennel]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[fortran]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[fossil_branch]
+format = "[|](bright-black) [$symbol$branch]($style) "
+symbol = " "
+
+[fossil_metrics]
+format = "[|](bright-black) [+$added]($added_style)\\]\\[[-$deleted]($deleted_style) "
+
+[gcloud]
+format = "[|](bright-black) [$symbol$account(@$domain)(\\($region\\))]($style) "
+symbol = " "
+
+[git_branch]
+format = "[$branch]($style)"
+style = "7"
+symbol = " "
+
+[git_commit]
+format = "[|](bright-black) [\\($hash$tag\\)]($style) "
+tag_symbol = "  "
 
 [git_metrics]
-disabled=true
+format = "[|](bright-black) [+$added]($added_style)\\]\\[[-$deleted]($deleted_style) "
+disabled = true
+
+[git_state]
+format = "[|](bright-black) [$state ($progress_current/$progress_total)]($style) "
+
+[git_status]
+format = "([$all_status$ahead_behind]($style))"
+style = "cyan"
+ahead = ">"
+behind = "<"
+diverged = "<>"
+renamed = "r"
+deleted = "x"
+modified = "*"
+untracked = "u"
+
+[gleam]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[golang]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[gradle]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[guix_shell]
+format = "[|](bright-black) [$symbol]($style) "
+symbol = " "
+
+[haskell]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[haxe]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[helm]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[hg_branch]
+format = "[|](bright-black) [$symbol$branch]($style) "
+symbol = " "
+
+[hostname]
+format = "[|](bright-black) [$ssh_symbol($hostname)]($style) "
+ssh_symbol = " "
+
+[java]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[jobs]
+format = "[|](bright-black) [$symbol$number]($style) "
+
+[julia]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[kotlin]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[kubernetes]
+format = "[|](bright-black) [$symbol$context( \\($namespace\\))]($style) "
+
+[localip]
+format = "[|](bright-black) [$localipv4]($style) "
+
+[lua]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[memory_usage]
+format = "[|](bright-black) $symbol[$ram( | $swap)]($style) "
+symbol = "󰍛 "
+
+[meson]
+format = "[|](bright-black) [$symbol$project]($style) "
+symbol = "󰔷 "
+
+[mise]
+format = "[|](bright-black) [$symbol$health]($style) "
+
+[mojo]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[nats]
+format = "[|](bright-black) [$symbol$name]($style) "
+
+[netns]
+format = "[|](bright-black) [$symbol \\[$name\\]]($style) "
+
+[nim]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = "󰆥 "
+
+[nix_shell]
+format = "[|](bright-black) [$symbol$state( \\($name\\))]($style) "
+symbol = " "
+
+[nodejs]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[ocaml]
+format = "[|](bright-black) [$symbol($version) (\\($switch_indicator$switch_name\\))]($style) "
+symbol = " "
+
+[odin]
+format = "[|](bright-black) [$symbol($version )]($style) "
+
+[opa]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[openstack]
+format = "[|](bright-black) [$symbol$cloud(\\($project\\))]($style) "
 
 [os]
-disabled=true
+format = "[|](bright-black) [$symbol]($style) "
+disabled = true
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+AlmaLinux = " "
+Amazon = " "
+Android = " "
+AOSC = " "
+Arch = " "
+Artix = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "󰛓 "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = "󰈸 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = "󰈺 "
+openSUSE = " "
+OracleLinux = "󰌷 "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+Redox = "󰀘 "
+Solus = "󰠳 "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Void = " "
+Windows = "󰍲 "
+
+[package]
+format = "[|](bright-black) [$symbol$version]($style) "
+symbol = "󰏗 "
+
+[perl]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[php]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[pijul_channel]
+format = "[|](bright-black) [$symbol$channel]($style) "
+symbol = " "
+
+[pixi]
+format = "[|](bright-black) [$symbol$version( $environment)]($style) "
+symbol = "󰏗 "
+
+[pulumi]
+format = "[|](bright-black) [$symbol$stack]($style) "
+
+[purescript]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[python]
+format = "[|](bright-black) [${symbol}${pyenv_prefix}(${version})(\\($virtualenv\\))]($style) "
+symbol = " "
+
+[quarto]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[raku]
+format = "[|](bright-black) [$symbol($version-$vm_version)]($style) "
+
+[red]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[rlang]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = "󰟔 "
+
+[ruby]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[rust]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = "󱘗 "
+
+[scala]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[shell]
+style = "cyan bold"
+bash_indicator = "b"
+zsh_indicator = "z"
+fish_indicator = "󰈺 "
+powershell_indicator = "_"
+cmd_indicator = "c"
+unknown_indicator = "mystery shell"
+
+[singularity]
+format = "[|](bright-black) [$symbol\\[$env\\]]($style) "
+
+[solidity]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[spack]
+format = "[|](bright-black) [$symbol$environment]($style) "
+
+[status]
+format = "[|](bright-black) [$symbol$status]($style) "
+symbol = " "
+
+[sudo]
+format = "[|](bright-black) [as $symbol]($style) "
+
+[swift]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[terraform]
+format = "[|](bright-black) [$symbol$workspace]($style) "
+
+[time]
+format = "[|](bright-black) [$time]($style) "
+
+[typst]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[username]
+format = "[|](bright-black) [$user]($style) "
+
+[vagrant]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[vcsh]
+format = "[|](bright-black) vcsh [$symbol$repo]($style) "
+
+[vlang]
+format = "[|](bright-black) [$symbol($version)]($style) "
+
+[xmake]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[zig]
+format = "[|](bright-black) [$symbol($version)]($style) "
+symbol = " "
+
+[directory]
+read_only = " 󰌾"
