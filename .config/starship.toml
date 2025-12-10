@@ -149,7 +149,7 @@ symbol = " "
 
 [git_branch]
 format = "[$branch]($style)"
-style = "7"
+style = "bold 7"
 symbol = " "
 
 [git_commit]
@@ -164,15 +164,28 @@ disabled = true
 format = "[|](bright-black) [$state ($progress_current/$progress_total)]($style) "
 
 [git_status]
-format = "([$all_status$ahead_behind]($style))"
-style = "cyan"
-ahead = ">"
-behind = "<"
-diverged = "<>"
-renamed = "r"
+format = """
+[$conflicted](red)\
+[$deleted](red)\
+[$renamed](yellow)\
+[$modified](yellow)\
+[$typechanged](yellow)\
+[$staged](green)\
+[$untracked](green)\
+[$stashed](bright-black)\
+[$ahead_behind](cyan)\
+ """
+conflicted = "c"
 deleted = "x"
-modified = "*"
+renamed = "r"
+modified = "m"
+typechanged = "t"
+staged = "g"
 untracked = "u"
+stashed = "s"
+ahead = "a"
+behind = "b"
+diverged = "d"
 
 [gleam]
 format = "[|](bright-black) [$symbol($version)]($style) "
@@ -358,6 +371,7 @@ format = "[|](bright-black) [$symbol($version)]($style) "
 
 [python]
 format = "[|](bright-black) [${symbol}${pyenv_prefix}(${version})(\\($virtualenv\\))]($style) "
+style = "bold blue"
 symbol = " "
 
 [quarto]
