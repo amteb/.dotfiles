@@ -26,8 +26,13 @@ format = "[|](bright-black) [$symbol($version)]($style) "
 symbol = " "
 
 [c]
+disabled = false
 format = "[|](bright-black) [$symbol($version(-$name))]($style) "
 commands = [
+    [
+      "/opt/homebrew/opt/llvm/bin/clang",
+      "--version",
+    ],
     [
         "clang",
         "--version",
@@ -66,8 +71,13 @@ symbol = " "
 format = "[|](bright-black) [$symbol \\[$name\\]]($style) "
 
 [cpp]
+disabled = false
 format = "[|](bright-black) [$symbol($version(-$name))]($style) "
 commands = [
+    [
+      "/opt/homebrew/opt/llvm/bin/clang++",
+      "--version",
+    ],
     [
         "clang",
         "--version",
@@ -173,8 +183,7 @@ format = """
 [$staged](green)\
 [$untracked](green)\
 [$stashed](bright-black)\
-[$ahead_behind](cyan)\
- """
+[$ahead_behind](cyan) """
 conflicted = "c"
 deleted = "x"
 renamed = "r"
