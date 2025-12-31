@@ -1,4 +1,12 @@
 return {
+    {
+        dir = "~/Documents/dev/ghostty-theme-sync.nvim",
+        name = "ghostty-theme-sync",
+        lazy = true,
+        config = function()
+            require("ghostty-theme-sync").setup()
+        end,
+    },
     { -- You can easily change to a different colorscheme.
         -- Change the name of the colorscheme plugin below, and then
         -- change the command in the config to whatever the name of that colorscheme is.
@@ -66,13 +74,4 @@ return {
             vim.cmd.hi "Comment gui=none"
         end,
     },
-    -- {
-    --     dir = vim.fn.stdpath "config" .. "/lua",
-    --     name = "ghostty-theme-sync",
-    --     lazy = false,
-    --     priority = 1000,
-    --     config = function()
-    --         require("ghostty-theme-sync").setup()
-    --     end,
-    -- },
 }

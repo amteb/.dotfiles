@@ -48,5 +48,5 @@ window-padding-balance = true
 clipboard-paste-protection = false
 clipboard-paste-bracketed-safe = false
 
-# theme = 0x96f
+theme = Ghostty Default Style Dark
 keybind = shift+enter=text:\x1b\r
