@@ -259,3 +259,4 @@ eval "$(atuin init zsh --disable-up-arrow)"
 # This section can be safely removed at any time if needed.
 [[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
+# Another test

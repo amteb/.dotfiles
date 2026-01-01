@@ -443,3 +443,4 @@ These are personal dotfiles, but feel free to fork and adapt them for your own u
 ## Acknowledgments
 
 Inspired by the dotfiles community and countless hours of configuration tweaking. Special thanks to the developers of the tools configured here.
+# Testing atomic commits
