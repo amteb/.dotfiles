@@ -92,10 +92,6 @@ function install_and_add_to_stow_setup() {
     fi
 }
 
-function sto() {
-    install_and_add_to_stow_setup "$@"
-}
-
 function restow() {
     local original_dir="$(pwd)"
     cd "$DOTFILES"
@@ -117,24 +113,14 @@ function restow() {
     fi
 }
 
-function gas() {
-    $DOTFILES/scripts/git-autosync "$@"
+## script functions
+function sto() {
+    install_and_add_to_stow_setup "$@"
 }
 
-## utility functions
-function l {
-    eza \
-        -a \
-        -l \
-        -F \
-        --git \
-        --git-repos \
-        --group-directories-first \
-        --header \
-        --icons=always \
-        --no-quotes \
-        --time-style=relative \
-        "$@"
+
+function gas() {
+    $DOTFILES/scripts/git-autosync "$@"
 }
 
 function tmux_sessionizer_widget() {
@@ -147,8 +133,28 @@ function tmux_sessionizer_widget() {
 zle -N tmux_sessionizer_widget
 bindkey '^F' tmux_sessionizer_widget
 
+## alias functions
+function g {
+    glow -t "$@"
+}
+
+function l {
+    eza \
+        -F \
+        -a \
+        -l \
+        --git \
+        --git-repos \
+        --group-directories-first \
+        --header \
+        --icons=always \
+        --no-quotes \
+        --time-style=relative \
+        "$@"
+}
+
+
 # Aliases
-alias lt="l --tree"
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias clip="pbcopy"
 else
@@ -156,26 +162,26 @@ else
 fi
 alias buu="brew update && brew upgrade"
 alias c.="code ."
-alias v="nvim"
-alias v.="nvim ."
-alias sva="source .venv/bin/activate"
-alias sz="source $HOME/.zshrc"
-alias sp="source $HOME/.zprofile"
-alias z.="z .."
-alias z-="z -"
 alias c="code"
 alias f="fd"
+alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --quiet"
 alias fzv="v \$(fzf)"
-alias g="git"
+alias ld="lazydocker"
+alias lg="lazygit"
+alias lt="l --tree"
+alias sp="source $HOME/.zprofile"
+alias sva="source .venv/bin/activate"
+alias sz="source $HOME/.zshrc"
 alias t="tmux"
 alias ta="tmux attach"
 alias td="tmux detach"
-alias tl="tmux list-sessions"
 alias tf="$DOTFILES/scripts/tmux-sessionizer"
+alias tl="tmux list-sessions"
 alias ts="tmux choose-tree -Zs"
-alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --quiet"
-alias lg="lazygit"
-alias ld="lazydocker"
+alias v.="nvim ."
+alias v="nvim"
+alias z-="z -"
+alias z.="z .."
 
 # Named directories
 hash -d dot="$HOME/.dotfiles"
