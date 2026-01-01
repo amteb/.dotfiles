@@ -94,13 +94,52 @@ function install_and_add_to_stow_setup() {
 
 function restow() {
     local original_dir="$(pwd)"
+    local use_single_commit=0
+
+    # Parse flags
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -s|--single)
+                use_single_commit=1
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1" >&2
+                echo "Usage: restow [-s|--single]" >&2
+                return 1
+                ;;
+        esac
+    done
+
     cd "$DOTFILES"
 
     stow .
     git add .
 
     if ! git diff --cached --quiet; then
-        git commit -m "chore: update dotfiles"
+        local success=0
+
+        # Try atomic commits by default, unless -s flag is set
+        if [ $use_single_commit -eq 0 ]; then
+            if "$DOTFILES/scripts/atomic-commits.sh" 2>&1; then
+                success=1
+            else
+                echo "Atomic commits failed, falling back to single commit" >&2
+            fi
+        fi
+
+        # Fall back to single commit if atomic commits failed or -s flag was used
+        if [ $success -eq 0 ]; then
+            local commit_msg
+            if commit_msg=$("$DOTFILES/scripts/generate-commit-message.sh" 2>/dev/null); then
+                echo "Using Claude-generated commit message: $commit_msg"
+                git commit -m "$commit_msg"
+            else
+                # Final fallback to default message
+                git commit -m "chore: update dotfiles"
+            fi
+        fi
+
         git push
         echo "Synced .dotfiles repo"
     else
@@ -164,6 +203,7 @@ alias buu="brew update && brew upgrade"
 alias c.="code ."
 alias c="code"
 alias clod="claude"
+alias esh="exec zsh"
 alias f="fd"
 alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --quiet"
 alias fzv="v \$(fzf)"
