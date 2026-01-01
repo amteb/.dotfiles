@@ -92,6 +92,69 @@ function install_and_add_to_stow_setup() {
     fi
 }
 
+function gcr() {
+    local use_single_commit=0
+
+    # Colors
+    local BLUE='\033[0;34m'
+    local GREEN='\033[0;32m'
+    local YELLOW='\033[0;33m'
+    local NC='\033[0m'
+
+    # Parse flags
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -s|--single)
+                use_single_commit=1
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1" >&2
+                echo "Usage: gcr [-s|--single]" >&2
+                return 1
+                ;;
+        esac
+    done
+
+    # Check if in a git repository
+    if ! git rev-parse --git-dir &>/dev/null 2>&1; then
+        echo "Error: Not in a git repository" >&2
+        return 1
+    fi
+
+    git add .
+
+    if ! git diff --cached --quiet; then
+        local success=0
+
+        # Try atomic commits by default, unless -s flag is set
+        if [ $use_single_commit -eq 0 ]; then
+            if "$DOTFILES/scripts/atomic-commits.sh" 2>&1; then
+                success=1
+            else
+                echo -e "${YELLOW}Failed to analyze, falling back to single commit${NC}" >&2
+            fi
+        fi
+
+        # Fall back to single commit if atomic commits failed or -s flag was used
+        if [ $success -eq 0 ]; then
+            local commit_msg
+            if commit_msg=$("$DOTFILES/scripts/generate-commit-message.sh" 2>/dev/null); then
+                echo -e "${GREEN}Created commit:${NC} $commit_msg"
+                git commit -m "$commit_msg" --quiet
+            else
+                # Final fallback to default message
+                echo -e "${YELLOW}Using default commit message${NC}"
+                git commit -m "chore: update repository" --quiet
+            fi
+        fi
+
+        echo -e "${GREEN}Committed changes (not pushed)${NC}"
+    else
+        echo "No changes to commit"
+    fi
+}
+
 function restow() {
     local original_dir="$(pwd)"
     local use_single_commit=0
