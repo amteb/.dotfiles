@@ -69,8 +69,8 @@ Rules:
 5. ALL files must be included in exactly one commit
 6. Return valid JSON only, no other text"
 
-# Get Claude's response with timeout
-RESPONSE=$(timeout 15s claude -p "$PROMPT" 2>/dev/null || echo "")
+# Get Claude's response
+RESPONSE=$(claude -p "$PROMPT" 2>/dev/null || echo "")
 
 # Check if we got a response
 if [ -z "$RESPONSE" ]; then
@@ -140,9 +140,9 @@ for i in $(seq 0 $((NUM_COMMITS - 1))); do
     }
 done
 
-# Verify all changes were committed
-if ! git diff --quiet || ! git diff --cached --quiet; then
-    echo "Warning: Some changes were not committed" >&2
+# Verify all originally staged changes were committed
+if ! git diff --cached --quiet; then
+    echo "Warning: Some staged changes were not committed" >&2
     exit 1
 fi
 

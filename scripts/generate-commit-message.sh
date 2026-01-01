@@ -53,8 +53,7 @@ Git diff detail:
 ${DIFF_TO_SEND}"
 
 # Try to get commit message from Claude
-# Use timeout to prevent hanging
-COMMIT_MSG=$(timeout 10s claude -p "$PROMPT" 2>/dev/null | head -n 1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+COMMIT_MSG=$(claude -p "$PROMPT" 2>/dev/null | head -n 1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
 # Validate the commit message
 if [ -z "$COMMIT_MSG" ]; then
