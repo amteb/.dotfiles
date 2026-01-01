@@ -2,11 +2,10 @@
 
 add_paths_from_dir() {
     local base_dir=$1
-    local strip_prefix=$2
-    local fd_cmd=$3
+    local fd_cmd=$2
 
     while IFS= read -r path; do
-        display_path=${path#$strip_prefix}
+        display_path=${path#$base_dir}
         paths[${display_path%/}]=$path
     done < <($fd_cmd . "$base_dir" --max-depth 1 --type d)
 }
@@ -18,8 +17,8 @@ get_project_paths() {
 
     declare -A paths
 
-    add_paths_from_dir ~/Documents/dev "$DEV" "$FD_CMD"
-    add_paths_from_dir ~/Documents/finmath "$HOME/Documents/finmath/" "$FD_CMD"
+    add_paths_from_dir "$DEV/" "$FD_CMD"
+    add_paths_from_dir "$HOME/Documents/finmath/" "$FD_CMD"
     paths[.dotfiles]="$DOTFILES"
 
     local -a keys=("${(@k)paths}")
