@@ -1,7 +1,6 @@
 return {
     {
-        dir = "~/Documents/dev/ghostty-theme-sync.nvim",
-        name = "ghostty-theme-sync",
+        "atbraz/ghostty-theme-sync.nvim",
         lazy = true,
         config = function()
             require("ghostty-theme-sync").setup()
