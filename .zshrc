@@ -96,6 +96,12 @@ function restow() {
     local original_dir="$(pwd)"
     local use_single_commit=0
 
+    # Colors
+    local BLUE='\033[0;34m'
+    local GREEN='\033[0;32m'
+    local YELLOW='\033[0;33m'
+    local NC='\033[0m'
+
     # Parse flags
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -113,18 +119,19 @@ function restow() {
 
     cd "$DOTFILES"
 
+    echo -e "${BLUE}Stowing dotfiles...${NC}"
     stow .
     git add .
 
     if ! git diff --cached --quiet; then
         local success=0
 
-        # Try atomic commits by default, unless -s flag is set
+        # Try thematic commits by default, unless -s flag is set
         if [ $use_single_commit -eq 0 ]; then
             if "$DOTFILES/scripts/atomic-commits.sh" 2>&1; then
                 success=1
             else
-                echo "Atomic commits failed, falling back to single commit" >&2
+                echo -e "${YELLOW}Failed to analyze, falling back to single commit${NC}" >&2
             fi
         fi
 
@@ -132,16 +139,18 @@ function restow() {
         if [ $success -eq 0 ]; then
             local commit_msg
             if commit_msg=$("$DOTFILES/scripts/generate-commit-message.sh" 2>/dev/null); then
-                echo "Using Claude-generated commit message: $commit_msg"
-                git commit -m "$commit_msg"
+                echo -e "${GREEN}Created commit:${NC} $commit_msg"
+                git commit -m "$commit_msg" --quiet
             else
                 # Final fallback to default message
-                git commit -m "chore: update dotfiles"
+                echo -e "${YELLOW}Using default commit message${NC}"
+                git commit -m "chore: update dotfiles" --quiet
             fi
         fi
 
+        echo -e "${BLUE}Pushing to remote...${NC}"
         git push
-        echo "Synced .dotfiles repo"
+        echo -e "${GREEN}Synced .dotfiles repo${NC}"
     else
         echo "No changes to commit"
     fi

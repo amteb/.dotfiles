@@ -5,6 +5,10 @@
 
 set -euo pipefail
 
+# Colors
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
 MAX_CHARS=20000
 
 # Check if claude command is available
@@ -51,6 +55,8 @@ ${DIFF}
 
 Git diff detail:
 ${DIFF_TO_SEND}"
+
+echo -e "${BLUE}Generating commit message with Claude...${NC}" >&2
 
 # Try to get commit message from Claude
 COMMIT_MSG=$(claude -p "$PROMPT" 2>/dev/null | head -n 1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')

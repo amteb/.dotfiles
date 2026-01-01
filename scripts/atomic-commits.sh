@@ -5,6 +5,12 @@
 
 set -euo pipefail
 
+# Colors
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
 # Check if claude command is available
 if ! command -v claude &>/dev/null; then
     exit 1
@@ -34,6 +40,8 @@ if [ ${#FULL_DIFF} -gt $MAX_DIFF_CHARS ]; then
 
 ... (diff truncated for length)"
 fi
+
+echo -e "${BLUE}Analyzing changes...${NC}" >&2
 
 # Create prompt for Claude
 PROMPT="You are analyzing git changes to suggest atomic, thematic commits following Conventional Commits format.
@@ -69,6 +77,8 @@ Rules:
 5. ALL files must be included in exactly one commit
 6. Return valid JSON only, no other text"
 
+echo -e "${BLUE}Waiting for Claude to analyze diff...${NC}" >&2
+
 # Get Claude's response
 RESPONSE=$(claude -p "$PROMPT" 2>/dev/null || echo "")
 
@@ -100,7 +110,7 @@ if [ "$NUM_COMMITS" -eq 0 ]; then
     exit 1
 fi
 
-echo "Creating $NUM_COMMITS atomic commit(s)..." >&2
+echo -e "${GREEN}Creating $NUM_COMMITS commit(s)...${NC}" >&2
 
 # Unstage all changes first
 git reset HEAD --quiet
@@ -133,7 +143,7 @@ for i in $(seq 0 $((NUM_COMMITS - 1))); do
     fi
 
     # Create the commit
-    echo "  [$((i + 1))/$NUM_COMMITS] $MESSAGE" >&2
+    echo -e "  ${GREEN}[$((i + 1))/$NUM_COMMITS]${NC} $MESSAGE" >&2
     git commit -m "$MESSAGE" --quiet || {
         echo "Error: Failed to create commit: $MESSAGE" >&2
         exit 1
@@ -146,5 +156,5 @@ if ! git diff --cached --quiet; then
     exit 1
 fi
 
-echo "Successfully created $NUM_COMMITS atomic commit(s)" >&2
+echo -e "${GREEN}Successfully created $NUM_COMMITS commit(s)${NC}" >&2
 exit 0
