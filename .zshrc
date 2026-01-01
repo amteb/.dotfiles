@@ -163,15 +163,17 @@ fi
 alias buu="brew update && brew upgrade"
 alias c.="code ."
 alias c="code"
+alias clod="claude"
 alias f="fd"
 alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requirements.txt --universal --emit-index-url --emit-index-annotation --no-strip-markers --quiet"
 alias fzv="v \$(fzf)"
 alias ld="lazydocker"
 alias lg="lazygit"
 alias lt="l --tree"
+alias se="source $HOME/.zshenv"
 alias sp="source $HOME/.zprofile"
-alias sva="source .venv/bin/activate"
 alias sz="source $HOME/.zshrc"
+alias sva="source .venv/bin/activate"
 alias t="tmux"
 alias ta="tmux attach"
 alias td="tmux detach"
@@ -184,8 +186,8 @@ alias z-="z -"
 alias z.="z .."
 
 # Named directories
+hash -d dev="$HOME/Dev"
 hash -d dot="$HOME/.dotfiles"
-hash -d projects="$HOME/projects"
 hash -d downloads="$HOME/Downloads"
 
 function check_ssh_agent() {

@@ -18,9 +18,9 @@ get_project_paths() {
 
     declare -A paths
 
-    add_paths_from_dir ~/Documents/dev "$HOME/Documents/dev/" "$FD_CMD"
+    add_paths_from_dir ~/Documents/dev "$DEV" "$FD_CMD"
     add_paths_from_dir ~/Documents/finmath "$HOME/Documents/finmath/" "$FD_CMD"
-    paths[.dotfiles]="$HOME/.dotfiles"
+    paths[.dotfiles]="$DOTFILES"
 
     local -a keys=("${(@k)paths}")
     print -l "${(@)keys}" | $SORT_CMD -rf | $FZF_CMD | while read -r selected_display; do
