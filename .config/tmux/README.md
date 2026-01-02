@@ -164,9 +164,9 @@ tmux source-file ~/.config/tmux/tmux.conf
 
 ## Modular Philosophy Benefits
 
-✅ **Maintainability** - Each file has single responsibility  
-✅ **Composability** - Mix and match themes + components  
-✅ **Testability** - Verify each layer independently  
-✅ **Portability** - Themes work across different tmux setups  
-✅ **Extensibility** - Add components without breaking themes  
+✅ **Maintainability** - Each file has single responsibility
+✅ **Composability** - Mix and match themes + components
+✅ **Testability** - Verify each layer independently
+✅ **Portability** - Themes work across different tmux setups
+✅ **Extensibility** - Add components without breaking themes
 ✅ **Plugin-friendly** - Dynamic color updates just work
