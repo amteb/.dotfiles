@@ -282,11 +282,11 @@ alias fzv="v \$(fzf)"
 alias ld="lazydocker"
 alias lg="lazygit"
 alias lt="l --tree"
-alias oc="opencode"
 alias se="source $HOME/.zshenv"
 alias sp="source $HOME/.zprofile"
-alias sva="source .venv/bin/activate"
 alias sz="source $HOME/.zshrc"
+alias sva="source .venv/bin/activate"
+alias oc="opencode"
 alias t="tmux"
 alias ta="tmux attach"
 alias td="tmux detach"
@@ -297,6 +297,9 @@ alias v.="nvim ."
 alias v="nvim"
 alias z-="z -"
 alias z.="z .."
+alias z..="z ../.."
+alias z...="z ../../.."
+alias z....="z ../../../..."
 
 # Named directories
 hash -d dev="$HOME/Dev"
@@ -330,6 +333,6 @@ eval "$(atuin init zsh --disable-up-arrow)"
 #   - the correct directories to the PATH
 #   - auto-completion for the opam binary
 # This section can be safely removed at any time if needed.
-[[ ! -r '~/.opam/opam-init/init.zsh' ]] || source '~/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+[[ ! -r '%%HOME%%/.opam/opam-init/init.zsh' ]] || source '%%HOME%%/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 # END opam configuration
 # Another test
