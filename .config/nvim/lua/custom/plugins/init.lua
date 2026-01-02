@@ -27,43 +27,23 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
+-- Lazy.nvim will automatically load all plugin specs from these directories:
 require("lazy").setup({
+    -- Auto-import all custom plugins (organized by category)
+    { import = "custom.plugins.core" },
+    { import = "custom.plugins.editor" },
+    { import = "custom.plugins.coding" },
+    { import = "custom.plugins.lsp" },
+    { import = "custom.plugins.ui" },
+    { import = "custom.plugins.integrations" },
 
-    require "custom.plugins.cmp",
-    require "custom.plugins.comments",
-    require "custom.plugins.conform",
-    require "custom.plugins.dap",
-    require "custom.plugins.dashboard",
-    require "custom.plugins.devicons",
-    require "custom.plugins.harpoon",
-    require "custom.plugins.lsp.config",
-    require "custom.plugins.lsp.plugins",
-    require "custom.plugins.lualine",
-    require "custom.plugins.mini",
-    require "custom.plugins.neo-tree",
-    require "custom.plugins.neotest",
-    require "custom.plugins.supermaven",
-    require "custom.plugins.telescope",
-    require "custom.plugins.theme",
-    require "custom.plugins.tmux-status",
-    require "custom.plugins.treesitter",
-    require "custom.plugins.vim-tmux-navigator",
-    require "custom.plugins.which_key",
+    -- Miscellaneous plugins
+    { import = "custom.plugins.misc" },
 
-    require "custom.plugins.misc",
-    --
-    -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
-    -- init.lua. If you want these files, they are in the repository, so you can just download them and
-    -- place them in the correct locations.
-
-    -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-    --
-    --  Here are some example plugins that I've included in the Kickstart repository.
-    --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-
+    -- Kickstart plugins (explicit imports to avoid broken ones)
     require "kickstart.plugins.indent_line",
     require "kickstart.plugins.autopairs",
-    require "kickstart.plugins.gitsigns", -- adds gitsigns recommend keymaps
+    require "kickstart.plugins.gitsigns",
 }, {
     ui = {
         -- If you are using a Nerd Font: set icons to an empty table which will use the
