@@ -10,11 +10,11 @@ return {
         },
         config = function()
             -- Initialize the neotest module first
-            local neotest = require "neotest"
+            local neotest = require("neotest")
 
-            neotest.setup {
+            neotest.setup({
                 adapters = {
-                    require "neotest-python" {
+                    require("neotest-python")({
                         -- python = function()
                         --     if vim.fn.isdirectory ".venv/bin" == 1 then
                         --         return ".venv/bin/python"
@@ -35,7 +35,7 @@ return {
                         --         or file_path:match "test/.+%.py$"
                         -- end,
                         pytest_discover_instances = true,
-                    },
+                    }),
                 },
                 -- -- Enable debug logging
                 -- log_level = vim.log.levels.DEBUG,
@@ -45,7 +45,7 @@ return {
                 --     expand_errors = true,
                 --     follow = true,
                 -- },
-            }
+            })
         end,
         keys = {
             -- Test execution
@@ -59,7 +59,7 @@ return {
             {
                 "<leader>nf",
                 function()
-                    require("neotest").run.run(vim.fn.expand "%")
+                    require("neotest").run.run(vim.fn.expand("%"))
                 end,
                 desc = "[N]eotest Run [F]ile",
             },
@@ -82,14 +82,14 @@ return {
             {
                 "<leader>nj",
                 function()
-                    require("neotest").jump.next { status = "failed" }
+                    require("neotest").jump.next({ status = "failed" })
                 end,
                 desc = "[N]eotest [J]ump to next failed",
             },
             {
                 "<leader>nk",
                 function()
-                    require("neotest").jump.prev { status = "failed" }
+                    require("neotest").jump.prev({ status = "failed" })
                 end,
                 desc = "[N]eotest [K]ump to prev failed",
             },
@@ -98,7 +98,7 @@ return {
             {
                 "<leader>no",
                 function()
-                    require("neotest").output.open { enter = true }
+                    require("neotest").output.open({ enter = true })
                 end,
                 desc = "[N]eotest [O]utput show",
             },
@@ -114,7 +114,7 @@ return {
             {
                 "<leader>nd",
                 function()
-                    require("neotest").run.run { strategy = "dap" }
+                    require("neotest").run.run({ strategy = "dap" })
                 end,
                 desc = "[N]eotest [D]ebug nearest",
             },

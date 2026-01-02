@@ -1,5 +1,5 @@
 return {
-	"christopher-francisco/tmux-status.nvim",
-	lazy = true,
-	opts = {},
+    "christopher-francisco/tmux-status.nvim",
+    lazy = true,
+    opts = {},
 }
