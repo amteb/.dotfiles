@@ -525,7 +525,7 @@ useDefault = true
 [[rules]]
 id = "dotfiles-personal-info"
 description = "Personal information in dotfiles"
-regex = '''antonio@torreaobraz\.com|~|abraz@example'''
+regex = '''a@b\.com|/Users/a|a@c'''
 [rules.allowlist]
 paths = ['''^\.git/''', '''^scripts/hooks/''']
 ```
@@ -651,7 +651,7 @@ git push --tags
 8. Version pin your tools
 
 **Low Priority (Nice to Have):**
-9. GitHub Actions CI
+9. REMOVED
 10. Git worktrees for experimentation
 11. SOPS/git-crypt for secrets
 12. Benchmarking scripts
