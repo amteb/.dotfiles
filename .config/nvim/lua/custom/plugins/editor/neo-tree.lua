@@ -39,7 +39,7 @@ return {
         },
     },
     config = function(_, opts)
-        require("nvim-web-devicons")
+        require "nvim-web-devicons"
         require("neo-tree").setup(opts)
     end,
 }

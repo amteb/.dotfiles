@@ -71,7 +71,11 @@ return {
 
                 -- Jump to the implementation of the word under your cursor.
                 --  Useful when your language has ways of declaring types without an actual implementation.
-                map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+                map(
+                    "gri",
+                    require("telescope.builtin").lsp_implementations,
+                    "[G]oto [I]mplementation"
+                )
 
                 -- Jump to the definition of the word under your cursor.
                 --  This is where a variable was first declared, or where a function is defined, etc.
@@ -84,16 +88,28 @@ return {
 
                 -- Fuzzy find all the symbols in your current document.
                 --  Symbols are things like variables, functions, types, etc.
-                map("gO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
+                map(
+                    "gO",
+                    require("telescope.builtin").lsp_document_symbols,
+                    "Open Document Symbols"
+                )
 
                 -- Fuzzy find all the symbols in your current workspace.
                 --  Similar to document symbols, except searches over your entire project.
-                map("gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
+                map(
+                    "gW",
+                    require("telescope.builtin").lsp_dynamic_workspace_symbols,
+                    "Open Workspace Symbols"
+                )
 
                 -- Jump to the type of the word under your cursor.
                 --  Useful when you're not sure what type a variable is and you want to see
                 --  the definition of its *type*, not where it was *defined*.
-                map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+                map(
+                    "grt",
+                    require("telescope.builtin").lsp_type_definitions,
+                    "[G]oto [T]ype Definition"
+                )
 
                 -- The following two autocommands are used to highlight references of the
                 -- word under your cursor when your cursor rests there for a little while.
@@ -103,9 +119,13 @@ return {
                 local client = vim.lsp.get_client_by_id(event.data.client_id)
                 if
                     client
-                    and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
+                    and client:supports_method(
+                        vim.lsp.protocol.Methods.textDocument_documentHighlight,
+                        event.buf
+                    )
                 then
-                    local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
+                    local highlight_augroup =
+                        vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
                     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
                         buffer = event.buf,
                         group = highlight_augroup,
@@ -119,10 +139,16 @@ return {
                     })
 
                     vim.api.nvim_create_autocmd("LspDetach", {
-                        group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
+                        group = vim.api.nvim_create_augroup(
+                            "kickstart-lsp-detach",
+                            { clear = true }
+                        ),
                         callback = function(event2)
                             vim.lsp.buf.clear_references()
-                            vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event2.buf })
+                            vim.api.nvim_clear_autocmds {
+                                group = "kickstart-lsp-highlight",
+                                buffer = event2.buf,
+                            }
                         end,
                     })
                 end
@@ -131,9 +157,17 @@ return {
                 -- code, if the language server you are using supports them
                 --
                 -- This may be unwanted, since they displace some of your code
-                if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+                if
+                    client
+                    and client:supports_method(
+                        vim.lsp.protocol.Methods.textDocument_inlayHint,
+                        event.buf
+                    )
+                then
                     map("<leader>th", function()
-                        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
+                        vim.lsp.inlay_hint.enable(
+                            not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }
+                        )
                     end, "[T]oggle Inlay [H]ints")
                 end
             end,
@@ -141,7 +175,7 @@ return {
 
         -- Diagnostic Config
         -- See :help vim.diagnostic.Opts
-        vim.diagnostic.config({
+        vim.diagnostic.config {
             severity_sort = true,
             float = { border = "rounded", source = "if_many" },
             underline = { severity = vim.diagnostic.severity.ERROR },
@@ -166,7 +200,7 @@ return {
                     return diagnostic_message[diagnostic.severity]
                 end,
             },
-        })
+        }
 
         -- LSP servers and clients are able to communicate to each other what features they support.
         --  By default, Neovim doesn't support everything that is in the LSP specification.
@@ -240,9 +274,9 @@ return {
         vim.list_extend(ensure_installed, {
             "stylua", -- Used to format Lua code
         })
-        require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+        require("mason-tool-installer").setup { ensure_installed = ensure_installed }
 
-        require("mason-lspconfig").setup({
+        require("mason-lspconfig").setup {
             ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
             automatic_installation = false,
             handlers = {
@@ -251,10 +285,11 @@ return {
                     -- This handles overriding only values explicitly passed
                     -- by the server configuration above. Useful when disabling
                     -- certain features of an LSP (for example, turning off formatting for ts_ls)
-                    server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+                    server.capabilities =
+                        vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
                     require("lspconfig")[server_name].setup(server)
                 end,
             },
-        })
+        }
     end,
 }

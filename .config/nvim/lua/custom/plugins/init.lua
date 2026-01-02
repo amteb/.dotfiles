@@ -6,10 +6,17 @@
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    local out = vim.fn.system {
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "--branch=stable",
+        lazyrepo,
+        lazypath,
+    }
     if vim.v.shell_error ~= 0 then
         error("Error cloning lazy.nvim:\n" .. out)
     end
@@ -41,9 +48,9 @@ require("lazy").setup({
     { import = "custom.plugins.misc" },
 
     -- Kickstart plugins (explicit imports to avoid broken ones)
-    require("kickstart.plugins.indent_line"),
-    require("kickstart.plugins.autopairs"),
-    require("kickstart.plugins.gitsigns"),
+    require "kickstart.plugins.indent_line",
+    require "kickstart.plugins.autopairs",
+    require "kickstart.plugins.gitsigns",
 }, {
     ui = {
         -- If you are using a Nerd Font: set icons to an empty table which will use the

@@ -15,7 +15,7 @@ return {
         "loctvl842/monokai-pro.nvim",
         priority = 1000,
         config = function()
-            require("monokai-pro").setup({
+            require("monokai-pro").setup {
                 transparent_background = true,
                 terminal_colors = true,
                 devicons = true, -- highlight the icons of `nvim-web-devicons`
@@ -65,13 +65,13 @@ return {
                 -- ---@param Config MonokaiProOptions
                 -- ---@param hp Helper
                 -- override = function(cs: Colorscheme, p: ColorschemeOptions, Config: MonokaiProOptions, hp: Helper) end,
-            })
+            }
         end,
         init = function()
-            vim.cmd.colorscheme("monokai-pro")
+            vim.cmd.colorscheme "monokai-pro"
 
             -- You can configure highlights by doing something like:
-            vim.cmd.hi("Comment gui=none")
+            vim.cmd.hi "Comment gui=none"
         end,
     },
 }

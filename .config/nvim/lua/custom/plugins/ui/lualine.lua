@@ -18,7 +18,7 @@ return {
     lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-        local colors = require("monokai-pro.colorscheme")
+        local colors = require "monokai-pro.colorscheme"
         vim.opt.cmdheight = 0 -- Minimize command line space
         vim.opt.laststatus = 3 -- Global statusline
         local theme = {
@@ -54,7 +54,7 @@ return {
             },
         }
 
-        require("lualine").setup({
+        require("lualine").setup {
             options = {
                 theme = theme,
                 component_separators = "",
@@ -110,6 +110,6 @@ return {
                 "neo-tree",
                 "nvim-dap-ui",
             },
-        })
+        }
     end,
 }

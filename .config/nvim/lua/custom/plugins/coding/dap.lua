@@ -64,7 +64,7 @@ return {
         {
             "<leader>B",
             function()
-                require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+                require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
             end,
             desc = "Debug: Set Breakpoint",
         },
@@ -78,10 +78,10 @@ return {
         },
     },
     config = function()
-        local dap = require("dap")
-        local dapui = require("dapui")
+        local dap = require "dap"
+        local dapui = require "dapui"
 
-        require("mason-nvim-dap").setup({
+        require("mason-nvim-dap").setup {
             -- Makes a best effort to setup the various debuggers with
             -- reasonable debug configurations
             automatic_installation = true,
@@ -97,11 +97,11 @@ return {
                 -- "delve",
                 "debugpy",
             },
-        })
+        }
 
         -- Dap UI setup
         -- For more information, see |:help nvim-dap-ui|
-        dapui.setup({
+        dapui.setup {
             -- Set icons to characters that are more likely to work in every terminal.
             --    Feel free to remove or use ones that you like more! :)
             --    Don't feel like these are good choices.
@@ -119,7 +119,7 @@ return {
                     disconnect = "⏏",
                 },
             },
-        })
+        }
 
         -- Change breakpoint icons
         vim.api.nvim_set_hl(0, "DapBreak", { fg = "#e51400" })

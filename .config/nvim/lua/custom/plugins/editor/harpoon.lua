@@ -3,7 +3,7 @@ return {
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-        local harpoon = require("harpoon")
+        local harpoon = require "harpoon"
         harpoon:setup()
 
         local conf = require("telescope.config").values
@@ -16,11 +16,11 @@ return {
             require("telescope.pickers")
                 .new({}, {
                     prompt_title = "Harpoon",
-                    finder = require("telescope.finders").new_table({
+                    finder = require("telescope.finders").new_table {
                         results = file_paths,
-                    }),
-                    previewer = conf.file_previewer({}),
-                    sorter = conf.generic_sorter({}),
+                    },
+                    previewer = conf.file_previewer {},
+                    sorter = conf.generic_sorter {},
                 })
                 :find()
         end
@@ -74,7 +74,7 @@ return {
         -- Toggle Harpoon quick menu with current file focused
         vim.keymap.set("n", "<leader>pf", function()
             local list = harpoon:list()
-            local current_file = vim.fn.expand("%:p")
+            local current_file = vim.fn.expand "%:p"
             local current_index = nil
 
             -- Find the index of the current file
@@ -95,12 +95,12 @@ return {
                 require("telescope.pickers")
                     .new({}, {
                         prompt_title = "Harpoon",
-                        finder = require("telescope.finders").new_table({
+                        finder = require("telescope.finders").new_table {
                             results = file_paths,
                             selection = selection_index,
-                        }),
-                        previewer = require("telescope.config").values.file_previewer({}),
-                        sorter = require("telescope.config").values.generic_sorter({}),
+                        },
+                        previewer = require("telescope.config").values.file_previewer {},
+                        sorter = require("telescope.config").values.generic_sorter {},
                     })
                     :find()
             end
