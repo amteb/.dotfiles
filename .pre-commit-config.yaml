@@ -3,7 +3,7 @@
 repos:
 # Standard pre-commit hooks
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
     -   id: trailing-whitespace
         exclude: ^\.git/
@@ -25,13 +25,13 @@ repos:
 
 # Security: Scan for secrets and credentials
 -   repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.4
+    rev: v8.30.0
     hooks:
     -   id: gitleaks
 
 # Shell script linting
 -   repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
+    rev: v0.11.0.1
     hooks:
     -   id: shellcheck
         args: ['-x']  # Follow sourced files
@@ -39,7 +39,7 @@ repos:
 
 # Lua formatting for Neovim configs
 -   repo: https://github.com/JohnnyMorganz/StyLua
-    rev: v0.20.0
+    rev: v2.3.1
     hooks:
     -   id: stylua
         files: \.lua$
@@ -47,7 +47,7 @@ repos:
 
 # YAML linting
 -   repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
+    rev: v1.37.1
     hooks:
     -   id: yamllint
         files: \.(yaml|yml)$
