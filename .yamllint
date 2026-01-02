@@ -3,9 +3,12 @@ extends: default
 
 rules:
   line-length:
-    max: 120
+    max: 100
     level: warning
   document-start: disable
+  indentation:
+    spaces: 4
+    indent-sequences: true
   comments:
     min-spaces-from-content: 1
   truthy:

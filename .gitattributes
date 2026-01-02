@@ -1,3 +1,7 @@
-* filter=substitution
-scripts/clean.sh -filter
-scripts/smudge.sh -filter
+# Git attributes for dotfiles
+# Apply substitution filter only to files that contain user-specific paths
+
+.zshrc filter=substitution
+.zshenv filter=substitution
+.zprofile filter=substitution
+.config/hatch/config.toml filter=substitution

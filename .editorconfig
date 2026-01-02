@@ -23,12 +23,12 @@ indent_size = 4
 # Lua files (Neovim)
 [*.lua]
 indent_style = space
-indent_size = 2
+indent_size = 4
 
 # Configuration files
 [*.{yaml,yml,toml,json}]
 indent_style = space
-indent_size = 2
+indent_size = 4
 
 # Markdown
 [*.md]
