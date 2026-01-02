@@ -50,7 +50,6 @@ repos:
     rev: v1.35.1
     hooks:
     -   id: yamllint
-        args: ['-d', '{extends: default, rules: {line-length: {max: 120}, document-start: disable}}']
         files: \.(yaml|yml)$
 
 # Check for common security issues in shell scripts
