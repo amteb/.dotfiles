@@ -130,7 +130,7 @@ for i in $(seq 0 $((NUM_COMMITS - 1))); do
     # Stage files for this commit
     echo "$FILES" | while read -r file; do
         if [ -n "$file" ]; then
-            git add "$file" 2>/dev/null || {
+            git add --all "$file" 2>/dev/null || {
                 echo "Warning: Could not stage $file" >&2
             }
         fi
