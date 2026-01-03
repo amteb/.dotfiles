@@ -3,7 +3,7 @@
 # This template file has been automatically created at the following
 # path since Ghostty couldn't find any existing config files on your system:
 #
-#   ~/Library/Application Support/com.mitchellh.ghostty/config
+#   ~/.config/ghostty/config
 #
 # The template does not set any default options, since Ghostty ships
 # with sensible defaults for all options. Users should only need to set
@@ -49,5 +49,5 @@ clipboard-paste-protection = false
 clipboard-paste-bracketed-safe = false
 
 theme = Ghostty Default Style Dark
-# theme = Laser
+# theme = Gruvbox Dark Hard
 keybind = shift+enter=text:\x1b\r

@@ -1,93 +1,109 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-# Standard pre-commit hooks
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
-    hooks:
-    -   id: trailing-whitespace
-        exclude: ^\.git/
-    -   id: end-of-file-fixer
-        exclude: ^\.git/
-    -   id: check-yaml
-        args: ['--unsafe']  # Allow custom YAML tags
-    -   id: check-toml
-    -   id: check-json
-    -   id: check-added-large-files
-        args: ['--maxkb=1000']
-    -   id: check-merge-conflict
-    -   id: check-executables-have-shebangs
-    -   id: check-shebang-scripts-are-executable
-    -   id: detect-private-key
-    -   id: mixed-line-ending
-        args: ['--fix=lf']
-    -   id: check-case-conflict
+    # Standard pre-commit hooks
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v6.0.0
+      hooks:
+          - id: trailing-whitespace
+            exclude: ^\.git/
+          - id: end-of-file-fixer
+            exclude: ^\.git/
+          - id: check-yaml
+            args: ["--unsafe"] # Allow custom YAML tags
+          - id: check-toml
+          - id: check-json
+          - id: check-added-large-files
+            args: ["--maxkb=1000"]
+          - id: check-merge-conflict
+          - id: check-executables-have-shebangs
+          - id: check-shebang-scripts-are-executable
+          - id: detect-private-key
+          - id: mixed-line-ending
+            args: ["--fix=lf"]
+          - id: check-case-conflict
 
-# Security: Scan for secrets and credentials
--   repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.0
-    hooks:
-    -   id: gitleaks
+    # Security: Scan for secrets and credentials
+    - repo: https://github.com/gitleaks/gitleaks
+      rev: v8.30.0
+      hooks:
+          - id: gitleaks
 
-# Shell script linting
--   repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.11.0.1
-    hooks:
-    -   id: shellcheck
-        args: ['-x']  # Follow sourced files
-        exclude: ^\.zsh|^\.zshrc$|^\.zshenv$|^\.zprofile$  # Exclude zsh config files
+    # Shell script linting
+    - repo: https://github.com/shellcheck-py/shellcheck-py
+      rev: v0.11.0.1
+      hooks:
+          # ShellCheck for all sh/bash scripts (auto-detects shell type)
+          - id: shellcheck
+            name: shellcheck
+            args: ["-x"] # Follow sourced files, auto-detect shell type
+            files: \.(bash|sh)$
+            exclude: ^\.zsh
+            types: [file]
 
-# Lua formatting for Neovim configs
--   repo: https://github.com/JohnnyMorganz/StyLua
-    rev: v2.3.1
-    hooks:
-    -   id: stylua
-        files: \.lua$
-        types: [file]
+    # Lua formatting for Neovim configs
+    - repo: https://github.com/JohnnyMorganz/StyLua
+      rev: v2.3.1
+      hooks:
+          - id: stylua
+            files: \.lua$
+            types: [file]
 
-# YAML linting
--   repo: https://github.com/adrienverge/yamllint
-    rev: v1.37.1
-    hooks:
-    -   id: yamllint
-        files: \.(yaml|yml)$
+    # YAML linting
+    - repo: https://github.com/adrienverge/yamllint
+      rev: v1.37.1
+      hooks:
+          - id: yamllint
+            files: \.(yaml|yml)$
 
-# Check for common security issues in shell scripts
--   repo: https://github.com/openstack/bashate
-    rev: 2.1.1
-    hooks:
-    -   id: bashate
-        args: ['--ignore=E006']  # Ignore line length for readability
+    # Check for common security issues in bash scripts
+    - repo: https://github.com/openstack/bashate
+      rev: 2.1.1
+      hooks:
+          - id: bashate
+            name: bashate (bash only)
+            args: ["--ignore=E006"] # Ignore line length for readability
+            files: \.bash$
+            exclude: ^\.zsh
+            types: [file]
 
-# Custom local hooks
--   repo: local
-    hooks:
-    # Verify no personal information leaks
-    -   id: verify-no-personal-info
-        name: Verify no personal info in commits
-        entry: scripts/hooks/verify-no-personal-info.sh
-        language: system
-        pass_filenames: false
+    # Custom local hooks
+    - repo: local
+      hooks:
+          # Zsh syntax checking
+          - id: zsh-syntax-check
+            name: Zsh syntax check
+            entry: zsh -n
+            language: system
+            files: (\.zsh$|\.zshrc$|\.zshenv$|\.zprofile$)
+            types: [file]
 
-    # Verify smudge/clean filters are configured
-    -   id: verify-git-filters-configured
-        name: Verify git filters are configured
-        entry: scripts/hooks/verify-git-filters.sh
-        language: system
-        pass_filenames: false
-        always_run: true
+          # Verify no personal information leaks
+          - id: verify-no-personal-info
+            name: Verify no personal info in commits
+            entry: scripts/hooks/verify-no-personal-info.sh
+            language: system
+            pass_filenames: false
 
-    # Check shell scripts are executable
-    -   id: check-shell-scripts-executable
-        name: Ensure shell scripts are executable
-        entry: scripts/hooks/check-scripts-executable.sh
-        language: system
-        files: ^scripts/.*\.sh$
-        pass_filenames: true
+          # Verify smudge/clean filters are configured
+          - id: verify-git-filters-configured
+            name: Verify git filters are configured
+            entry: scripts/hooks/verify-git-filters.sh
+            language: system
+            pass_filenames: false
+            always_run: true
 
-    # Check for common dotfile mistakes
-    -   id: check-common-mistakes
-        name: Check for common dotfile mistakes
-        entry: scripts/hooks/check-common-mistakes.sh
-        language: system
-        pass_filenames: false
+          # Check shell scripts are executable
+          - id: check-shell-scripts-executable
+            name: Ensure shell scripts are executable
+            entry: scripts/hooks/check-scripts-executable.sh
+            language: system
+            files: ^scripts/.*\.sh$
+            pass_filenames: true
+
+          # Check for common dotfile mistakes
+          - id: check-common-mistakes
+            name: Check for common dotfile mistakes
+            entry: scripts/hooks/check-common-mistakes.sh
+            language: system
+            pass_filenames: false

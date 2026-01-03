@@ -6,3 +6,6 @@
 tmux-client-*.log
 
 .claude
+
+# Tmux plugins managed by TPM
+.config/tmux/plugins/

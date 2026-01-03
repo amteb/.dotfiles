@@ -94,7 +94,8 @@ function install_and_add_to_stow_setup() {
 
 
 function restow() {
-    local original_dir="$(pwd)"
+    local original_dir
+    original_dir="$(pwd)"
     local use_single_commit=0
 
     # Colors
@@ -167,7 +168,8 @@ function sto() {
     install_and_add_to_stow_setup "$@"
 }
 
-function gcr() {
+# Shared commit logic used by gcr and grel
+function _commit_changes() {
     local use_single_commit=0
 
     # Colors
@@ -184,9 +186,7 @@ function gcr() {
                 shift
                 ;;
             *)
-                echo "Unknown option: $1" >&2
-                echo "Usage: gcr [-s|--single]" >&2
-                return 1
+                shift
                 ;;
         esac
     done
@@ -224,9 +224,172 @@ function gcr() {
             fi
         fi
 
+        return 0
+    else
+        return 1
+    fi
+}
+
+function gcr() {
+    # Colors
+    local GREEN='\033[0;32m'
+    local NC='\033[0m'
+
+    if _commit_changes "$@"; then
         echo -e "${GREEN}Committed changes (not pushed)${NC}"
     else
         echo "No changes to commit"
+    fi
+}
+
+function grel() {
+    local use_single_commit=0
+    local skip_commit=0
+
+    # Colors
+    local BLUE='\033[0;34m'
+    local GREEN='\033[0;32m'
+    local YELLOW='\033[0;33m'
+    local RED='\033[0;31m'
+    local CYAN='\033[0;36m'
+    local NC='\033[0m'
+
+    # Parse flags
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -s|--single)
+                use_single_commit=1
+                shift
+                ;;
+            --skip-commit)
+                skip_commit=1
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1" >&2
+                echo "Usage: grel [-s|--single] [--skip-commit]" >&2
+                return 1
+                ;;
+        esac
+    done
+
+    # Check if in a git repository
+    if ! git rev-parse --git-dir &>/dev/null 2>&1; then
+        echo -e "${RED}Error: Not in a git repository${NC}" >&2
+        return 1
+    fi
+
+    # Check if gh CLI is installed
+    if ! command -v gh &>/dev/null; then
+        echo -e "${RED}Error: gh CLI is not installed${NC}" >&2
+        echo "Install it with: brew install gh" >&2
+        return 1
+    fi
+
+    # Check if we're authenticated with gh
+    if ! gh auth status &>/dev/null; then
+        echo -e "${RED}Error: Not authenticated with GitHub${NC}" >&2
+        echo "Run: gh auth login" >&2
+        return 1
+    fi
+
+    echo -e "${BLUE}=== GitHub Release Creator ===${NC}\n"
+
+    # Step 1: Handle uncommitted changes
+    if [ $skip_commit -eq 0 ]; then
+        if ! git diff --quiet || ! git diff --cached --quiet; then
+            echo -e "${YELLOW}You have uncommitted changes.${NC}"
+            echo -n "Commit them now? [Y/n/q] "
+            read -r response
+            case "$response" in
+                [Qq]*)
+                    echo -e "${YELLOW}Release cancelled${NC}"
+                    return 0
+                    ;;
+                [Nn]*)
+                    echo -e "${YELLOW}Skipping commit. Release will use current HEAD.${NC}"
+                    ;;
+                *)
+                    echo ""
+                    if [ $use_single_commit -eq 1 ]; then
+                        _commit_changes -s || return 1
+                    else
+                        _commit_changes || return 1
+                    fi
+                    echo ""
+                    ;;
+            esac
+        fi
+    fi
+
+    # Step 2: Calculate next version
+    echo -e "${BLUE}Calculating next version...${NC}"
+    NEXT_VERSION=$("$DOTFILES/scripts/calculate-next-version.sh" 2>/dev/null)
+
+    if [ $? -ne 0 ] || [ -z "$NEXT_VERSION" ]; then
+        echo -e "${RED}Error: Failed to calculate next version${NC}" >&2
+        return 1
+    fi
+
+    LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
+
+    echo -e "${CYAN}Current version:${NC} $LATEST_TAG"
+    echo -e "${CYAN}Next version:${NC}    v$NEXT_VERSION"
+
+    # Show commits that will be included
+    echo -e "\n${CYAN}Commits since last tag:${NC}"
+    if [ "$LATEST_TAG" = "none" ]; then
+        git log --oneline --decorate --color=always | head -n 10
+    else
+        git log "$LATEST_TAG..HEAD" --oneline --decorate --color=always
+    fi
+
+    # Step 3: Confirm release
+    echo -e "\n${YELLOW}This will:${NC}"
+    echo "  1. Tag the current commit as v$NEXT_VERSION"
+    echo "  2. Push the tag to origin"
+    echo "  3. Create a GitHub release with auto-generated notes"
+    echo ""
+    echo -n "Proceed with release? [y/N/q] "
+    read -r response
+
+    case "$response" in
+        [Qq]*)
+            echo -e "${YELLOW}Release cancelled${NC}"
+            return 0
+            ;;
+        [Yy]*)
+            ;;
+        *)
+            echo -e "${YELLOW}Release cancelled${NC}"
+            return 0
+            ;;
+    esac
+
+    # Step 4: Create and push tag
+    echo -e "\n${BLUE}Creating tag v$NEXT_VERSION...${NC}"
+    if ! git tag -a "v$NEXT_VERSION" -m "Release v$NEXT_VERSION"; then
+        echo -e "${RED}Error: Failed to create tag${NC}" >&2
+        return 1
+    fi
+
+    echo -e "${BLUE}Pushing tag to origin...${NC}"
+    if ! git push origin "v$NEXT_VERSION" && git push; then
+        echo -e "${RED}Error: Failed to push tag${NC}" >&2
+        echo -e "${YELLOW}Removing local tag...${NC}"
+        git tag -d "v$NEXT_VERSION"
+        return 1
+    fi
+
+    # Step 5: Create GitHub release
+    echo -e "${BLUE}Creating GitHub release...${NC}"
+    if gh release create "v$NEXT_VERSION" --generate-notes; then
+        echo -e "\n${GREEN}✓ Release v$NEXT_VERSION created successfully!${NC}"
+        echo -e "${CYAN}View release:${NC} $(gh release view "v$NEXT_VERSION" --json url -q .url)"
+    else
+        echo -e "${RED}Error: Failed to create GitHub release${NC}" >&2
+        echo -e "${YELLOW}Note: Tag v$NEXT_VERSION was pushed but release creation failed${NC}"
+        return 1
     fi
 }
 
@@ -271,7 +434,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
     alias clip="clip.exe"
 fi
-alias buu="brew update && brew upgrade"
+alias bruu="brew update && brew upgrade"
 alias c.="code ."
 alias c="code"
 alias clod="claude"
