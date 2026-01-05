@@ -10,4 +10,6 @@ if [ -z "$CLEAN_FILTER" ] || [ -z "$SMUDGE_FILTER" ]; then
     exit 1
 fi
 
+./verify-git-filters.sh
+
 exit 0
