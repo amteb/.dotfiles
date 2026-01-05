@@ -91,7 +91,10 @@ repos:
             entry: scripts/hooks/verify-git-filters.sh
             language: system
             pass_filenames: false
+<<<<<<< HEAD
             always_run: true
+=======
+>>>>>>> 114397f (feat(ghostty): add Chicago Night theme)
 
           # Check shell scripts are executable
           - id: check-shell-scripts-executable

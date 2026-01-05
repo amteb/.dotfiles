@@ -48,6 +48,17 @@ window-padding-balance = true
 clipboard-paste-protection = false
 clipboard-paste-bracketed-safe = false
 
-theme = Ghostty Default Style Dark
-# theme = Gruvbox Dark Hard
+# theme = Ghostty Default Style Dark
+# theme = Broadcast
+# theme = Dracula+
+# theme = Flexoki Dark
+# theme = Galaxy
+# theme = Japanesque
+# theme = Niji
+# theme = Obsidian
+# theme = Raycast Dark
+# theme = Smyck
+# theme = Sonokai
+theme = Chicago Night
+
 keybind = shift+enter=text:\x1b\r
