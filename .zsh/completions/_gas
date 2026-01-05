@@ -1,0 +1,60 @@
+#compdef gas
+
+# Completion for gas (git-autosync wrapper) function
+# Since gas is a simple wrapper around git-autosync, delegate to its completion
+_gas() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '(- :)'{-h,--help}'[show help message]' \
+        '1: :->command' \
+        '*:: :->args'
+
+    case $state in
+    command)
+        _values 'gas command' \
+            'add[add a repository to a frequency]' \
+            'remove[remove a repository from a frequency]' \
+            'list[list repositories]' \
+            'sync[synchronize repositories]' \
+            'update-cron[update cron jobs]' \
+            'add-freq[add a new frequency]' \
+            'remove-freq[remove a frequency]'
+        ;;
+    args)
+        case $line[1] in
+        add|remove)
+            _arguments \
+                '1:repository:_path_files -/' \
+                '2:frequency:->frequencies'
+            ;;
+        list|sync)
+            _arguments \
+                '(-a --all)'{-a,--all}'[all frequencies]' \
+                '1:frequency:->frequencies'
+            ;;
+        add-freq)
+            _arguments \
+                '1:frequency name:' \
+                '2:cron expression:'
+            ;;
+        remove-freq)
+            _arguments '1:frequency:->frequencies'
+            ;;
+        esac
+
+        case $state in
+        frequencies)
+            local -a freqs
+            if [[ -x "$DOTFILES/scripts/git-autosync" ]]; then
+                freqs=(${(f)"$($DOTFILES/scripts/git-autosync list 2>/dev/null | tail -n +2)"})
+            fi
+            _describe -t frequencies 'frequency' freqs
+            ;;
+        esac
+        ;;
+    esac
+}
+
+_gas "$@"

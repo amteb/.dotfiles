@@ -1,0 +1,32 @@
+#compdef sto
+
+# Completion for sto (install and add to stow setup) function
+_sto() {
+    local -a common_install_commands
+    common_install_commands=(
+        'brew install'
+        'brew install --cask'
+        'cargo install'
+        'pip install'
+        'pipx install'
+        'npm install -g'
+        'go install'
+        'apt install'
+        'apt-get install'
+        'dnf install'
+        'yum install'
+        'pacman -S'
+    )
+
+    if (( CURRENT == 1 )); then
+        # First word - suggest common package managers or any command
+        _alternative \
+            'install-commands:common install commands:compadd -a common_install_commands' \
+            'commands:command: _command_names -e'
+    else
+        # After first word, use normal completion
+        _normal
+    fi
+}
+
+_sto "$@"

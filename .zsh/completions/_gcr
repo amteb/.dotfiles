@@ -1,0 +1,14 @@
+#compdef gcr
+
+# Completion for gcr (git commit and remain) function
+_gcr() {
+    local -a args
+    args=(
+        '(-s --single)'{-s,--single}'[use single commit instead of atomic commits]'
+        '(- :)'{-h,--help}'[show help message]'
+    )
+
+    _arguments -s -S $args
+}
+
+_gcr "$@"

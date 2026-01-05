@@ -1,0 +1,16 @@
+#compdef restow
+
+# Completion for restow function
+_restow() {
+    local -a args
+    args=(
+        '(-s --single)'{-s,--single}'[use single commit instead of atomic commits]'
+        '--no-checks[skip pre-commit checks]'
+        '--force[skip stow dry-run simulation]'
+        '(- :)'{-h,--help}'[show help message]'
+    )
+
+    _arguments -s -S $args
+}
+
+_restow "$@"

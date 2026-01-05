@@ -1,0 +1,15 @@
+#compdef grel
+
+# Completion for grel (git release) function
+_grel() {
+    local -a args
+    args=(
+        '(-s --single)'{-s,--single}'[use single commit instead of atomic commits]'
+        '--skip-commit[skip committing changes before creating release]'
+        '(- :)'{-h,--help}'[show help message]'
+    )
+
+    _arguments -s -S $args
+}
+
+_grel "$@"
