@@ -35,7 +35,7 @@ FULL_DIFF=$(git diff --cached)
 
 # Limit full diff to reasonable size
 MAX_DIFF_CHARS=30000
-if [ ${#FULL_DIFF} -gt $MAX_DIFF_CHARS ]; then
+if [ ${#FULL_DIFF} -gt "$MAX_DIFF_CHARS" ]; then
     FULL_DIFF="${FULL_DIFF:0:$MAX_DIFF_CHARS}
 
 ... (diff truncated for length)"
@@ -112,6 +112,12 @@ fi
 
 echo -e "${GREEN}Creating $NUM_COMMITS commit(s)...${NC}" >&2
 
+# Check if .pre-commit-config.yaml is in the staged changes
+PRECOMMIT_CONFIG_MODIFIED=0
+if git diff --cached --name-only | grep -q "^\.pre-commit-config\.yaml$"; then
+    PRECOMMIT_CONFIG_MODIFIED=1
+fi
+
 # Unstage all changes first
 git reset HEAD --quiet
 
@@ -136,18 +142,47 @@ for i in $(seq 0 $((NUM_COMMITS - 1))); do
         fi
     done
 
+    # If this is the first commit and .pre-commit-config.yaml was modified,
+    # include it to satisfy pre-commit's safety check
+    if [ "$i" -eq 0 ] && [ "$PRECOMMIT_CONFIG_MODIFIED" -eq 1 ]; then
+        if ! echo "$FILES" | grep -q "^\.pre-commit-config\.yaml$"; then
+            git add .pre-commit-config.yaml 2>/dev/null || true
+        fi
+    fi
+
     # Check if anything was staged
     if git diff --cached --quiet; then
         echo "Warning: No changes staged for commit: $MESSAGE" >&2
         continue
     fi
 
+    # Remember which files are staged for this commit
+    STAGED_FILES=$(git diff --cached --name-only)
+
     # Create the commit
     echo -e "  ${GREEN}[$((i + 1))/$NUM_COMMITS]${NC} $MESSAGE" >&2
-    git commit -m "$MESSAGE" --quiet || {
-        echo "Error: Failed to create commit: $MESSAGE" >&2
-        exit 1
-    }
+
+    # Try to commit, and if it fails due to pre-commit hooks modifying files, retry once
+    if ! git commit -m "$MESSAGE" --quiet 2>/dev/null; then
+        # Check if there are unstaged changes (likely from pre-commit hooks auto-fixing files)
+        if ! git diff --quiet 2>/dev/null; then
+            echo -e "  ${YELLOW}Pre-commit hooks modified files, re-staging and retrying...${NC}" >&2
+            # Re-stage only the files that were part of this commit
+            while IFS= read -r file; do
+                if [ -n "$file" ]; then
+                    git add "$file" 2>/dev/null || true
+                fi
+            done <<< "$STAGED_FILES"
+            # Retry the commit
+            if ! git commit -m "$MESSAGE" --quiet 2>/dev/null; then
+                echo "Error: Failed to create commit after retry: $MESSAGE" >&2
+                exit 1
+            fi
+        else
+            echo "Error: Failed to create commit: $MESSAGE" >&2
+            exit 1
+        fi
+    fi
 done
 
 # Verify all originally staged changes were committed
