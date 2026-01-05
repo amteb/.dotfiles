@@ -22,11 +22,11 @@ return {
                 styles = {
                     comment = { italic = false },
                     keyword = { italic = false }, -- any other keyword
-                    type = { italic = false }, -- (preferred) int, long, char, etc
-                    storageclass = { italic = false }, -- static, register, volatile, etc
-                    structure = { italic = false }, -- struct, union, enum, etc
+                    type = { italic = true }, -- (preferred) int, long, char, etc
+                    storageclass = { italic = true }, -- static, register, volatile, etc
+                    structure = { italic = true }, -- struct, union, enum, etc
                     parameter = { italic = false }, -- parameter pass in function
-                    annotation = { italic = false },
+                    annotation = { italic = true },
                     tag_attribute = { italic = false }, -- attribute of tag in reactjs
                 },
                 filter = "machine", -- classic | octagon | pro | machine | ristretto | spectrum
@@ -47,6 +47,7 @@ return {
                     "nvim-tree",
                     "neo-tree",
                     "bufferline", -- better used if background of `neo-tree` or `nvim-tree` is cleared
+                    "lualine",
                 },
                 plugins = {
                     bufferline = {
