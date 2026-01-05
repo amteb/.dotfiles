@@ -70,23 +70,17 @@ GIT_EMAIL=$(git config user.email)
 # Stage all changes temporarily
 git add -A > /dev/null 2>&1
 
-# Check for personal info in staged files
-PERSONAL_INFO_FOUND=0
-
 # Search for personal information patterns
 if git diff --cached | grep -q "$HOME" 2>/dev/null; then
     echo -e "${YELLOW}⚠ Found $HOME in staged changes${NC}"
-    PERSONAL_INFO_FOUND=1
 fi
 
 if git diff --cached | grep -q "$GIT_NAME" 2>/dev/null; then
     echo -e "${YELLOW}⚠ Found git name '$GIT_NAME' in staged changes${NC}"
-    PERSONAL_INFO_FOUND=1
 fi
 
 if git diff --cached | grep -q "$GIT_EMAIL" 2>/dev/null; then
     echo -e "${YELLOW}⚠ Found git email '$GIT_EMAIL' in staged changes${NC}"
-    PERSONAL_INFO_FOUND=1
 fi
 
 # Check that placeholders exist in what will be stored
@@ -104,7 +98,7 @@ fi
 # Unstage changes
 git reset > /dev/null 2>&1
 
-if [ $PLACEHOLDERS_FOUND -gt 0 ]; then
+if [ "$PLACEHOLDERS_FOUND" -gt 0 ]; then
     echo -e "${GREEN}✓ Found $PLACEHOLDERS_FOUND placeholder(s) in files that will be stored in git${NC}"
 else
     echo -e "${YELLOW}⚠ No placeholders found (this is ok if you're not changing files with personal info)${NC}"
@@ -126,18 +120,8 @@ if [ ${#FILES_WITH_ISSUES[@]} -gt 0 ]; then
         echo "  - $info"
     done
     echo "  This is expected in the working directory (smudge filter applies them)"
+    exit 1
 else
     echo -e "${GREEN}✓ No hardcoded personal information found${NC}"
+    exit 0
 fi
-
-echo ""
-echo "=== Summary ==="
-echo "The filters are working correctly!"
-echo ""
-echo "How it works:"
-echo "  • When you commit: clean.sh replaces personal values with %%PLACEHOLDERS%%"
-echo "  • When you checkout: smudge.sh replaces %%PLACEHOLDERS%% with personal values"
-echo "  • Your working directory has real values, but git stores placeholders"
-echo ""
-echo "To see what git will store, run:"
-echo "  git add <file> && git cat-file -p :0:<file>"
