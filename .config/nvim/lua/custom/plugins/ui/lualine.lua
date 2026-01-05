@@ -19,8 +19,13 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
         local colors = require "monokai-pro.colorscheme"
+        colors.base.background = "#161616"
+        -- current ghostty background, if i set NONE it reverts back to monokai's dark2
+        -- TODO: find better way to have transparent bg
+
         vim.opt.cmdheight = 0 -- Minimize command line space
         vim.opt.laststatus = 3 -- Global statusline
+
         local theme = {
             normal = {
                 a = { bg = colors.base.yellow, fg = colors.base.black, gui = "bold" },
