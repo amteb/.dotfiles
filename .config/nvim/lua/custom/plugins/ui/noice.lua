@@ -8,7 +8,11 @@ return {
             config = function()
                 local notify = require "notify"
                 notify.setup {
+<<<<<<< HEAD
                     background_colour = "#000000",
+=======
+                    background_colour = "#0f0f0f",
+>>>>>>> 5f0f8ee (feat(nvim): add noice.nvim for UI enhancement)
                     timeout = 3000,
                     max_width = 50,
                     render = "compact",
@@ -47,7 +51,11 @@ return {
                     filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
                     lua = {
                         pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" },
+<<<<<<< HEAD
                         icon = "",
+=======
+                        icon = "lua",
+>>>>>>> 5f0f8ee (feat(nvim): add noice.nvim for UI enhancement)
                         lang = "lua",
                     },
                     help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
