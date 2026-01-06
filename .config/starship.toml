@@ -118,7 +118,14 @@ format = "[|](bright-black) [$symbol($version)]($style) "
 symbol = " "
 
 [direnv]
-format = "[|](bright-black) [$symbol$loaded/$allowed]($style) "
+disabled = false
+format = "[|](bright-black) [$symbol]($style)[$loaded/$allowed](7) "
+symbol = "󱃻 "
+allowed_msg = "a"
+not_allowed_msg = "n"
+denied_msg = "d"
+loaded_msg = "l"
+unloaded_msg = "u"
 
 [docker_context]
 format = "[|](bright-black) [$symbol$context]($style) "
