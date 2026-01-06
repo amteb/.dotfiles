@@ -29,17 +29,8 @@ repos:
       hooks:
           - id: gitleaks
 
-    # Shell script linting
-    - repo: https://github.com/koalaman/shellcheck-precommit
-      rev: v0.11.0
-      hooks:
-          # ShellCheck for all sh/bash scripts (auto-detects shell type)
-          - id: shellcheck
-            name: shellcheck
-            args: ["-x"] # Follow sourced files, auto-detect shell type
-            files: \.(bash|sh)$
-            exclude: ^\.zsh
-            types: [file]
+    # Shell script linting (native - no Docker required)
+    # Removed Docker-based shellcheck to use local installation instead
 
     # Lua formatting for Neovim configs
     - repo: https://github.com/JohnnyMorganz/StyLua
@@ -70,6 +61,15 @@ repos:
     # Custom local hooks
     - repo: local
       hooks:
+          # ShellCheck for shell scripts (uses local installation)
+          - id: shellcheck
+            name: shellcheck
+            entry: shellcheck -x
+            language: system
+            files: \.(bash|sh)$
+            exclude: ^\.zsh
+            types: [file]
+
           # Zsh syntax checking
           - id: zsh-syntax-check
             name: Zsh syntax check
