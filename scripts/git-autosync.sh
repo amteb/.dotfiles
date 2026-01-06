@@ -182,12 +182,12 @@ load_config() {
                 if [[ -n "$paths_str" ]]; then
                     local IFS=,
                     current_paths=()
-                    for path in ${=paths_str}; do
-                        path="${path#"${path%%[! ]*}"}"
-                        path="${path%"${path##*[! ]}"}"
-                        path="${path#[\"\']}"
-                        path="${path%[\"\']}"
-                        [[ -n "$path" ]] && current_paths+=("$path")
+                    for repo_path in ${=paths_str}; do
+                        repo_path="${repo_path#"${repo_path%%[! ]*}"}"
+                        repo_path="${repo_path%"${repo_path##*[! ]}"}"
+                        repo_path="${repo_path#[\"\']}"
+                        repo_path="${repo_path%[\"\']}"
+                        [[ -n "$repo_path" ]] && current_paths+=("$repo_path")
                     done
                 fi
                 ;;
@@ -224,9 +224,9 @@ save_config() {
             print -r -- "cron = \"$cron\""
 
             local quoted_paths=()
-            local path
-            for path in $paths; do
-                quoted_paths+=("\"$path\"")
+            local repo_path
+            for repo_path in $paths; do
+                quoted_paths+=("\"$repo_path\"")
             done
             print -r -- "paths = [${(j:, :)quoted_paths}]"
             print
