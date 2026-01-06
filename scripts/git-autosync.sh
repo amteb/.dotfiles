@@ -488,6 +488,7 @@ list_all_repos() {
         local paths=(${(s:,:)${frequencies[$freq]#*:}})
         printf "\n%s (%d repositories):" "$freq" "${#paths[@]}"
         if [[ ${#paths[@]} -gt 0 ]]; then
+            print
             print -l -- $paths | while read -r line; do
                 print "  $line"
             done
