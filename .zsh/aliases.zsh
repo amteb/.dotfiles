@@ -31,8 +31,6 @@ fi
 alias bruu="brew update && brew upgrade"
 
 # Editors
-alias c.="code ."
-alias c="code"
 alias clod="claude"
 alias oc="opencode"
 alias v.="nvim ."
