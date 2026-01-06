@@ -10,6 +10,16 @@ add_paths_from_dir() {
     done < <($fd_cmd . "$base_dir" --max-depth 1 --type d --exclude '.*' --exclude '_*')
 }
 
+add_single_path() {
+    local full_path=$1
+    local display_name=${full_path:t}  # :t modifier gets basename
+
+    # Skip if basename starts with _
+    [[ $display_name == _* ]] && return
+
+    paths[$display_name]=$full_path
+}
+
 get_project_paths() {
     local FD_CMD=${commands[fd]}
     local FZF_CMD=${commands[fzf]}
@@ -19,7 +29,10 @@ get_project_paths() {
 
     add_paths_from_dir "$DEV/" "$FD_CMD"
     add_paths_from_dir "$HOME/Documents/finmath/" "$FD_CMD"
-    paths[.dotfiles]="$DOTFILES"
+
+    add_single_path "$DOTFILES"
+    add_single_path "$HOME/Documents/finmath/"
+    add_single_path "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault/"
 
     local -a keys=("${(@k)paths}")
     print -l "${(@)keys}" | $SORT_CMD -rf | $FZF_CMD | while read -r selected_display; do
