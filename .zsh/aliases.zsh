@@ -20,6 +20,10 @@ function l {
         "$@"
 }
 
+function md {
+    mkdir -p "$1" && cd "$1"
+}
+
 # System aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias clip="pbcopy"
