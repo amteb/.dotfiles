@@ -7,7 +7,7 @@ add_paths_from_dir() {
     while IFS= read -r path; do
         display_path=${path#$base_dir}
         paths[${display_path%/}]=$path
-    done < <($fd_cmd . "$base_dir" --max-depth 1 --type d)
+    done < <($fd_cmd . "$base_dir" --max-depth 1 --type d --exclude '.*' --exclude '_*')
 }
 
 get_project_paths() {
