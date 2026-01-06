@@ -59,6 +59,6 @@ clipboard-paste-bracketed-safe = false
 # theme = Raycast Dark
 # theme = Smyck
 # theme = Sonokai
-theme = Chicago Night
+theme = ChicagoNight
 
 keybind = shift+enter=text:\x1b\r
