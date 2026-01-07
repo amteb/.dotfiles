@@ -4,6 +4,7 @@
 .config/nvim/lazy-lock.json
 .config/Code/**/accessTokenCache
 tmux-client-*.log
+.DS_Store
 
 .claude
 

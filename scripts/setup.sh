@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Get script directory (macOS compatible)
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -275,7 +275,7 @@ fi
 
 # Setup smudge and clean filters
 if prompt_install "set up Git smudge and clean filters"; then
-    sh $SCRIPT_DIR/setup_smudge_clean.sh
+    sh "$SCRIPT_DIR/setup_smudge_clean.sh"
 fi
 
 echo "Setup complete"

@@ -162,26 +162,41 @@ for i in $(seq 0 $((NUM_COMMITS - 1))); do
     # Create the commit
     echo -e "  ${GREEN}[$((i + 1))/$NUM_COMMITS]${NC} $MESSAGE" >&2
 
-    # Try to commit, and if it fails due to pre-commit hooks modifying files, retry once
-    if ! git commit -m "$MESSAGE" --quiet 2>/dev/null; then
+    # Try to commit, handling pre-commit hooks that may modify files multiple times
+    MAX_RETRIES=3
+    RETRY_COUNT=0
+    COMMIT_SUCCESS=0
+
+    while [ "$RETRY_COUNT" -lt "$MAX_RETRIES" ]; do
+        if git commit -m "$MESSAGE" --quiet >/dev/null 2>&1; then
+            COMMIT_SUCCESS=1
+            break
+        fi
+
         # Check if there are unstaged changes (likely from pre-commit hooks auto-fixing files)
         if ! git diff --quiet 2>/dev/null; then
-            echo -e "  ${YELLOW}Pre-commit hooks modified files, re-staging and retrying...${NC}" >&2
-            # Re-stage only the files that were part of this commit
-            while IFS= read -r file; do
-                if [ -n "$file" ]; then
-                    git add "$file" 2>/dev/null || true
-                fi
-            done <<< "$STAGED_FILES"
-            # Retry the commit
-            if ! git commit -m "$MESSAGE" --quiet 2>/dev/null; then
-                echo "Error: Failed to create commit after retry: $MESSAGE" >&2
-                exit 1
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ "$RETRY_COUNT" -lt "$MAX_RETRIES" ]; then
+                echo -e "  ${YELLOW}Pre-commit hooks modified files, re-staging (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)...${NC}" >&2
+                # Re-stage only the files that were part of this commit
+                while IFS= read -r file; do
+                    if [ -n "$file" ]; then
+                        git add "$file" 2>/dev/null || true
+                    fi
+                done <<< "$STAGED_FILES"
             fi
         else
-            echo "Error: Failed to create commit: $MESSAGE" >&2
+            # No unstaged changes means hooks failed for a different reason
+            echo "Error: Pre-commit hooks failed for: $MESSAGE" >&2
+            echo "Run 'pre-commit run --all-files' to see details" >&2
             exit 1
         fi
+    done
+
+    if [ "$COMMIT_SUCCESS" -eq 0 ]; then
+        echo "Error: Failed to create commit after $MAX_RETRIES attempts: $MESSAGE" >&2
+        echo "Pre-commit hooks may be making repeated modifications" >&2
+        exit 1
     fi
 done
 
