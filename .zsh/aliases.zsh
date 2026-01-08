@@ -65,7 +65,7 @@ alias lt="l --tree"
 alias t="tmux"
 alias ta="tmux attach"
 alias td="tmux detach"
-alias tf="$DOTFILES/scripts/tmux-sessionizer"
+alias tf="$DOTFILES/scripts/tmux-sessionizer.sh"
 alias tl="tmux list-sessions"
 alias ts="tmux choose-tree -Zs"
 

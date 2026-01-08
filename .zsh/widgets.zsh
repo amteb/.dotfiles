@@ -5,7 +5,7 @@ function tmux_sessionizer_widget() {
     LBUFFER=""
     RBUFFER=""
     zle redisplay
-    zsh -c "$DOTFILES/scripts/tmux-sessionizer"
+    zsh -c "$DOTFILES/scripts/tmux-sessionizer.sh"
     zle reset-prompt
 }
 zle -N tmux_sessionizer_widget
