@@ -82,7 +82,7 @@ fi
 echo -n "Checking required tools... "
 MISSING_TOOLS=()
 for tool in git stow zsh; do
-    if ! command -v $tool >/dev/null 2>&1; then
+    if ! command -v "$tool" >/dev/null 2>&1; then
         MISSING_TOOLS+=("$tool")
     fi
 done
@@ -119,14 +119,14 @@ fi
 # Summary
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
+if [ "$ERRORS" -eq 0 ] && [ "$WARNINGS" -eq 0 ]; then
     echo -e "${GREEN}🎉 All checks passed! Your dotfiles are healthy.${NC}"
     exit 0
-elif [ $ERRORS -eq 0 ]; then
+elif [ "$ERRORS" -eq 0 ]; then
     echo -e "${YELLOW}⚠️  $WARNINGS warning(s). Consider addressing them.${NC}"
     exit 0
 else
     echo -e "${RED}❌ $ERRORS error(s) found. Please fix them.${NC}"
-    [ $WARNINGS -gt 0 ] && echo -e "${YELLOW}⚠️  Also $WARNINGS warning(s).${NC}"
+    [ "$WARNINGS" -gt 0 ] && echo -e "${YELLOW}⚠️  Also $WARNINGS warning(s).${NC}"
     exit 1
 fi

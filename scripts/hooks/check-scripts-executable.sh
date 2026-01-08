@@ -10,4 +10,4 @@ for file in "$@"; do
     fi
 done
 
-exit $ERRORS
+exit "$ERRORS"

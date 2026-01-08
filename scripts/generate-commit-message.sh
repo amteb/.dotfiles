@@ -67,6 +67,7 @@ if [ -z "$COMMIT_MSG" ]; then
 fi
 
 # Remove any markdown code blocks or quotes that Claude might add
+# shellcheck disable=SC2016 # Backticks are literal, not command substitution
 COMMIT_MSG=$(echo "$COMMIT_MSG" | sed 's/^`\+//;s/`\+$//;s/^"//;s/"$//')
 
 # Output the commit message

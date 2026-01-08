@@ -14,4 +14,4 @@ if git diff --cached | grep -q "export PATH=.*:" 2>/dev/null; then
     echo "WARNING: PATH should be appended, not overwritten (use path+= or add to array)"
 fi
 
-exit $ERRORS
+exit "$ERRORS"
