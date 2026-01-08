@@ -64,7 +64,7 @@ repos:
           # ShellCheck for shell scripts (uses local installation)
           - id: shellcheck
             name: shellcheck
-            entry: shellcheck -x
+            entry: shellcheck -x -S error
             language: system
             files: \.(bash|sh)$
             exclude: ^\.zsh

@@ -34,7 +34,7 @@ export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 } XDG_{CONFIG,CACHE,DATA,STATE}_HOME
 
 # Environment variables
-export DEV="$HOME/Dev"
+export CODE="$HOME/Documents/Vault/Code"
 export DOTFILES="$HOME/.dotfiles"
 export EDITOR='nvim'
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=TRUE
@@ -42,6 +42,7 @@ export HOMEBREW_NO_ENV_HINTS=TRUE
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export PAGER='less'
+export VAULT="$HOME/Documents/Vault/"
 export VISUAL='nvim'
 
 # Perl stuff
@@ -67,19 +68,19 @@ path=(
     "$HOME/bin"
     "$HOME/.local/bin"
     "/usr/local/bin"
-    "/opt/nvim-linux64/bin"
-    "/usr/local/go/bin"
-    "/usr/local/zig"
     "$HOME/go/bin"
 )
 
 # Conditional PATH additions
 _add_to_path \
+    "$HOME/perl5/bin" \
     "$HOME/squashfs-root/usr/bin" \
-    "/usr/local/node/bin" \
-    "/opt/mssql-tools18/bin" \
     "/home/linuxbrew/.linuxbrew/bin" \
-    "$HOME/perl5/bin"
+    "/opt/mssql-tools18/bin" \
+    "/opt/nvim-linux64/bin" \
+    "/usr/local/go/bin" \
+    "/usr/local/node/bin" \
+    "/usr/local/zig"
 
 export PATH
 
