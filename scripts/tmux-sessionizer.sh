@@ -36,9 +36,9 @@ get_project_paths() {
     declare -A paths
 
     add_paths_from_dir "$CODE/" "$FD_CMD"
-    add_paths_from_dir "$VAULT/Work/FinMath/CourseWork" "$FD_CMD"
+    add_paths_from_dir "$VAULT/Work/FinMath/Coursework" "$FD_CMD"
 
-    add_path_with_alias "FinMath" "$VAULT/Work/FinMath/CourseWork"
+    add_path_with_alias "FinMath" "$VAULT/Work/FinMath/Coursework"
 
     add_single_path "$DOTFILES"
     add_single_path "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault/"
