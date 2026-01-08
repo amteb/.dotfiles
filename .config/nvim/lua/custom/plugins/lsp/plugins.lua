@@ -23,6 +23,13 @@ return {
         },
     },
     { "b0o/schemastore.nvim" },
+    {
+        "Mythos-404/xmake.nvim",
+        version = "^3",
+        lazy = true,
+        event = "BufReadPost",
+        config = true,
+    },
 
     -- { "cordx56/rustowl", dependencies = { "neovim/nvim-lspconfig" } },
 }
