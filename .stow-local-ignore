@@ -50,3 +50,4 @@ _darcs
 .DS_Store
 docs/
 justfile
+.claude
