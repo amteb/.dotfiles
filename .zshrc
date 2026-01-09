@@ -28,6 +28,15 @@ zle -N edit-command-line
 bindkey '^xe' edit-command-line
 bindkey '^x^e' edit-command-line
 
+# Better word movement - respect path separators
+# Removes '/' from WORDCHARS so Ctrl+W stops at directory boundaries
+# Example: /usr/local/bin -> Ctrl+W removes 'bin', next Ctrl+W removes 'local'
+WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+
+# Alternative word selection styles for different contexts
+autoload -U select-word-style
+select-word-style bash
+
 # Completion system
 source ~/.dotfiles/.zsh/completions.zsh
 
