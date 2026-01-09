@@ -44,10 +44,37 @@ get_project_paths() {
     add_single_path "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault/"
 
 
-    local -a keys=("${(@k)paths}")
-    print -l "${(@)keys}" | $SORT_CMD -rf | $FZF_CMD | while read -r selected_display; do
-        [[ -n $selected_display ]] && echo "${paths[$selected_display]}"
+    # Output: "display_name\tfull_path" for fzf to use
+    local -a entries=()
+    for key in '${(@k)paths}'; do
+        entries+=("$key	${paths[$key]}")
     done
+
+    # Preview script shows project markers and recent git activity
+    local preview_cmd='
+        dir="{2}"
+        markers=""
+        [[ -d "$dir/.git" ]] && markers+="git "
+        [[ -f "$dir/package.json" ]] && markers+="node "
+        [[ -f "$dir/Cargo.toml" ]] && markers+="rust "
+        [[ -f "$dir/go.mod" ]] && markers+="go "
+        [[ -f "$dir/pyproject.toml" || -f "$dir/setup.py" ]] && markers+="python "
+        [[ -n "$markers" ]] && echo "[$markers]" || echo "[directory]"
+        echo "---"
+        if [[ -d "$dir/.git" ]]; then
+            git -C "$dir" log --oneline -5 2>/dev/null || echo "No commits"
+        else
+            ls -la "$dir" 2>/dev/null | head -10
+        fi
+    '
+
+    print -l "${(@)entries}" | $SORT_CMD -rf | \
+        $FZF_CMD --delimiter='\t' \
+                 --with-nth=1 \
+                 --preview "$preview_cmd" \
+                 --preview-window=right:50%:wrap \
+                 --height=80% | \
+        cut -f2
 }
 
 selected=${1:-$(get_project_paths)}
