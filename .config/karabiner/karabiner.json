@@ -2,26 +2,6 @@
     "global": { "show_in_menu_bar": false },
     "profiles": [
         {
-            "complex_modifications": {
-                "rules": [
-                    {
-                        "description": "Map Ctrl+Option to Right Click",
-                        "enabled": false,
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "simultaneous": [
-                                        { "key_code": "left_control" },
-                                        { "key_code": "left_option" }
-                                    ]
-                                },
-                                "to": [{ "pointing_button": "button2" }],
-                                "type": "basic"
-                            }
-                        ]
-                    }
-                ]
-            },
             "devices": [
                 {
                     "identifiers": {

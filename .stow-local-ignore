@@ -45,3 +45,8 @@ _darcs
 
 # Repository-specific git config
 ^\.gitconfig\.dotfiles
+
+# misc
+.DS_Store
+docs/
+justfile

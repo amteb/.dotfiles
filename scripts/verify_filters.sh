@@ -6,11 +6,8 @@
 echo "=== Git Filter Verification Script ==="
 echo ""
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+# Source centralized colors
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/colors.sh"
 
 # Check if filters are configured
 echo "1. Checking if git filters are configured..."
@@ -34,7 +31,7 @@ echo "2. Testing filter scripts..."
 TEST_INPUT="$HOME/test path $(git config user.name) $(git config user.email)"
 CLEAN_OUTPUT=$(echo "$TEST_INPUT" | ./scripts/clean.sh)
 
-if [[ "$CLEAN_OUTPUT" == *"%%HOME%%"* ]] && [[ "$CLEAN_OUTPUT" == *"%%GIT_NAME%%"* ]] && [[ "$CLEAN_OUTPUT" == *"%%GIT_EMAIL%%"* ]]; then
+if [[ "$CLEAN_OUTPUT" == *"~"* ]] && [[ "$CLEAN_OUTPUT" == *"Your Name"* ]] && [[ "$CLEAN_OUTPUT" == *"user@example.com"* ]]; then
     echo -e "${GREEN}✓ Clean filter working${NC}"
     echo "  Input:  $TEST_INPUT"
     echo "  Output: $CLEAN_OUTPUT"
@@ -46,7 +43,7 @@ else
 fi
 
 # Test smudge filter
-TEST_INPUT="%%HOME%%/test path %%GIT_NAME%% %%GIT_EMAIL%%"
+TEST_INPUT="~/test path Your Name user@example.com"
 SMUDGE_OUTPUT=$(echo "$TEST_INPUT" | ./scripts/smudge.sh)
 
 if [[ "$SMUDGE_OUTPUT" == *"$HOME"* ]] && [[ "$SMUDGE_OUTPUT" == *"$(git config user.name)"* ]] && [[ "$SMUDGE_OUTPUT" == *"$(git config user.email)"* ]]; then
@@ -85,13 +82,13 @@ fi
 
 # Check that placeholders exist in what will be stored
 PLACEHOLDERS_FOUND=0
-if git diff --cached --diff-filter=AM | grep -q "%%HOME%%" 2>/dev/null; then
+if git diff --cached --diff-filter=AM | grep -q "~" 2>/dev/null; then
     ((PLACEHOLDERS_FOUND++))
 fi
-if git diff --cached --diff-filter=AM | grep -q "%%GIT_NAME%%" 2>/dev/null; then
+if git diff --cached --diff-filter=AM | grep -q "Your Name" 2>/dev/null; then
     ((PLACEHOLDERS_FOUND++))
 fi
-if git diff --cached --diff-filter=AM | grep -q "%%GIT_EMAIL%%" 2>/dev/null; then
+if git diff --cached --diff-filter=AM | grep -q "user@example.com" 2>/dev/null; then
     ((PLACEHOLDERS_FOUND++))
 fi
 
@@ -110,7 +107,7 @@ echo "4. Checking for common personal info patterns in repo..."
 # Check if any files in the repo contain personal information
 FILES_WITH_ISSUES=()
 
-if grep -r "$GIT_EMAIL" --exclude-dir=.git --exclude="verify_filters.sh" . 2>/dev/null | grep -v "%%GIT_EMAIL%%" > /dev/null; then
+if grep -r "$GIT_EMAIL" --exclude-dir=.git --exclude="verify_filters.sh" . 2>/dev/null | grep -v "user@example.com" > /dev/null; then
     FILES_WITH_ISSUES+=("$GIT_EMAIL")
 fi
 

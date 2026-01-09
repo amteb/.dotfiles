@@ -5,9 +5,8 @@
 
 set -euo pipefail
 
-# Colors
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Source centralized colors
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/colors.sh"
 
 MAX_CHARS=20000
 

@@ -15,10 +15,10 @@
         }
       },
       "pointer" : {
-        "acceleration" : 2,
+        "acceleration" : 1.5,
         "disableAcceleration" : false,
         "redirectsToScroll" : false,
-        "speed" : 0.1084
+        "speed" : 0.125
       },
       "scrolling" : {
         "acceleration" : {

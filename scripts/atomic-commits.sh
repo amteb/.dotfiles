@@ -5,11 +5,8 @@
 
 set -euo pipefail
 
-# Colors
-BLUE='\033[0;34m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-NC='\033[0m' # No Color
+# Source centralized colors
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/colors.sh"
 
 # Check if claude command is available
 if ! command -v claude &>/dev/null; then
