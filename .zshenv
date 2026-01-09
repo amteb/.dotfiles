@@ -34,7 +34,7 @@ export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 } XDG_{CONFIG,CACHE,DATA,STATE}_HOME
 
 # Environment variables
-export CODE="$HOME/Documents/Vault/Projects/Code"
+export CODE="$HOME/Code"
 export DOTFILES="$HOME/.dotfiles"
 export EDITOR='nvim'
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=TRUE
