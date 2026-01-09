@@ -63,6 +63,32 @@ get_project_paths() {
         if [ -n "$markers" ]; then echo "[$markers ]"; else echo "[directory]"; fi
         echo "---"
         if [ -d "$dir/.git" ]; then
+            branch=$(/usr/bin/git -C "$dir" symbolic-ref --short HEAD 2>/dev/null || echo "detached")
+            git_status=$(/usr/bin/git -C "$dir" status --porcelain 2>/dev/null)
+            conflicted=$(echo "$git_status" | /usr/bin/grep -c "^UU\|^AA\|^DD" || true)
+            deleted=$(echo "$git_status" | /usr/bin/grep -c "^ D\|^D " || true)
+            renamed=$(echo "$git_status" | /usr/bin/grep -c "^R" || true)
+            modified=$(echo "$git_status" | /usr/bin/grep -c "^ M" || true)
+            staged=$(echo "$git_status" | /usr/bin/grep -c "^M\|^A" || true)
+            untracked=$(echo "$git_status" | /usr/bin/grep -c "^\?\?" || true)
+            stashed=$(/usr/bin/git -C "$dir" stash list 2>/dev/null | /usr/bin/wc -l | /usr/bin/tr -d " ")
+            upstream=$(/usr/bin/git -C "$dir" rev-parse --abbrev-ref @{u} 2>/dev/null)
+            if [ -n "$upstream" ]; then
+                ahead=$(/usr/bin/git -C "$dir" rev-list @{u}..HEAD 2>/dev/null | /usr/bin/wc -l | /usr/bin/tr -d " ")
+                behind=$(/usr/bin/git -C "$dir" rev-list HEAD..@{u} 2>/dev/null | /usr/bin/wc -l | /usr/bin/tr -d " ")
+            fi
+            status_str=" $branch "
+            [ "$conflicted" -gt 0 ] && status_str="${status_str}\033[31mc${conflicted}\033[0m"
+            [ "$deleted" -gt 0 ] && status_str="${status_str}\033[31mx${deleted}\033[0m"
+            [ "$renamed" -gt 0 ] && status_str="${status_str}\033[33mr${renamed}\033[0m"
+            [ "$modified" -gt 0 ] && status_str="${status_str}\033[33mm${modified}\033[0m"
+            [ "$staged" -gt 0 ] && status_str="${status_str}\033[32mg${staged}\033[0m"
+            [ "$untracked" -gt 0 ] && status_str="${status_str}\033[32mu${untracked}\033[0m"
+            [ "$stashed" -gt 0 ] && status_str="${status_str}\033[90ms${stashed}\033[0m"
+            [ -n "$ahead" ] && [ "$ahead" -gt 0 ] && status_str="${status_str}\033[36ma${ahead}\033[0m"
+            [ -n "$behind" ] && [ "$behind" -gt 0 ] && status_str="${status_str}\033[36mb${behind}\033[0m"
+            echo "$status_str"
+            echo "---"
             /usr/bin/git -C "$dir" log --oneline --color=always -5 2>/dev/null || echo "No commits"
             echo "---"
         fi
