@@ -74,9 +74,6 @@ zstyle ':completion:*' menu select
 # Autocomplete options for cd instead of directory stack
 zstyle ':completion:*' complete-options true
 
-zstyle ':completion:*' file-sort modification
-
-
 zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
 zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}-- %D %d --%f'
 zstyle ':completion:*:*:*:*:messages' format ' %F{purple} -- %d --%f'
@@ -100,6 +97,9 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 
 zstyle ':completion:*' keep-prefix true
 
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
+# Sort files by modification time (most recent first)
+zstyle ':completion:*' file-sort modification reverse
 
 ## For kubernetes
 # source $DOTFILES/zsh/plugins/kubectl-completion/_kubectl
