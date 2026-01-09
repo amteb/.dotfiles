@@ -20,8 +20,12 @@ function l {
         "$@"
 }
 
-function md {
-    mkdir -p "$1" && cd "$1"
+function md() {
+    if [[ -d "$1" ]]; then
+        echo "exists: $1" && cd "$1"
+    else
+        mkdir -p "$1" && echo "created: $1" && cd "$1"
+    fi
 }
 
 # System aliases
@@ -56,10 +60,17 @@ alias funcsync="uv sync && uv pip compile pyproject.toml --output-file requireme
 
 # CLI tools
 alias f="fd"
-alias fzv="v \$(fzf)"
+function fzv() {
+    local file
+    file=$(fzf --preview "bat --color=always --style=numbers --line-range=:500 {}" --preview-window=right:60%:wrap --height=80%)
+    [[ -n "$file" ]] && v "$file"
+}
 alias ld="lazydocker"
 alias lg="lazygit"
-alias lt="l --tree"
+function lt() {
+    local depth="${1:-2}"
+    eza -F -a --tree --level="$depth" --git --icons=always --group-directories-first "${@:2}"
+}
 
 # Tmux
 alias t="tmux"
