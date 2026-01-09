@@ -76,7 +76,7 @@ function lt() {
 alias t="tmux"
 alias ta="tmux attach"
 alias td="tmux detach"
-alias tf="$DOTFILES/scripts/tmux-sessionizer.sh"
+alias tf="$DOTFILES/scripts/tmux-sessionizer.zsh"
 alias tl="tmux list-sessions"
 alias ts="tmux choose-tree -Zs"
 
