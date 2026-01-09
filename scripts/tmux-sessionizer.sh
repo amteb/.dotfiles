@@ -46,26 +46,27 @@ get_project_paths() {
 
     # Output: "display_name\tfull_path" for fzf to use
     local -a entries=()
-    for key in '${(@k)paths}'; do
+    for key in ${(@k)paths}; do
         entries+=("$key	${paths[$key]}")
     done
 
-    # Preview script shows project markers and recent git activity
+    # Preview script shows project markers and recent git activity (POSIX sh compatible)
     local preview_cmd='
-        dir="{2}"
+        dir={2}
         markers=""
-        [[ -d "$dir/.git" ]] && markers+="git "
-        [[ -f "$dir/package.json" ]] && markers+="node "
-        [[ -f "$dir/Cargo.toml" ]] && markers+="rust "
-        [[ -f "$dir/go.mod" ]] && markers+="go "
-        [[ -f "$dir/pyproject.toml" || -f "$dir/setup.py" ]] && markers+="python "
-        [[ -n "$markers" ]] && echo "[$markers]" || echo "[directory]"
+        [ -d "$dir/.git" ] && markers="$markers git"
+        [ -f "$dir/package.json" ] && markers="$markers node"
+        [ -f "$dir/Cargo.toml" ] && markers="$markers rust"
+        [ -f "$dir/go.mod" ] && markers="$markers go"
+        [ -f "$dir/pyproject.toml" ] && markers="$markers python"
+        [ -f "$dir/setup.py" ] && markers="$markers python"
+        if [ -n "$markers" ]; then echo "[$markers ]"; else echo "[directory]"; fi
         echo "---"
-        if [[ -d "$dir/.git" ]]; then
-            git -C "$dir" log --oneline -5 2>/dev/null || echo "No commits"
-        else
-            ls -la "$dir" 2>/dev/null | head -10
+        if [ -d "$dir/.git" ]; then
+            /usr/bin/git -C "$dir" log --oneline --color=always -5 2>/dev/null || echo "No commits"
+            echo "---"
         fi
+        /opt/homebrew/bin/eza -la --color=always "$dir" 2>/dev/null | /usr/bin/head -15
     '
 
     print -l "${(@)entries}" | $SORT_CMD -rf | \
@@ -73,8 +74,9 @@ get_project_paths() {
                  --with-nth=1 \
                  --preview "$preview_cmd" \
                  --preview-window=right:50%:wrap \
+                 --ansi \
                  --height=80% | \
-        cut -f2
+        /usr/bin/cut -f2
 }
 
 selected=${1:-$(get_project_paths)}
