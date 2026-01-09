@@ -58,7 +58,7 @@ ${DIFF_TO_SEND}"
 echo -e "${BLUE}Generating commit message with Claude...${NC}" >&2
 
 # Try to get commit message from Claude
-COMMIT_MSG=$(claude -p "$PROMPT" 2>/dev/null | head -n 1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+COMMIT_MSG=$(claude --model haiku -p "$PROMPT" 2>/dev/null | head -n 1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
 # Validate the commit message
 if [ -z "$COMMIT_MSG" ]; then
