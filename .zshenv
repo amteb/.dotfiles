@@ -51,6 +51,10 @@ export PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_
 export PERL_MB_OPT="--install_base \"$HOME/perl5\""
 export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
 
+# PostgreSQL stuff
+export LDFLAGS="-L/opt/homebrew/opt/postgresql@18/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/postgresql@18/include"
+
 # PATH modifications
 typeset -U path
 
@@ -80,7 +84,10 @@ _add_to_path \
     "/opt/nvim-linux64/bin" \
     "/usr/local/go/bin" \
     "/usr/local/node/bin" \
-    "/usr/local/zig"
+    "/usr/local/zig" \
+    "/opt/homebrew/opt/postgresql@18/bin" \
+    "/opt/homebrew/opt/libpq/bin" \
+
 
 export PATH
 
