@@ -30,6 +30,25 @@ return {
         event = "BufReadPost",
         config = true,
     },
+    {
+        "madskjeldgaard/cppman.nvim",
+        requires = {
+            { "MunifTanjim/nui.nvim" }, -- Required dependency for the UI
+        },
+        config = function()
+            local cppman = require "cppman"
+            cppman.setup()
+
+            -- Keymaps for easy access
+            vim.keymap.set("n", "<leader>cm", function()
+                cppman.open_cppman_for(vim.fn.expand "<cword>") -- Open man page for the word under the cursor
+            end, { desc = "Open C++ man page for word under cursor" })
+
+            vim.keymap.set("n", "<leader>cc", function()
+                cppman.input() -- Open search prompt
+            end, { desc = "Open C++ man page search prompt" })
+        end,
+    },
 
     -- { "cordx56/rustowl", dependencies = { "neovim/nvim-lspconfig" } },
 }

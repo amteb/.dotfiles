@@ -11,3 +11,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         vim.highlight.on_yank()
     end,
 })
+--
+-- Set 'keywordprg' for C/C++ file types to use cppman
+-- vim.api.nvim_create_autocmd("FileType", {
+--     pattern = { "c", "cpp" },
+--     command = "setlocal keywordprg=cppman",
+-- })
