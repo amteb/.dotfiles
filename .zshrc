@@ -27,6 +27,7 @@ autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '^xe' edit-command-line
 bindkey '^x^e' edit-command-line
+bindkey '\ev' edit-command-line
 
 # Better word movement - respect path separators
 # Removes '/' from WORDCHARS so Ctrl+W stops at directory boundaries
