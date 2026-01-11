@@ -41,14 +41,34 @@ The repository includes configurations for:
 
 ### Scripts (`scripts/`)
 
-Utility scripts for system setup and workflow automation:
+Utility scripts for system setup and workflow automation. See [`scripts/README.md`](scripts/README.md) for detailed documentation.
 
+**Setup & Installation:**
 - **`setup.sh`** - Main setup script for installing dependencies and configuring the system
-- **`git-autosync`** - Automatically sync git repositories
-- **`tmux-sessionizer`** - Fuzzy finder for tmux sessions (bound to `Ctrl+F`)
-- **`tmux-windowizer`** - Fuzzy finder for tmux windows
-- **`smudge.sh` / `clean.sh`** - Git filters for username-agnostic configs
 - **`setup_smudge_clean.sh`** - Configure git smudge/clean filters
+
+**Git Filters (Username-Agnostic Configs):**
+- **`smudge.sh`** - Restore placeholders to local values on checkout
+- **`clean.sh`** - Replace personal values with placeholders on commit
+- **`apply_smudge.sh`** - Re-apply smudge filter to all repository files
+- **`verify_filters.sh`** - Verify filter configuration and functionality
+
+**AI-Powered Commit Tools:**
+- **`atomic-commits.sh`** - Analyze changes and create semantic atomic commits using Claude
+- **`generate-commit-message.sh`** - Generate conventional commit messages using Claude
+- **`calculate-next-version.sh`** - Calculate semantic version from conventional commits
+
+**Utilities:**
+- **`tmux-sessionizer.zsh`** - Fuzzy finder for tmux sessions (bound to `Ctrl+F`)
+- **`git-autosync.sh`** - Automatic git repository synchronization with cron scheduling
+- **`health.sh`** - Comprehensive dotfiles health check
+- **`colors.sh`** - Centralized ANSI color definitions for scripts
+
+**Pre-commit Hooks (`hooks/`):**
+- **`verify-no-personal-info.sh`** - Ensure personal data is filtered
+- **`verify-git-filters.sh`** - Check filter configuration
+- **`check-scripts-executable.sh`** - Verify script permissions
+- **`check-common-mistakes.sh`** - Detect bash in zsh, PATH overwrites
 
 ### Other Files
 
@@ -443,4 +463,3 @@ These are personal dotfiles, but feel free to fork and adapt them for your own u
 ## Acknowledgments
 
 Inspired by the dotfiles community and countless hours of configuration tweaking. Special thanks to the developers of the tools configured here.
-# Testing atomic commits
