@@ -2,7 +2,7 @@
 
 # Alias-like functions (wrappers with default arguments)
 function g {
-    glow -t "$@"
+    glow "$@"
 }
 
 function l {
