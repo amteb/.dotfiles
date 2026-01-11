@@ -49,6 +49,7 @@ return {
             end, { desc = "Open C++ man page search prompt" })
         end,
     },
+    { "Civitasv/cmake-tools.nvim", opts = {} },
 
     -- { "cordx56/rustowl", dependencies = { "neovim/nvim-lspconfig" } },
 }
