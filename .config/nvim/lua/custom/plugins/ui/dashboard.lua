@@ -3,11 +3,30 @@ return {
     event = "VimEnter",
     priority = 999,
     config = function()
+        local function get_header()
+            local cwd = vim.fn.getcwd()
+            local dir_name = vim.fn.fnamemodify(cwd, ":t")
+            if dir_name == "" then
+                dir_name = cwd
+            end
+
+            local ok, result = pcall(vim.fn.systemlist, "figlet -w 100 -f colossal " .. dir_name)
+            if ok and result and #result > 0 then
+                return result
+            end
+
+            return { dir_name }
+        end
+
         require("dashboard").setup {
             theme = "hyper",
+            disable_move = true,
+            shortcut_type = "number",
+            disable = { winbar = true, statusline = true, tabline = true },
             config = {
-                week_header = {
-                    enable = true,
+                header = get_header(),
+                packages = {
+                    enabled = false,
                 },
                 shortcut = {
                     {
