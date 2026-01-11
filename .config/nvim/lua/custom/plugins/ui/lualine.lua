@@ -52,6 +52,11 @@ return {
                 b = { bg = colors.base.background, fg = colors.base.cyan },
                 c = { bg = colors.base.background, fg = colors.statusBar.activeForeground },
             },
+            terminal = {
+                a = { bg = colors.base.blue, fg = colors.base.black, gui = "bold" },
+                b = { bg = colors.base.background, fg = colors.base.blue },
+                c = { bg = colors.base.background, fg = colors.statusBar.activeForeground },
+            },
             inactive = {
                 a = { bg = colors.base.background, fg = colors.base.dimmed1 },
                 b = { bg = colors.base.background, fg = colors.base.dimmed1 },
