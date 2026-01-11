@@ -38,8 +38,6 @@ get_project_paths() {
     add_single_path "$DOTFILES"
     add_single_path "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault/"
     add_paths_from_dir "$CODE/" "$FD_CMD"
-    add_path_with_alias "FinMath" "$CODE/Assignments"
-
 
     # Output: "display_name\tfull_path" for fzf to use
     local -a entries=()
