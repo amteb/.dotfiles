@@ -226,6 +226,11 @@ function gcr() {
     fi
 }
 
+# Git commit and push
+function gcrp() {
+    gcr && git push
+}
+
 # Git release - create a semantic version tag and GitHub release
 function grel() {
     local use_single_commit=0
