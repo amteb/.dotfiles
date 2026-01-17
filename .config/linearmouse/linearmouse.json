@@ -96,6 +96,25 @@
           "vertical" : false
         }
       }
+    },
+    {
+      "buttons" : {
+        "universalBackForward" : true
+      },
+      "if" : {
+        "device" : {
+          "category" : "mouse",
+          "productID" : "0xc098",
+          "productName" : "G502 X LIGHTSPEED",
+          "serialNumber" : "6AFEF577",
+          "vendorID" : "0x46d"
+        }
+      },
+      "scrolling" : {
+        "reverse" : {
+          "vertical" : true
+        }
+      }
     }
   ]
 }
