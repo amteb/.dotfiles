@@ -46,6 +46,10 @@ function M.setup()
     --   "+p to paste from system clipboard
     -- Regular y/d/p will use internal registers only
     vim.opt.clipboard = ""
+
+    vim.api.nvim_create_user_command("Clip", function(opts)
+        vim.cmd(opts.line1 .. "," .. opts.line2 .. "yank +")
+    end, { range = true })
 end
 
 return M
