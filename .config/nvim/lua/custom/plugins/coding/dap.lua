@@ -96,6 +96,7 @@ return {
                 -- Update this to ensure that you have the debuggers for the langs you want
                 -- "delve",
                 "debugpy",
+                "codelldb",
             },
         }
 
@@ -168,5 +169,33 @@ return {
                 },
             },
         })
+
+        -- C/C++ configuration with codelldb
+        dap.adapters.codelldb = {
+            type = "server",
+            port = "${port}",
+            executable = {
+                command = vim.fn.stdpath "data" .. "/mason/bin/codelldb",
+                args = { "--port", "${port}" },
+            },
+        }
+
+        dap.configurations.cpp = {
+            {
+                name = "Launch",
+                type = "codelldb",
+                request = "launch",
+                program = function()
+                    return vim.fn.input(
+                        "Path to executable: ",
+                        vim.fn.getcwd() .. "/build/",
+                        "file"
+                    )
+                end,
+                cwd = "${workspaceFolder}",
+                stopOnEntry = false,
+            },
+        }
+        dap.configurations.c = dap.configurations.cpp
     end,
 }
