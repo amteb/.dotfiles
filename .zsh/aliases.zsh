@@ -28,6 +28,10 @@ function md() {
     fi
 }
 
+function rmr() {
+    rm -r "$@"
+}
+
 # System aliases
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias clip="pbcopy"
