@@ -3,9 +3,9 @@
     "agent": {
         "// --- 1. STRATEGY & MANAGEMENT TIER ---": {},
         "manager": {
-            "mode": "primary",
+            "mode": "subagent",
             "model": "anthropic/claude-opus-4-5",
-            "prompt": "{file:./Agents/Manager.md}",
+            "prompt": "{agents/manager.md}",
             "tools": {
                 "task": true,
                 "bash": true,
@@ -15,7 +15,7 @@
         "product_owner": {
             "mode": "subagent",
             "model": "anthropic/claude-opus-4-5",
-            "prompt": "{file:./Agents/ProductOwner.md}",
+            "prompt": "{agents/product-owner.md}",
             "tools": {
                 "task": true,
                 "bash": true,
@@ -26,7 +26,7 @@
         "scrum_master": {
             "mode": "subagent",
             "model": "anthropic/claude-opus-4-5",
-            "prompt": "{file:./Agents/ScrumMaster.md}",
+            "prompt": "{agents/scrum-master.md}",
             "tools": {
                 "read": true,
                 "bash": true,
@@ -38,7 +38,7 @@
         "architect": {
             "mode": "subagent",
             "model": "anthropic/claude-sonnet-4-5",
-            "prompt": "{file:./Agents/Architect.md}",
+            "prompt": "{agents/architect.md}",
             "tools": {
                 "read": true,
                 "write": true,
@@ -48,7 +48,7 @@
         "architect_fallback": {
             "mode": "subagent",
             "model": "anthropic/claude-sonnet-4-0",
-            "prompt": "{file:./Agents/Architect.md}",
+            "prompt": "{agents/architect.md}",
             "tools": {
                 "read": true,
                 "write": true,
@@ -58,7 +58,7 @@
         "archaeologist": {
             "mode": "subagent",
             "model": "opencode/grok-code",
-            "prompt": "{file:./Agents/Archaeologist.md}",
+            "prompt": "{agents/archaeologist.md}",
             "tools": {
                 "read": true,
                 "write": true,
@@ -68,7 +68,7 @@
         "cab": {
             "mode": "subagent",
             "model": "anthropic/claude-opus-4-5",
-            "prompt": "{file:./Agents/CAB.md}",
+            "prompt": "{agents/cab.md}",
             "tools": {
                 "read": true,
                 "bash": true,
@@ -80,7 +80,7 @@
         "dev_senior": {
             "mode": "subagent",
             "model": "anthropic/claude-sonnet-4-5",
-            "prompt": "{file:./Agents/DevSenior.md}",
+            "prompt": "{agents/dev-senior.md}",
             "tools": {
                 "read": true,
                 "write": true,
@@ -90,7 +90,7 @@
         "dev_senior_fallback": {
             "mode": "subagent",
             "model": "anthropic/claude-sonnet-4-0",
-            "prompt": "{file:./Agents/DevSenior.md}",
+            "prompt": "{agents/dev-senior.md}",
             "tools": {
                 "read": true,
                 "write": true,
@@ -100,7 +100,7 @@
         "dev_junior": {
             "mode": "subagent",
             "model": "anthropic/claude-haiku-4-5",
-            "prompt": "{file:./Agents/DevJunior.md}",
+            "prompt": "{agents/dev-junior.md}",
             "tools": {
                 "read": true,
                 "write": true,
@@ -111,7 +111,7 @@
         "librarian": {
             "mode": "subagent",
             "model": "google/gemini-2.5-pro",
-            "prompt": "{file:./Agents/Librarian.md}",
+            "prompt": "{agents/librarian.md}",
             "tools": {
                 "read": true,
                 "write": true,
