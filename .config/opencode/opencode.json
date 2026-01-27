@@ -1,4 +1,123 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "default_agent": "manager"
+    "$schema": "https://opencode.ai/config.json",
+    "agent": {
+        "// --- 1. STRATEGY & MANAGEMENT TIER ---": {},
+        "manager": {
+            "mode": "primary",
+            "model": "anthropic/claude-opus-4-5",
+            "prompt": "{file:./Agents/Manager.md}",
+            "tools": {
+                "task": true,
+                "bash": true,
+                "list_directory": true
+            }
+        },
+        "product_owner": {
+            "mode": "subagent",
+            "model": "anthropic/claude-opus-4-5",
+            "prompt": "{file:./Agents/ProductOwner.md}",
+            "tools": {
+                "task": true,
+                "bash": true,
+                "write": true,
+                "read": true
+            }
+        },
+        "scrum_master": {
+            "mode": "subagent",
+            "model": "anthropic/claude-opus-4-5",
+            "prompt": "{file:./Agents/ScrumMaster.md}",
+            "tools": {
+                "read": true,
+                "bash": true,
+                "write": true,
+                "list_directory": true
+            }
+        },
+        "// --- 2. ANALYSIS & DESIGN TIER ---": {},
+        "architect": {
+            "mode": "subagent",
+            "model": "anthropic/claude-sonnet-4-5",
+            "prompt": "{file:./Agents/Architect.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true
+            }
+        },
+        "architect_fallback": {
+            "mode": "subagent",
+            "model": "anthropic/claude-sonnet-4-0",
+            "prompt": "{file:./Agents/Architect.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true
+            }
+        },
+        "archaeologist": {
+            "mode": "subagent",
+            "model": "opencode/grok-code",
+            "prompt": "{file:./Agents/Archaeologist.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true
+            }
+        },
+        "cab": {
+            "mode": "subagent",
+            "model": "anthropic/claude-opus-4-5",
+            "prompt": "{file:./Agents/CAB.md}",
+            "tools": {
+                "read": true,
+                "bash": true,
+                "write": true,
+                "list_directory": true
+            }
+        },
+        "// --- 3. BUILD TIER (AD-TDD) ---": {},
+        "dev_senior": {
+            "mode": "subagent",
+            "model": "anthropic/claude-sonnet-4-5",
+            "prompt": "{file:./Agents/DevSenior.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true
+            }
+        },
+        "dev_senior_fallback": {
+            "mode": "subagent",
+            "model": "anthropic/claude-sonnet-4-0",
+            "prompt": "{file:./Agents/DevSenior.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true
+            }
+        },
+        "dev_junior": {
+            "mode": "subagent",
+            "model": "anthropic/claude-haiku-4-5",
+            "prompt": "{file:./Agents/DevJunior.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true
+            }
+        },
+        "// --- 4. CLOSURE TIER ---": {},
+        "librarian": {
+            "mode": "subagent",
+            "model": "google/gemini-2.5-pro",
+            "prompt": "{file:./Agents/Librarian.md}",
+            "tools": {
+                "read": true,
+                "write": true,
+                "bash": true,
+                "list_directory": true
+            }
+        }
+    }
 }
