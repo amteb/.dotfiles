@@ -52,3 +52,7 @@ vim.keymap.set("n", "]r", ":cnext<CR>", { desc = "Next reference" })
 vim.keymap.set("n", "[r", ":cprev<CR>", { desc = "Previous reference" })
 
 vim.api.nvim_set_keymap("c", "W", "w", { noremap = true, silent = true })
+
+-- Copy to system clipboard
+vim.keymap.set("n", "<leader>Y", "<cmd>Clip<CR>", { desc = "Copy line to system clipboard" })
+vim.keymap.set("v", "<leader>Y", ":'<,'>Clip<CR>", { desc = "Copy selection to system clipboard" })
