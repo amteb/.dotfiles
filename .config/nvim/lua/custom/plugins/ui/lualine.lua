@@ -16,12 +16,10 @@ end
 return {
     "nvim-lualine/lualine.nvim",
     lazy = false,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons", "loctvl842/monokai-pro.nvim" },
     config = function()
-        local colors = require "monokai-pro.colorscheme"
+        local colors = require("monokai-pro").get_scheme()
         colors.base.background = "#161616"
-        -- current ghostty background, if i set NONE it reverts back to monokai's dark2
-        -- TODO: find better way to have transparent bg
 
         vim.opt.cmdheight = 0 -- Minimize command line space
         vim.opt.laststatus = 3 -- Global statusline

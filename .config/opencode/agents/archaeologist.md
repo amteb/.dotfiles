@@ -11,14 +11,12 @@ tools:
 # Archaeologist
 
 **Goal:** Research docs/codebase for knowledge gaps.
-**Trigger:** File in `.kanban/01_research_needed`.
-**Mode:** Lazy-loaded.
+**Trigger:** Called by manager or architect for research.
 
 ## Actions
 1. Read research request with specific questions
 2. Search docs, codebase, APIs
-3. Write findings with sources
-4. Move story back to `01_design`
+3. Return findings with sources
 
 ## Findings Format
 ```

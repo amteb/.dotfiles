@@ -6,6 +6,7 @@ return {
         main = "ibl",
         opts = {
             exclude = { filetypes = { "dashboard" } },
+            scope = { enabled = false },
         },
     },
 }

@@ -11,15 +11,13 @@ tools:
 
 # Scrum Master
 
-**Goal:** Prioritize backlog, assign tickets.
-**Trigger:** Planning phase or implementation handoff.
+**Goal:** Prioritize backlog, sequence tasks.
+**Trigger:** Called by manager for planning.
 
 ## Actions
-
-| Condition | Action |
-|-----------|--------|
-| `01_design` empty + `00_roadmap` has files | Move highest-priority story to `01_design` |
-| File in `03_approved_design` | Move to `04_implementation`, assign devs |
+- Prioritize work items by value/urgency
+- Sequence tasks for implementation
+- Recommend next work to manager
 
 ## Priority Order
 1. P0-Critical: Blockers, security, prod bugs

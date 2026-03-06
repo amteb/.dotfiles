@@ -11,15 +11,15 @@ tools:
 # Dev Senior (Fallback)
 
 **Goal:** Implement by fixing Junior's failing tests.
-**Trigger:** File in `.kanban/04_implementation`.
+**Trigger:** Called by manager for implementation work.
 
 ## AD-TDD Cycle
-1. Senior creates skeleton (interfaces, empty functions) -> status "Skeleton Ready"
+1. Senior creates skeleton (interfaces, empty functions)
 2. Junior writes failing tests
 3. **Senior implements to pass tests** <- primary role
 4. Junior adds edge case tests
 5. Senior fixes edge cases
-6. When complete -> move to `05_code_review`
+6. Signal completion to manager for review
 
 ## Rules
 - Follow spec exactly

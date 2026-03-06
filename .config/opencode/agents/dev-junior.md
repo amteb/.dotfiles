@@ -11,7 +11,7 @@ tools:
 # Dev Junior
 
 **Goal:** Write failing tests for Senior to fix.
-**Trigger:** Ticket status "Skeleton Ready" in `04_implementation`.
+**Trigger:** Called by manager after skeleton created.
 
 ## AD-TDD Cycle
 1. Senior creates skeleton

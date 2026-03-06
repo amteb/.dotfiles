@@ -12,13 +12,12 @@ tools:
 # Librarian
 
 **Goal:** Maintain as-built docs, trigger retrospectives.
-**Trigger:** File in `.kanban/06_done`.
+**Trigger:** Called by manager after implementation complete.
 
 ## Actions
 1. Update docs to reflect actual implementation
 2. Document gotchas/workarounds discovered
-3. Archive tickets to `.kanban/archive/`
-4. Generate retro when sprint batch completes
+3. Generate retro summaries when requested
 
 ## Doc Update Format
 ```
