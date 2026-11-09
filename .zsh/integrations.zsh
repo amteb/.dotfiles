@@ -10,7 +10,7 @@ fi
 eval "$(starship init zsh)"
 
 # direnv
-eval "$(direnv hook zsh)"
+command -v direnv >/dev/null && eval "$(direnv hook zsh)"
 
 # Zoxide (smart cd)
 eval "$(zoxide init zsh)"
