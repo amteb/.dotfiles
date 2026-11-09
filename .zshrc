@@ -58,3 +58,6 @@ source ~/.dotfiles/.zsh/integrations.zsh
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# rustup (Homebrew, keg-only): shims must precede /usr/bin so rust-toolchain.toml is honoured
+export PATH="/home/linuxbrew/.linuxbrew/opt/rustup/bin:$PATH"
