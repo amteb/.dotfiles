@@ -15,9 +15,6 @@ eval "$(direnv hook zsh)"
 # Zoxide (smart cd)
 eval "$(zoxide init zsh)"
 
-# Atuin (shell history)
-eval "$(atuin init zsh --disable-up-arrow)"
-
 # Opam (OCaml package manager)
 # This section can be safely removed if not using OCaml
 [[ ! -r '/Users/antonio/.opam/opam-init/init.zsh' ]] || source '/Users/antonio/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null

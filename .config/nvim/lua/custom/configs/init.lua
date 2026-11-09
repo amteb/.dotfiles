@@ -12,3 +12,4 @@ require "custom.configs.autocmds"
 require("custom.configs.clipboard").setup()
 require("custom.configs.resize").setup()
 require "custom.configs.filetypes"
+require "custom.configs.treesitter"

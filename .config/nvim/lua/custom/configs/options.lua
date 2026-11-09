@@ -73,8 +73,4 @@ vim.opt.hlsearch = true
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Configure underlines for diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-        underline = true,
-    })
+vim.diagnostic.config { underline = true }
