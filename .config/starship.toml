@@ -182,7 +182,7 @@ symbol = " "
 [direnv]
 disabled = false
 format = "[|](bright-black) [$symbol]($style)[$loaded/$allowed](7) "
-symbol = "󱃻 "
+symbol = " "
 allowed_msg = "a"
 not_allowed_msg = "n"
 denied_msg = "d"
@@ -327,11 +327,11 @@ symbol = " "
 
 [memory_usage]
 format = "[|](bright-black) $symbol[$ram( | $swap)]($style) "
-symbol = "󰍛 "
+symbol = " "
 
 [meson]
 format = "[|](bright-black) [$symbol$project]($style) "
-symbol = "󰔷 "
+symbol = " "
 
 [mise]
 format = "[|](bright-black) [$symbol$health]($style) "
@@ -347,7 +347,7 @@ format = "[|](bright-black) [$symbol \\[$name\\]]($style) "
 
 [nim]
 format = "[|](bright-black) [$symbol($version)]($style) "
-symbol = "󰆥 "
+symbol = " "
 
 [nix_shell]
 format = "[|](bright-black) [$symbol$state( \\($name\\))]($style) "
@@ -391,10 +391,10 @@ Emscripten = " "
 EndeavourOS = " "
 Fedora = " "
 FreeBSD = " "
-Garuda = "󰛓 "
+Garuda = ""
 Gentoo = " "
-HardenedBSD = "󰞌 "
-Illumos = "󰈸 "
+HardenedBSD = ""
+Illumos = ""
 Kali = " "
 Linux = " "
 Mabox = " "
@@ -406,25 +406,25 @@ Mint = " "
 NetBSD = " "
 NixOS = " "
 Nobara = " "
-OpenBSD = "󰈺 "
+OpenBSD = ""
 openSUSE = " "
-OracleLinux = "󰌷 "
+OracleLinux = ""
 Pop = " "
 Raspbian = " "
 Redhat = " "
 RedHatEnterprise = " "
 RockyLinux = " "
-Redox = "󰀘 "
-Solus = "󰠳 "
+Redox = ""
+Solus = ""
 SUSE = " "
 Ubuntu = " "
 Unknown = " "
 Void = " "
-Windows = "󰍲 "
+Windows = " "
 
 [package]
 format = "[|](bright-black) [$symbol$version]($style) "
-symbol = "󰏗 "
+symbol = " "
 
 [perl]
 format = "[|](bright-black) [$symbol($version)]($style) "
@@ -440,7 +440,7 @@ symbol = " "
 
 [pixi]
 format = "[|](bright-black) [$symbol$version( $environment)]($style) "
-symbol = "󰏗 "
+symbol = " "
 
 [pulumi]
 format = "[|](bright-black) [$symbol$stack]($style) "
@@ -464,7 +464,7 @@ format = "[|](bright-black) [$symbol($version)]($style) "
 
 [rlang]
 format = "[|](bright-black) [$symbol($version)]($style) "
-symbol = "󰟔 "
+symbol = " "
 
 [ruby]
 format = "[|](bright-black) [$symbol($version)]($style) "
@@ -472,7 +472,7 @@ symbol = " "
 
 [rust]
 format = "[|](bright-black) [$symbol($version)]($style) "
-symbol = "󱘗 "
+symbol = " "
 
 [scala]
 format = "[|](bright-black) [$symbol($version)]($style) "
@@ -482,7 +482,7 @@ symbol = " "
 style = "cyan bold"
 bash_indicator = "b"
 zsh_indicator = "z"
-fish_indicator = "󰈺 "
+fish_indicator = "><>"
 powershell_indicator = "_"
 cmd_indicator = "c"
 unknown_indicator = "mystery shell"
@@ -537,4 +537,4 @@ format = "[|](bright-black) [$symbol($version)]($style) "
 symbol = " "
 
 [directory]
-read_only = " 󰌾"
+read_only = " "
