@@ -1,166 +1,139 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-# Get script directory (macOS compatible)
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    SCRIPT_DIR=$(dirname "$(greadlink -f "$0" 2>/dev/null || readlink "$0" 2>/dev/null || echo "$0")")
-else
-    SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
-fi
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# Function to check if a command exists
 command_exists() {
     command -v "$1" > /dev/null 2>&1
 }
 
-# Function to prompt user for installation
 prompt_install() {
     printf "Do you want to install %s? (y/n) " "$1"
     read -r REPLY
-    case "$REPLY" in
-        [Yy]*)
-            return 0
-            ;;
-        *)
-            return 1
-            ;;
+    [[ "$REPLY" =~ ^[Yy] ]]
+}
+
+# Detect OS, architecture and native package manager
+case "$(uname -m)" in
+    x86_64|amd64) ARCH="x86_64"; NVIM_ARCH="x86_64" ;;
+    arm64|aarch64) ARCH="aarch64"; NVIM_ARCH="arm64" ;;
+    *) echo "Unsupported architecture: $(uname -m)"; exit 1 ;;
+esac
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OS="mac"
+    PM="brew"
+elif command_exists apt-get; then
+    OS="linux"
+    PM="apt"
+elif command_exists dnf; then
+    OS="linux"
+    PM="dnf"
+elif command_exists pacman; then
+    OS="linux"
+    PM="pacman"
+else
+    echo "No supported package manager found (brew, apt, dnf, pacman)"
+    exit 1
+fi
+
+# Install via the native package manager
+pm_install() {
+    case "$PM" in
+        brew) brew install "$@" ;;
+        apt) sudo apt-get install -y "$@" ;;
+        dnf) sudo dnf install -y "$@" ;;
+        pacman) sudo pacman -S --needed --noconfirm "$@" ;;
     esac
 }
 
-# Detect OS and set package manager
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    OS="mac"
-    PKG_MGR="brew install"
-else
-    OS="linux"
-    PKG_MGR="sudo apt install -y"
-fi
+pm_update() {
+    case "$PM" in
+        brew) brew update ;;
+        apt) sudo apt-get update && sudo apt-get upgrade -y ;;
+        dnf) sudo dnf upgrade -y ;;
+        pacman) sudo pacman -Syu --noconfirm ;;
+    esac
+}
 
-# Function to install a package based on OS
+# Package names that differ from the command name
+pkg_name() {
+    case "$PM:$1" in
+        apt:fd|dnf:fd) echo "fd-find" ;;
+        apt:bat) echo "bat" ;;
+        *) echo "$1" ;;
+    esac
+}
+
+# Fetch a GitHub release tarball and extract a single binary into ~/.local/bin
+install_release_binary() {
+    local url="$1" binary="$2" tmp
+    tmp=$(mktemp -d)
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL "$url" | tar -xz -C "$tmp"
+    install -m 755 "$(find "$tmp" -type f -name "$binary" | head -1)" "$HOME/.local/bin/$binary"
+    rm -rf "$tmp"
+}
+
+install_neovim() {
+    if [[ "$OS" == "mac" || "$PM" == "pacman" ]]; then
+        pm_install neovim
+        return
+    fi
+    local tarball="nvim-linux-${NVIM_ARCH}.tar.gz"
+    curl -fLO "https://github.com/neovim/neovim/releases/latest/download/$tarball"
+    sudo rm -rf "/opt/nvim-linux-${NVIM_ARCH}"
+    sudo tar -C /opt -xzf "$tarball"
+    sudo ln -sf "/opt/nvim-linux-${NVIM_ARCH}/bin/nvim" /usr/local/bin/nvim
+    rm "$tarball"
+}
+
 install_package() {
     local package="$1"
     case "$package" in
-        # Cross-platform packages that work with standard package managers
-        bat|fzf|ripgrep|jq|tmux|keychain|neovim|stow|unzip)
-            if [[ "$OS" == "mac" ]]; then
-                brew install "$package"
-            else
-                if [[ "$package" == "neovim" ]]; then
-                    # Linux manual installation for latest version
-                    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz \
-                    && sudo rm -rf /opt/nvim \
-                    && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
-                    && rm nvim-linux64.tar.gz
-                elif [[ "$package" == "unzip" ]]; then
-                    echo "unzip should be pre-installed"
-                else
-                    $PKG_MGR "$package"
-                fi
-            fi
-            ;;
-        # OS-specific package names
-        fd)
-            if [[ "$OS" == "mac" ]]; then
-                brew install fd
-            else
-                $PKG_MGR fd-find
-            fi
+        neovim) install_neovim ;;
+        fd) pm_install "$(pkg_name fd)" ;;
+        build-essential)
+            case "$PM" in
+                apt) pm_install build-essential ;;
+                dnf) sudo dnf group install -y development-tools ;;
+                pacman) pm_install base-devel ;;
+            esac
             ;;
         git-delta)
             if [[ "$OS" == "mac" ]]; then
-                brew install git-delta
+                pm_install git-delta
             else
-                # Linux manual installation
-                url=$(curl -s https://api.github.com/repos/dandavison/delta/releases/latest | jq -r '.assets[] | select(.name | contains("delta-") and contains("x86_64-unknown-linux-gnu.tar.gz")) | .browser_download_url')
-                wget "$url" -O /tmp/delta.tar.gz \
-                && dirname=$(tar -tzf /tmp/delta.tar.gz | head -1 | cut -f1 -d"/") \
-                && tar -xzf /tmp/delta.tar.gz -C /tmp \
-                && mv "/tmp/$dirname/delta" "$HOME/.local/bin" \
-                && rm -r "/tmp/$dirname" \
-                && rm /tmp/delta.tar.gz
+                local url
+                url=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest \
+                    | jq -r --arg a "$ARCH-unknown-linux-gnu.tar.gz" '.assets[] | select(.name | startswith("delta-") and endswith($a)) | .browser_download_url' \
+                    | head -1)
+                install_release_binary "$url" delta
             fi
             ;;
-        # Cross-platform curl installers
-        zoxide|uv)
-            if [[ "$package" == "zoxide" ]]; then
-                curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-            else
-                curl -LsSf https://astral.sh/uv/install.sh | sh
-            fi
-            ;;
-        # Special cases
         eza)
-            if [[ "$OS" == "mac" ]]; then
-                brew install eza
+            if [[ "$OS" == "mac" || "$PM" == "pacman" ]]; then
+                pm_install eza
             else
-                wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz \
-                && sudo chmod +x eza \
-                && sudo chown root:root eza \
-                && sudo mv eza /usr/local/bin/eza
+                install_release_binary "https://github.com/eza-community/eza/releases/latest/download/eza_${ARCH}-unknown-linux-gnu.tar.gz" eza
             fi
             ;;
-        tlrc)
-            brew install tlrc  # Available on both platforms via brew
-            ;;
-        sd)
-            if [[ "$OS" == "mac" ]]; then
-                brew install sd
+        zoxide) curl -sSf https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh ;;
+        uv) curl -LsSf https://astral.sh/uv/install.sh | sh ;;
+        # Not in apt/dnf: use Homebrew, which is installed below on Linux
+        tlrc|antidote|gitleaks|sd)
+            if [[ "$OS" == "mac" || "$PM" == "pacman" && "$package" == "sd" ]]; then
+                pm_install "$package"
             else
-                $PKG_MGR sd
+                command_exists brew || { echo "Homebrew required for $package, install it first"; return 1; }
+                brew install "$package"
             fi
             ;;
-        build-essential)
-            if [[ "$OS" == "linux" ]]; then
-                $PKG_MGR build-essential
-            fi
-            ;;
-        *)
-            echo "Unknown package: $package"
-            return 1
-            ;;
+        *) pm_install "$package" ;;
     esac
 }
 
-# List of utility commands to install
-if [[ "$OS" == "mac" ]]; then
-    UTILS="curl wget git bat fd fzf ripgrep sd jq zoxide eza git-delta uv tlrc keychain tmux neovim stow"
-else
-    UTILS="curl wget git build-essential bat fd fzf ripgrep sd jq zoxide eza git-delta uv tlrc keychain tmux neovim unzip stow"
-fi
-
-# Install utility commands
-for util in $UTILS; do
-    if ! command_exists "$util"; then
-        if prompt_install "$util"; then
-            install_package "$util"
-        fi
-    else
-        echo "$util is already installed."
-    fi
-done
-
-# Update system packages
-if [[ "$OS" == "mac" ]]; then
-    echo "Updating Homebrew..."
-    brew update
-else
-    echo "Updating system packages..."
-    sudo apt update && sudo apt upgrade -y
-fi
-
-# Install neofetch if not already installed
-if ! command_exists neofetch; then
-    if prompt_install "neofetch"; then
-        if [[ "$OS" == "mac" ]]; then
-            brew install neofetch
-        else
-            sudo apt install neofetch
-        fi
-    fi
-else
-    echo "neofetch is already installed."
-fi
-
-# Install Homebrew if not already installed (Linux only, macOS has it by default)
+# Install Homebrew first on Linux so brew-only packages resolve
 if [[ "$OS" == "linux" ]] && ! command_exists brew; then
     if prompt_install "Homebrew"; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -168,22 +141,50 @@ if [[ "$OS" == "linux" ]] && ! command_exists brew; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         fi
     fi
-elif [[ "$OS" == "mac" ]]; then
-    echo "Homebrew should be pre-installed on macOS."
+elif [[ "$OS" == "mac" ]] && ! command_exists brew; then
+    echo "Homebrew not found. Install it from https://brew.sh and rerun."
+    exit 1
 fi
 
-# Install and configure zsh if not already the default shell
-if [ "$SHELL" != "$(which zsh)" ]; then
-    if prompt_install "zsh and set it as your default shell"; then
-        if [[ "$OS" == "mac" ]]; then
-            echo "zsh is pre-installed on macOS"
-        else
-            sudo apt install zsh
-        fi
-        chsh -s "$(which zsh)"
+echo "Updating system packages..."
+pm_update
+
+# Map a package to the command it provides
+cmd_for() {
+    case "$1" in
+        neovim) echo nvim ;;
+        ripgrep) echo rg ;;
+        git-delta) echo delta ;;
+        fd) command_exists fd && echo fd || echo fdfind ;;
+        build-essential) echo make ;;
+        *) echo "$1" ;;
+    esac
+}
+
+UTILS="curl wget git bat fd fzf ripgrep sd jq zoxide eza git-delta uv tlrc keychain tmux neovim stow unzip zsh antidote gitleaks"
+[[ "$OS" == "linux" ]] && UTILS="build-essential $UTILS"
+
+for util in $UTILS; do
+    if command_exists "$(cmd_for "$util")" || { [[ "$util" == "antidote" ]] && [ -d "${HOMEBREW_PREFIX:-}/opt/antidote" ]; }; then
+        echo "$util is already installed."
+    elif prompt_install "$util"; then
+        install_package "$util"
     fi
-else
-    echo "zsh is already your default shell."
+done
+
+# Install AI coding CLIs via their official installers
+if ! command_exists claude && prompt_install "Claude Code"; then
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+if ! command_exists opencode && prompt_install "opencode"; then
+    curl -fsSL https://opencode.ai/install | bash
+fi
+
+# Set zsh as the default shell
+if command_exists zsh && [ "$SHELL" != "$(command -v zsh)" ]; then
+    if prompt_install "zsh as your default shell"; then
+        chsh -s "$(command -v zsh)"
+    fi
 fi
 
 # Install starship prompt if not already installed
@@ -205,57 +206,9 @@ else
     echo "pre-commit is already installed."
 fi
 
-# Install Neovim if not already installed
-if ! command_exists nvim; then
-    if prompt_install "Neovim"; then
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz \
-        && sudo rm -rf /opt/nvim \
-        && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
-        && rm nvim-linux64.tar.gz
-    fi
-else
-    echo "Neovim is already installed."
-fi
-
-# Install unzip if not already installed
-if ! command_exists unzip; then
-    if prompt_install "unzip"; then
-        sudo apt install unzip
-    fi
-else
-    echo "unzip is already installed."
-fi
-
-# Install antidote if not already installed
-if ! command_exists antidote; then
-    if prompt_install "antidote"; then
-        brew install antidote
-    fi
-else
-    echo "antidote is already installed."
-fi
-
-# Install GNU stow if not already installed
-if ! command_exists stow; then
-    if prompt_install "GNU stow"; then
-        sudo apt install stow
-    fi
-else
-    echo "GNU stow is already installed."
-fi
-
 # Prompt to stow dotfiles
 if prompt_install "stow your dotfiles"; then
-    stow .
-fi
-
-# Install gitleaks if not already installed
-if ! command_exists gitleaks; then
-    if prompt_install "gitleaks"; then
-        brew install gitleaks
-    fi
-else
-    echo "gitleaks is already installed."
+    (cd "$SCRIPT_DIR/.." && stow --no-folding .)
 fi
 
 # Setup .gitconfig
