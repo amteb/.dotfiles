@@ -39,7 +39,7 @@ get_project_paths() {
     add_single_path "$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault/"
 
     add_paths_from_dir "$CODE/" "$FD_CMD"
-    add_paths_from_dir "$CODE/FinMath/" "$FD_CMD"
+    add_paths_from_dir "$CODE/Assignments/" "$FD_CMD"
     add_paths_from_dir "$CODE/Clones/" "$FD_CMD"
     add_paths_from_dir "$CODE/Projects/" "$FD_CMD"
 

@@ -32,9 +32,7 @@ return {
     },
     {
         "madskjeldgaard/cppman.nvim",
-        requires = {
-            { "MunifTanjim/nui.nvim" }, -- Required dependency for the UI
-        },
+        dependencies = { "MunifTanjim/nui.nvim" },
         config = function()
             local cppman = require "cppman"
             cppman.setup()
