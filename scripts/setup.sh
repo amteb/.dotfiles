@@ -180,7 +180,11 @@ fi
 # Set zsh as the default shell
 if command_exists zsh && [ "$SHELL" != "$(command -v zsh)" ]; then
     if prompt_install "zsh as your default shell"; then
-        chsh -s "$(command -v zsh)"
+        if command_exists chsh; then
+            chsh -s "$(command -v zsh)"
+        else
+            echo "chsh not found (install util-linux-user or passwd); skipping default shell change."
+        fi
     fi
 fi
 
