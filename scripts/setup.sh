@@ -212,6 +212,25 @@ if prompt_install "stow your dotfiles"; then
     (cd "$SCRIPT_DIR/.." && stow --no-folding .)
 fi
 
+# Install tmux plugins (tpm + plugins listed in tmux.conf)
+if command_exists tmux && command_exists git; then
+    TPM_DIR="$HOME/.config/tmux/plugins/tpm"
+    if [ ! -x "$TPM_DIR/bin/install_plugins" ]; then
+        if prompt_install "tmux plugin manager (tpm)"; then
+            mkdir -p "$(dirname "$TPM_DIR")"
+            if [ -d "$TPM_DIR" ] && [ -z "$(ls -A "$TPM_DIR")" ]; then
+                rmdir "$TPM_DIR"
+            fi
+            git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+        fi
+    else
+        echo "tpm is already installed."
+    fi
+    if [ -x "$TPM_DIR/bin/install_plugins" ]; then
+        TMUX_PLUGIN_MANAGER_PATH="$HOME/.config/tmux/plugins/" "$TPM_DIR/bin/install_plugins"
+    fi
+fi
+
 # Setup .gitconfig
 if [ ! -f "$HOME/.gitconfig" ]; then
    echo "[include]" > "$HOME/.gitconfig"
