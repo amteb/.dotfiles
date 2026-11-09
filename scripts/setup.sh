@@ -172,12 +172,9 @@ for util in $UTILS; do
     fi
 done
 
-# Install AI coding CLIs via their official installers
+# Install Claude Code via its official installer
 if ! command_exists claude && prompt_install "Claude Code"; then
     curl -fsSL https://claude.ai/install.sh | bash
-fi
-if ! command_exists opencode && prompt_install "opencode"; then
-    curl -fsSL https://opencode.ai/install | bash
 fi
 
 # Set zsh as the default shell

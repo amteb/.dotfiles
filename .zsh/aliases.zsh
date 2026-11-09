@@ -48,7 +48,6 @@ alias clodo="claude --model opus"
 alias clodp="claude --model opusplan"
 alias clods="claude --model sonnet"
 alias clodh="claude --model haiku"
-alias oc="opencode"
 alias v.="nvim ."
 alias v="nvim"
 
