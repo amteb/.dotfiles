@@ -64,7 +64,7 @@ Utility scripts for system setup and workflow automation. See [`scripts/README.m
 - **`health.sh`** - Comprehensive dotfiles health check
 - **`colors.sh`** - Centralized ANSI color definitions for scripts
 
-**Pre-commit Hooks (`hooks/`):**
+**Pre-commit Hooks (`scripts/hooks/`):**
 - **`verify-no-personal-info.sh`** - Ensure personal data is filtered
 - **`verify-git-filters.sh`** - Check filter configuration
 - **`check-scripts-executable.sh`** - Verify script permissions
