@@ -20,7 +20,11 @@ case "$(uname -m)" in
     *) echo "Unsupported architecture: $(uname -m)"; exit 1 ;;
 esac
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ -e /etc/NIXOS ]]; then
+    echo "NixOS: packages come from the system flake. Stowing only."
+    (cd "$SCRIPT_DIR/.." && stow --no-folding .)
+    exit 0
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     OS="mac"
     PM="brew"
 elif command_exists apt-get; then

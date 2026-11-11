@@ -1,11 +1,10 @@
 #!/bin/bash
+# Git smudge filter: replace placeholders with this machine's HOME,
+# git user.name and user.email on checkout.
 
-# Check if GIT_TRACE is set (which happens in verbose mode)
-if [ -n "$GIT_TRACE" ]; then
-    echo "Smudge filter running on: ${1:-<no filename provided>}" >&2
-fi
+escape_replacement() { printf '%s' "$1" | sed 's/[&|\\]/\\&/g'; }
 
-# Replace placeholders with actual values from environment
-sed -e "s|%%HOME%%|$HOME|g" \
-    -e "s|%%GIT_NAME%%|$(git config user.name)|g" \
-    -e "s|%%GIT_EMAIL%%|$(git config user.email)|g"
+exec sed \
+    -e "s|%%HOME%%|$(escape_replacement "$HOME")|g" \
+    -e "s|%%GIT_NAME%%|$(escape_replacement "$(git config user.name)")|g" \
+    -e "s|%%GIT_EMAIL%%|$(escape_replacement "$(git config user.email)")|g"

@@ -701,7 +701,7 @@ These scripts are primarily used internally by other scripts and functions. They
 ### Helper Scripts
 
 Most scripts in the repository are either:
-- **Git filter scripts**: `smudge.sh`, `clean.sh`, `apply_smudge.sh`, `setup_smudge_clean.sh`, `verify_filters.sh`
+- **Git filter scripts**: `smudge.sh`, `clean.sh`, `setup_smudge_clean.sh`, `verify_filters.sh`
 - **Setup scripts**: `setup.sh`, `health.sh`
 
 These are used for dotfiles setup and maintenance but are not primary user-facing tools.

@@ -39,7 +39,7 @@ autoload -U select-word-style
 select-word-style bash
 
 # Completion system
-source ~/.dotfiles/.zsh/completions.zsh
+source $DOTFILES/.zsh/completions.zsh
 
 # Named directories
 hash -d dev="$HOME/Dev"
@@ -47,17 +47,17 @@ hash -d dot="$HOME/.dotfiles"
 hash -d downloads="$HOME/Downloads"
 
 # Load modular configuration
-source ~/.dotfiles/.zsh/git-functions.zsh
-source ~/.dotfiles/.zsh/aliases.zsh
-source ~/.dotfiles/.zsh/widgets.zsh
-source ~/.dotfiles/.zsh/integrations.zsh
+source $DOTFILES/.zsh/git-functions.zsh
+source $DOTFILES/.zsh/aliases.zsh
+source $DOTFILES/.zsh/widgets.zsh
+source $DOTFILES/.zsh/integrations.zsh
 
 # bun completions
-[ -s "%%HOME%%/.bun/_bun" ] && source "%%HOME%%/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # rustup (Homebrew, keg-only): shims must precede /usr/bin so rust-toolchain.toml is honoured
-export PATH="/home/linuxbrew/.linuxbrew/opt/rustup/bin:$PATH"
+[[ -d /home/linuxbrew/.linuxbrew/opt/rustup/bin ]] && export PATH="/home/linuxbrew/.linuxbrew/opt/rustup/bin:$PATH"
