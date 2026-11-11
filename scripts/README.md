@@ -73,16 +73,6 @@ echo "$HOME/test" | ./scripts/clean.sh
 # Output: %%HOME%%/test
 ```
 
-### `apply_smudge.sh`
-
-Re-apply smudge filter to all repository files. Useful after cloning or if filters weren't working.
-
-```bash
-./scripts/apply_smudge.sh
-```
-
-**Warning:** This removes and re-adds all files from the git index.
-
 ### `verify_filters.sh`
 
 Verify filter configuration and test functionality.

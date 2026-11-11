@@ -52,8 +52,10 @@ export PERL_MB_OPT="--install_base \"$HOME/perl5\""
 export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
 
 # PostgreSQL stuff
-export LDFLAGS="-L/opt/homebrew/opt/postgresql@18/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/postgresql@18/include"
+if [[ -d /opt/homebrew/opt/postgresql@18 ]]; then
+  export LDFLAGS="-L/opt/homebrew/opt/postgresql@18/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/postgresql@18/include"
+fi
 
 # PATH modifications
 typeset -U path
