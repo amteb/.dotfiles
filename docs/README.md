@@ -251,7 +251,7 @@ Location: `~/.git-autosync.cfg`
 ```ini
 [nightly]
 cron = "0 0 * * *"
-paths = ["/Users/antonio/.dotfiles"]
+paths = ["~/.dotfiles"]
 
 [weekly]
 cron = "0 0 * * 0"

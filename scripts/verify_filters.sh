@@ -1,124 +1,46 @@
 #!/bin/bash
+# Verify the substitution filter is configured, round-trips, and that no
+# personal value reached the stored (index) copy of a filtered file.
 
-# Verify that git smudge/clean filters are working correctly
-# This script checks that personal information is being filtered out
+cd "$(git rev-parse --show-toplevel)" || exit 1
+source scripts/colors.sh
 
-echo "=== Git Filter Verification Script ==="
-echo ""
-
-# Source centralized colors
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/colors.sh"
-
-# Check if filters are configured
-echo "1. Checking if git filters are configured..."
-CLEAN_FILTER=$(git config --local filter.substitution.clean)
-SMUDGE_FILTER=$(git config --local filter.substitution.smudge)
-
-if [ -z "$CLEAN_FILTER" ] || [ -z "$SMUDGE_FILTER" ]; then
-    echo -e "${RED}✗ Filters not configured!${NC}"
-    echo "  Run: ./scripts/setup_smudge_clean.sh"
-    exit 1
-else
-    echo -e "${GREEN}✓ Filters are configured${NC}"
-    echo "  Clean:  $CLEAN_FILTER"
-    echo "  Smudge: $SMUDGE_FILTER"
-fi
-
-echo ""
-echo "2. Testing filter scripts..."
-
-# Test clean filter
-TEST_INPUT="$HOME/test path $(git config user.name) $(git config user.email)"
-CLEAN_OUTPUT=$(echo "$TEST_INPUT" | ./scripts/clean.sh)
-
-if [[ "$CLEAN_OUTPUT" == *"/Users/antonio"* ]] && [[ "$CLEAN_OUTPUT" == *"Antonio Braz"* ]] && [[ "$CLEAN_OUTPUT" == *"antonio@torreaobraz.com"* ]]; then
-    echo -e "${GREEN}✓ Clean filter working${NC}"
-    echo "  Input:  $TEST_INPUT"
-    echo "  Output: $CLEAN_OUTPUT"
-else
-    echo -e "${RED}✗ Clean filter not working properly${NC}"
-    echo "  Input:  $TEST_INPUT"
-    echo "  Output: $CLEAN_OUTPUT"
-    exit 1
-fi
-
-# Test smudge filter
-TEST_INPUT="/Users/antonio/test path Antonio Braz antonio@torreaobraz.com"
-SMUDGE_OUTPUT=$(echo "$TEST_INPUT" | ./scripts/smudge.sh)
-
-if [[ "$SMUDGE_OUTPUT" == *"$HOME"* ]] && [[ "$SMUDGE_OUTPUT" == *"$(git config user.name)"* ]] && [[ "$SMUDGE_OUTPUT" == *"$(git config user.email)"* ]]; then
-    echo -e "${GREEN}✓ Smudge filter working${NC}"
-    echo "  Input:  $TEST_INPUT"
-    echo "  Output: $SMUDGE_OUTPUT"
-else
-    echo -e "${RED}✗ Smudge filter not working properly${NC}"
-    echo "  Input:  $TEST_INPUT"
-    echo "  Output: $SMUDGE_OUTPUT"
-    exit 1
-fi
-
-echo ""
-echo "3. Checking what will be committed to git..."
-
-# Get current git user info
 GIT_NAME=$(git config user.name)
 GIT_EMAIL=$(git config user.email)
+status=0
 
-# Stage all changes temporarily
-git add -A > /dev/null 2>&1
+fail() { echo -e "${RED}✗ $*${NC}"; status=1; }
+pass() { echo -e "${GREEN}✓ $*${NC}"; }
 
-# Search for personal information patterns
-if git diff --cached | grep -q "$HOME" 2>/dev/null; then
-    echo -e "${YELLOW}⚠ Found $HOME in staged changes${NC}"
-fi
-
-if git diff --cached | grep -q "$GIT_NAME" 2>/dev/null; then
-    echo -e "${YELLOW}⚠ Found git name '$GIT_NAME' in staged changes${NC}"
-fi
-
-if git diff --cached | grep -q "$GIT_EMAIL" 2>/dev/null; then
-    echo -e "${YELLOW}⚠ Found git email '$GIT_EMAIL' in staged changes${NC}"
-fi
-
-# Check that placeholders exist in what will be stored
-PLACEHOLDERS_FOUND=0
-if git diff --cached --diff-filter=AM | grep -q "/Users/antonio" 2>/dev/null; then
-    ((PLACEHOLDERS_FOUND++))
-fi
-if git diff --cached --diff-filter=AM | grep -q "Antonio Braz" 2>/dev/null; then
-    ((PLACEHOLDERS_FOUND++))
-fi
-if git diff --cached --diff-filter=AM | grep -q "antonio@torreaobraz.com" 2>/dev/null; then
-    ((PLACEHOLDERS_FOUND++))
-fi
-
-# Unstage changes
-git reset > /dev/null 2>&1
-
-if [ "$PLACEHOLDERS_FOUND" -gt 0 ]; then
-    echo -e "${GREEN}✓ Found $PLACEHOLDERS_FOUND placeholder(s) in files that will be stored in git${NC}"
-else
-    echo -e "${YELLOW}⚠ No placeholders found (this is ok if you're not changing files with personal info)${NC}"
-fi
-
-echo ""
-echo "4. Checking for common personal info patterns in repo..."
-
-# Check if any files in the repo contain personal information
-FILES_WITH_ISSUES=()
-
-if grep -r "$GIT_EMAIL" --exclude-dir=.git --exclude="verify_filters.sh" . 2>/dev/null | grep -v "antonio@torreaobraz.com" > /dev/null; then
-    FILES_WITH_ISSUES+=("$GIT_EMAIL")
-fi
-
-if [ ${#FILES_WITH_ISSUES[@]} -gt 0 ]; then
-    echo -e "${YELLOW}⚠ Found personal information in working directory:${NC}"
-    for info in "${FILES_WITH_ISSUES[@]}"; do
-        echo "  - $info"
-    done
-    echo "  This is expected in the working directory (smudge filter applies them)"
+if [ -z "$(git config --local filter.substitution.clean)" ] || [ -z "$(git config --local filter.substitution.smudge)" ]; then
+    fail "Filters not configured. Run: ./scripts/setup_smudge_clean.sh"
     exit 1
-else
-    echo -e "${GREEN}✓ No hardcoded personal information found${NC}"
-    exit 0
 fi
+pass "Filters configured"
+
+[ -n "$GIT_NAME" ] || fail "git user.name is empty; names will not be filtered"
+[ -n "$GIT_EMAIL" ] || fail "git user.email is empty; emails will not be filtered"
+
+input="$HOME/x $GIT_NAME $GIT_EMAIL"
+cleaned=$(printf '%s\n' "$input" | scripts/clean.sh)
+if [ "$cleaned" = "%%HOME%%/x %%GIT_NAME%% %%GIT_EMAIL%%" ]; then
+    pass "Clean filter replaces HOME, name and email"
+else
+    fail "Clean filter output: $cleaned"
+fi
+
+if [ "$(printf '%s\n' "$cleaned" | scripts/smudge.sh)" = "$input" ]; then
+    pass "Smudge filter restores the original"
+else
+    fail "Smudge filter does not round-trip"
+fi
+
+while read -r f; do
+    stored=$(git show ":$f" 2>/dev/null) || continue
+    for value in "$HOME" "$GIT_NAME" "$GIT_EMAIL"; do
+        [ -n "$value" ] && grep -qF -- "$value" <<<"$stored" && fail "$f: stored copy contains a personal value"
+    done
+done < <(git ls-files | git check-attr --stdin filter | awk -F': ' '$3 == "substitution" {print $1}')
+
+[ "$status" -eq 0 ] && pass "Stored copies are clean"
+exit "$status"

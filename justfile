@@ -19,7 +19,7 @@ update:
 sync:
     @echo "Syncing dotfiles..."
     @stow --no-folding .
-    @git add .
+    @git add -u
     @if ! git diff --cached --quiet; then \
         git status --short; \
         echo ""; \

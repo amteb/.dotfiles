@@ -1,7 +1,6 @@
 .config/google-chrome
 .config/uv/uv-receipt.json
 .config/go/telemetry/
-.config/nvim/lazy-lock.json
 .config/Code/**/accessTokenCache
 tmux-client-*.log
 .DS_Store
@@ -10,3 +9,8 @@ tmux-client-*.log
 
 # Tmux plugins managed by TPM
 .config/tmux/plugins/
+
+# Machine-written; gh stores oauth_token here when no keyring is available
+.config/gh/hosts.yml
+.config/atuin/atuin-receipt.json
+.config/karabiner/automatic_backups/

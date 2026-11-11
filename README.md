@@ -50,7 +50,6 @@ Utility scripts for system setup and workflow automation. See [`scripts/README.m
 **Git Filters (Username-Agnostic Configs):**
 - **`smudge.sh`** - Restore placeholders to local values on checkout
 - **`clean.sh`** - Replace personal values with placeholders on commit
-- **`apply_smudge.sh`** - Re-apply smudge filter to all repository files
 - **`verify_filters.sh`** - Verify filter configuration and functionality
 
 **AI-Powered Commit Tools:**

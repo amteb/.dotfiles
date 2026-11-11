@@ -17,4 +17,4 @@ eval "$(zoxide init zsh)"
 
 # Opam (OCaml package manager)
 # This section can be safely removed if not using OCaml
-[[ ! -r '/Users/antonio/.opam/opam-init/init.zsh' ]] || source '/Users/antonio/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+[[ -r "$HOME/.opam/opam-init/init.zsh" ]] && source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null

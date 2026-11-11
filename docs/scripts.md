@@ -326,11 +326,11 @@ git-autosync list --all
 **Output:**
 ```
 Repositories for nightly:
-  /Users/antonio/.dotfiles
-  /Users/antonio/Dev/myproject
+  ~/.dotfiles
+  ~/Dev/myproject
 
 Repositories for weekly:
-  /Users/antonio/Dev/archive
+  ~/Dev/archive
 ```
 
 #### sync
@@ -412,11 +412,11 @@ Format:
 ```ini
 [nightly]
 cron = "0 0 * * *"
-paths = ["/Users/antonio/.dotfiles", "/Users/antonio/Dev/project"]
+paths = ["~/.dotfiles", "~/Dev/project"]
 
 [weekly]
 cron = "0 0 * * 0"
-paths = ["/Users/antonio/Dev/archive"]
+paths = ["~/Dev/archive"]
 
 [monthly]
 cron = "0 0 1 * *"
@@ -701,7 +701,7 @@ These scripts are primarily used internally by other scripts and functions. They
 ### Helper Scripts
 
 Most scripts in the repository are either:
-- **Git filter scripts**: `smudge.sh`, `clean.sh`, `apply_smudge.sh`, `setup_smudge_clean.sh`, `verify_filters.sh`
+- **Git filter scripts**: `smudge.sh`, `clean.sh`, `setup_smudge_clean.sh`, `verify_filters.sh`
 - **Setup scripts**: `setup.sh`, `health.sh`
 
 These are used for dotfiles setup and maintenance but are not primary user-facing tools.
